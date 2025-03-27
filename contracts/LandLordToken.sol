@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-contract SquareMeterToken is ERC20, Ownable {
+contract LandLordToken is ERC20, Ownable {
     // Set decimals to 18 for BNB/BSC compatibility
     uint8 private constant _decimals = 18;
     
@@ -29,7 +29,7 @@ contract SquareMeterToken is ERC20, Ownable {
     event ProfitDistributed(uint256 indexed distributionId, uint256 amount, uint256 date);
     event ProfitClaimed(address indexed user, uint256 indexed distributionId, uint256 amount);
 
-    constructor() ERC20("Square Meter Token", "SQM2") Ownable(msg.sender) {
+    constructor() ERC20("LandLord", "LND") Ownable(msg.sender) {
         _mint(msg.sender, INITIAL_SUPPLY);
         backendAddress = msg.sender; // Initialize backend to owner
     }
