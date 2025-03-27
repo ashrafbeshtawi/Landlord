@@ -113,12 +113,17 @@ describe("LandLordToken", function () {
     // Transfer tokens to another user
     const transferAmount = ethers.parseUnits("2000", 18);
     await landlordToken.connect(owner).transfer(other.address, transferAmount);
-
+  
     // Distribute profit
     const profitAmount = ethers.parseUnits("1000", 18);
     await landlordToken.connect(owner).distributeProfit(profitAmount);
     const distributionId = 0;
-
+  
+    // Get total supply and owner balance at distribution time
+    const totalSupplyAtDistribution = await landlordToken.totalSupply();
+    const ownerBalanceAtDistribution = await landlordToken.balanceOf(owner.address);
+    const tokensExcludingOwner = totalSupplyAtDistribution - ownerBalanceAtDistribution;
+  
     // Claim for user
     const userBalanceAtDistribution = await landlordToken.balanceOf(user.address);
     const userMessageHash = ethers.solidityPackedKeccak256(
@@ -127,7 +132,7 @@ describe("LandLordToken", function () {
     );
     const userMessageHashBytes = ethers.getBytes(userMessageHash);
     const userSignature = await backend.signMessage(userMessageHashBytes);
-
+  
     // Claim for other user
     const otherBalanceAtDistribution = await landlordToken.balanceOf(other.address);
     const otherMessageHash = ethers.solidityPackedKeccak256(
@@ -136,18 +141,18 @@ describe("LandLordToken", function () {
     );
     const otherMessageHashBytes = ethers.getBytes(otherMessageHash);
     const otherSignature = await backend.signMessage(otherMessageHashBytes);
-
+  
     // Both users should be able to claim
     await landlordToken.connect(user).claimProfit(distributionId, userBalanceAtDistribution, userSignature);
     await landlordToken.connect(other).claimProfit(distributionId, otherBalanceAtDistribution, otherSignature);
-
+  
     // Verify balances increased correctly
-    const expectedUserProfit = profitAmount * userBalanceAtDistribution / (await landlordToken.totalSupply() - await landlordToken.balanceOf(owner.address));
-    const expectedOtherProfit = profitAmount * otherBalanceAtDistribution / (await landlordToken.totalSupply() - await landlordToken.balanceOf(owner.address));
-
+    const expectedUserProfit = profitAmount * userBalanceAtDistribution / tokensExcludingOwner;
+    const expectedOtherProfit = profitAmount * otherBalanceAtDistribution / tokensExcludingOwner;
+  
     const finalUserBalance = await landlordToken.balanceOf(user.address);
     const finalOtherBalance = await landlordToken.balanceOf(other.address);
-
+  
     expect(finalUserBalance).to.equal(userBalanceAtDistribution + expectedUserProfit);
     expect(finalOtherBalance).to.equal(otherBalanceAtDistribution + expectedOtherProfit);
   });
