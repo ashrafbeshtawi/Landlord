@@ -23,17 +23,17 @@ LandLordToken (LND) is an ERC-20 compatible smart contract deployed on Ethereum-
 
 ### 📁 Project Setup
 
-'''bash
+```bash
 git clone https://github.com/your-username/landlord-token.git
 cd landlord-token
 npm install
-'''
+```
 
 ### 🔨 Compile the Contract
 
-'''bash
+```bash
 npx hardhat compile
-'''
+```
 
 ---
 
@@ -41,9 +41,9 @@ npx hardhat compile
 
 Run tests with:
 
-'''bash
+```bash
 npx hardhat test
-'''
+```
 
 > 💡 Requires Node.js v20.x for compatibility with Hardhat and ethers.js v6.
 
