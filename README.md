@@ -35,6 +35,26 @@ npm install
 npx hardhat compile
 ```
 
+### 🔌 Start a Local Node
+
+Launch a local Hardhat node in one terminal window:
+
+```bash
+npx hardhat node
+```
+
+This starts a local Ethereum network with pre-funded accounts.
+
+### 🚀 Deploy the Contract Locally
+
+In another terminal window, run:
+
+```bash
+npx hardhat run scripts/deploy.js --network localhost
+```
+
+This command will compile the contract, deploy it on your local network, and output the deployed contract address.
+
 ---
 
 ## 🧪 Testing
