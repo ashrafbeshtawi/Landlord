@@ -9,12 +9,10 @@ describe("LandLordToken", function () {
     [owner, backend, user, other] = await ethers.getSigners();
     LandLordToken = await ethers.getContractFactory("LandLordToken");
     landlordToken = await LandLordToken.deploy();
-    await landlordToken.waitForDeployment(); // ethers v6 equivalent
+    await landlordToken.waitForDeployment();
 
-    // Set backend address to a non-owner account (backend)
     await landlordToken.connect(owner).setBackendAddress(backend.address);
 
-    // Transfer tokens from owner to user so that user has a positive balance
     const transferAmount = ethers.parseUnits("1000", 18);
     await landlordToken.connect(owner).transfer(user.address, transferAmount);
   });
@@ -82,4 +80,98 @@ describe("LandLordToken", function () {
         .claimProfit(distributionId, balanceAtDistribution, invalidSignature)
     ).to.be.revertedWith("Invalid backend signature");
   });
+
+  it("should prevent a user from claiming profit twice for the same distribution", async function () {
+    // Distribute profit
+    const profitAmount = ethers.parseUnits("500", 18);
+    await landlordToken.connect(owner).distributeProfit(profitAmount);
+    const distributionId = 0;
+
+    // Get user's balance at distribution
+    const balanceAtDistribution = await landlordToken.balanceOf(user.address);
+
+    // Prepare message hash
+    const messageHash = ethers.solidityPackedKeccak256(
+      ["address", "uint256", "uint256"],
+      [user.address, distributionId, balanceAtDistribution]
+    );
+    const messageHashBytes = ethers.getBytes(messageHash);
+
+    // Backend signs the message
+    const signature = await backend.signMessage(messageHashBytes);
+
+    // First claim should succeed
+    await landlordToken.connect(user).claimProfit(distributionId, balanceAtDistribution, signature);
+
+    // Second claim should revert
+    await expect(
+      landlordToken.connect(user).claimProfit(distributionId, balanceAtDistribution, signature)
+    ).to.be.revertedWith("Already claimed for this distribution");
+  });
+
+  it("should allow different users to claim for the same distribution", async function () {
+    // Transfer tokens to another user
+    const transferAmount = ethers.parseUnits("2000", 18);
+    await landlordToken.connect(owner).transfer(other.address, transferAmount);
+
+    // Distribute profit
+    const profitAmount = ethers.parseUnits("1000", 18);
+    await landlordToken.connect(owner).distributeProfit(profitAmount);
+    const distributionId = 0;
+
+    // Claim for user
+    const userBalanceAtDistribution = await landlordToken.balanceOf(user.address);
+    const userMessageHash = ethers.solidityPackedKeccak256(
+      ["address", "uint256", "uint256"],
+      [user.address, distributionId, userBalanceAtDistribution]
+    );
+    const userMessageHashBytes = ethers.getBytes(userMessageHash);
+    const userSignature = await backend.signMessage(userMessageHashBytes);
+
+    // Claim for other user
+    const otherBalanceAtDistribution = await landlordToken.balanceOf(other.address);
+    const otherMessageHash = ethers.solidityPackedKeccak256(
+      ["address", "uint256", "uint256"],
+      [other.address, distributionId, otherBalanceAtDistribution]
+    );
+    const otherMessageHashBytes = ethers.getBytes(otherMessageHash);
+    const otherSignature = await backend.signMessage(otherMessageHashBytes);
+
+    // Both users should be able to claim
+    await landlordToken.connect(user).claimProfit(distributionId, userBalanceAtDistribution, userSignature);
+    await landlordToken.connect(other).claimProfit(distributionId, otherBalanceAtDistribution, otherSignature);
+
+    // Verify balances increased correctly
+    const expectedUserProfit = profitAmount * userBalanceAtDistribution / (await landlordToken.totalSupply() - await landlordToken.balanceOf(owner.address));
+    const expectedOtherProfit = profitAmount * otherBalanceAtDistribution / (await landlordToken.totalSupply() - await landlordToken.balanceOf(owner.address));
+
+    const finalUserBalance = await landlordToken.balanceOf(user.address);
+    const finalOtherBalance = await landlordToken.balanceOf(other.address);
+
+    expect(finalUserBalance).to.equal(userBalanceAtDistribution + expectedUserProfit);
+    expect(finalOtherBalance).to.equal(otherBalanceAtDistribution + expectedOtherProfit);
+  });
+
+  it("should prevent owner from claiming profit", async function () {
+    // Distribute profit
+    const profitAmount = ethers.parseUnits("500", 18);
+    await landlordToken.connect(owner).distributeProfit(profitAmount);
+    const distributionId = 0;
+
+    // Prepare message hash for owner
+    const messageHash = ethers.solidityPackedKeccak256(
+      ["address", "uint256", "uint256"],
+      [owner.address, distributionId, await landlordToken.balanceOf(owner.address)]
+    );
+    const messageHashBytes = ethers.getBytes(messageHash);
+
+    // Backend signs the message
+    const signature = await backend.signMessage(messageHashBytes);
+
+    // Attempt to claim by owner should revert
+    await expect(
+      landlordToken.connect(owner).claimProfit(distributionId, await landlordToken.balanceOf(owner.address), signature)
+    ).to.be.revertedWith("Owner cannot claim");
+  });
+  
 });
