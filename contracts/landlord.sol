@@ -3,12 +3,9 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract SquareMeterToken is ERC20, Ownable {
-    using SafeMath for uint256;
-
     // Set decimals to 18 for BNB/BSC compatibility
     uint8 private constant _decimals = 18;
     
@@ -58,7 +55,7 @@ contract SquareMeterToken is ERC20, Ownable {
         uint256 totalSupplyValue = totalSupply();
         require(totalSupplyValue > ownerBalance, "No eligible holders for distribution");
         
-        newDistribution.tokensExcludingOwner = totalSupplyValue.sub(ownerBalance);
+        newDistribution.tokensExcludingOwner = totalSupplyValue - ownerBalance;
         
         emit ProfitDistributed(distributionId, profitAmount, block.timestamp);
     }
@@ -91,10 +88,8 @@ contract SquareMeterToken is ERC20, Ownable {
         // Mark as claimed
         distribution.claimed[msg.sender] = true;
 
-        // Calculate and transfer profit
-        uint256 userShare = distribution.totalAmount
-            .mul(balanceAtDistribution)
-            .div(distribution.tokensExcludingOwner);
+        // Calculate and transfer profit using native arithmetic operators
+        uint256 userShare = distribution.totalAmount * balanceAtDistribution / distribution.tokensExcludingOwner;
 
         _transfer(owner(), msg.sender, userShare);
 
