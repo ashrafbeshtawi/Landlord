@@ -1,0 +1,15 @@
+version: '3.1'
+
+services:
+  php:
+    container_name: php
+    image: php:8.2-apache
+    restart: always
+    ports:
+      - "1234:80"
+    volumes:
+      - ./php:/var/www/html
+
+
+
+
