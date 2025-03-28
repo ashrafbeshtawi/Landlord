@@ -40,6 +40,10 @@ describe("LandLordToken", function () {
 
     // Backend (designated signer) signs the message hash
     const signature = await backend.signMessage(messageHashBytes);
+    console.log(user.address);
+    console.log(balanceAtDistribution);
+    console.log("messageHash:", messageHash);
+
 
     // User claims the profit using the generated signature
     const claimTx = await landlordToken
