@@ -54,9 +54,10 @@ export async function GET(request: Request) {
       recoveredSigner,
       isValid,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Something went wrong', details: err.message },
+      { error: 'Something went wrong', details: errorMessage },
       { status: 500 }
     );
   }
