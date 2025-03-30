@@ -3,28 +3,28 @@ import { ethers } from 'ethers';
 
 export async function GET(request: Request) {
   try {
-    // Get query parameters from the request
     const url = new URL(request.url);
     const userAddress = url.searchParams.get('userAddress');
     const distributionId = url.searchParams.get('distributionId');
-    
-    // Check if required parameters are provided
+
     if (!userAddress || !distributionId) {
       return NextResponse.json({ error: 'userAddress and distributionId are required.' }, { status: 400 });
     }
 
-    // Convert distributionId to number if necessary
     const distributionIdNum = parseInt(distributionId, 10);
     if (isNaN(distributionIdNum)) {
       return NextResponse.json({ error: 'distributionId must be a valid number.' }, { status: 400 });
     }
 
-    // ⚠️ Never use real private keys in production code
-    const privateKey = '0x1234567890123456789012345678901234567890123456789012345678901234';
+    // Load private key from env
+    const privateKey = process.env.PRIVATE_KEY;
+    if (!privateKey) {
+      return NextResponse.json({ error: 'PRIVATE_KEY not set in environment variables.' }, { status: 500 });
+    }
+
     const backendWallet = new ethers.Wallet(privateKey);
 
-    // Example value for balanceAtDistribution
-    const balanceAtDistribution = 1000;
+    const balanceAtDistribution = ethers.parseUnits('1000', 18); // 1000 tokens with 18 decimals
 
     const messageHash = ethers.solidityPackedKeccak256(
       ['address', 'uint256', 'uint256'],
@@ -39,7 +39,6 @@ export async function GET(request: Request) {
     );
 
     const signature = await backendWallet.signMessage(ethers.getBytes(messageHash));
-
     const recoveredSigner = ethers.verifyMessage(ethers.getBytes(messageHash), signature);
     const isValid = recoveredSigner === backendWallet.address;
 
@@ -47,7 +46,7 @@ export async function GET(request: Request) {
       backendAddress: backendWallet.address,
       userAddress,
       distributionId: distributionIdNum,
-      balanceAtDistribution,
+      balanceAtDistribution: balanceAtDistribution.toString(),
       messageHash,
       ethSignedMessageHash,
       signature,

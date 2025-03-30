@@ -1,20 +1,17 @@
-version: '3.1'
+version: '3.9'
 
 services:
-  php:
-    container_name: php
-    image: php:8.2-apache
-    restart: always
+  nextjs:
+    container_name: nextjs-app
+    build:
+      context: ./nextjs
+      dockerfile: Dockerfile
     ports:
-      - "1234:80"
+      - '3000:3000'
     volumes:
-      - ./php:/var/www/html
-    environment:
-      - PUBLIC_KEY=${PUBLIC_KEY}
-      - PRIVATE_KEY=${PRIVATE_KEY}
-
-
-
-
-
-
+      - ./nextjs:/app
+      - /app/node_modules  # prevent host's node_modules from interfering
+    env_file:
+      - .env
+    command: npm run dev
+    restart: unless-stopped
