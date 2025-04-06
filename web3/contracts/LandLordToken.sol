@@ -4,8 +4,10 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract LandLordToken is ERC20, Ownable {
+
+contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
     // Set decimals to 18 for BNB/BSC compatibility
     uint8 private constant _decimals = 18;
     
@@ -64,7 +66,7 @@ contract LandLordToken is ERC20, Ownable {
         uint256 distributionId,
         uint256 balanceAtDistribution,
         bytes memory signature
-    ) external {
+    ) external nonReentrant {
         require(distributionId < profitDistributions.length, "Distribution does not exist");
         ProfitDistribution storage distribution = profitDistributions[distributionId];
 
@@ -96,13 +98,37 @@ contract LandLordToken is ERC20, Ownable {
         emit ProfitClaimed(msg.sender, distributionId, userShare);
     }
 
-    // Optional: Functions for token burning if you want to reduce supply
+    // Helper function to retrieve details of a specific profit distribution.
+    function getDistribution(uint256 distributionId) external view returns (
+        uint256 totalAmount,
+        uint256 distributionDate,
+        uint256 tokensExcludingOwner
+    ) {
+        require(distributionId < profitDistributions.length, "Distribution does not exist");
+        ProfitDistribution storage distribution = profitDistributions[distributionId];
+        return (distribution.totalAmount, distribution.distributionDate, distribution.tokensExcludingOwner);
+    }
+
+    // Helper function to check if an address has claimed a specific profit distribution.
+    function hasClaimed(uint256 distributionId, address user) external view returns (bool) {
+        require(distributionId < profitDistributions.length, "Distribution does not exist");
+        ProfitDistribution storage distribution = profitDistributions[distributionId];
+        return distribution.claimed[user];
+    }
+
+
     function burn(uint256 amount) public {
         _burn(msg.sender, amount);
     }
 
-    // Optional: Functions for additional minting if needed
-    function mint(address to, uint256 amount) public onlyOwner {
-        _mint(to, amount);
+    function generateTokensForRealEstatePurchase(uint256 amount) public onlyOwner {
+        uint256 maxMintAmount = totalSupply() / 10;
+        require(amount <= maxMintAmount, "Minting amount exceeds 10% of total supply");
+        _mint(owner(), amount);
+    }
+
+    // Override decimals function explicitly.
+    function decimals() public view virtual override returns (uint8) {
+        return _decimals;
     }
 }
