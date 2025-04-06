@@ -195,7 +195,7 @@ export default function Home() {
           <Box
             sx={(theme) => ({
               backgroundColor: theme.palette.background.default, // Using secondary color from theme
-              width: '40%',
+              width: '60%',
               height: 'auto',
               padding: '40px',
               borderRadius: '12px',
@@ -205,7 +205,7 @@ export default function Home() {
               color: '#FFFFFF',
               textAlign: 'center',
               marginLeft: '5%',
-              transform: 'translateX(-40%)',
+              transform: 'translateX(-20%)',
               opacity: 0.9,
             })}
           >
@@ -220,14 +220,15 @@ export default function Home() {
 
         {renderSection(
           'vision',
-          'The Vision Section',
-          'This section describes our vision. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+          'Establishing a Tangible Asset Backing for Digital Currencies',
+          `One of the major criticisms of many digital currencies is their lack of intrinsic value or tangible backing. This absence of real-world anchors often leads to high volatility and speculative trading. Backing a digital currency with physical assets, such as real estate, introduces a foundation of trust and stability. Investors are not only acquiring digital tokens, but also gaining exposure to income-generating, real-world properties. This model aligns digital finance with traditional asset management, offering a hybrid solution that is both innovative and fundamentally sound.`,
           true
         )}
+
         {renderSection(
           'tokenomiks',
-          'tokenomiks Section',
-          'Here we detail the tokenomiks. Ut enim ad minim veniam, quis nostrud exercitation ullamco.',
+          'Our Project: LandLord (Lnd)',
+          `LandLord (Lnd) is a blockchain-based digital currency backed by income-generating real estate assets. Investors can purchase Lnd tokens, and the capital raised is used to acquire, manage, and rent out properties. Rental income is periodically distributed among token holders, thereby providing a steady return on investment. The value of Lnd is intrinsically linked to the performance of the real estate portfolio, ensuring transparency and stability. By merging the security of real estate with the flexibility of digital finance, LandLord offers a revolutionary investment model that democratizes access to the real estate market.`,
           false
         )}
         {renderSection(
