@@ -1,8 +1,7 @@
-"use client";
+"use client"
 
 import * as React from 'react';
 import { useState } from 'react';
-import Image from 'next/image';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,34 +12,37 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Image from 'next/image';
 
 // Create a custom theme with the suggested color palette
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1A237E', // Deep blue
+      main: '#1DCD9F', // Mint Green (primary accent color)
     },
     secondary: {
-      main: '#00ACC1', // Cyan
-    },
-    error: {
-      main: '#FFC107', // Amber
+      main: '#169976', // Darker Mint Green (secondary accent color)
     },
     background: {
-      default: '#F5F5F5', // Light background color
+      default: '#222222', // Dark Gray for backgrounds
+      paper: '#000000', // Black background for paper elements
     },
     text: {
-      primary: '#212121', // Dark primary text
-      secondary: '#757575', // Secondary text
+      primary: '#FFFFFF', // White text on dark backgrounds
+      secondary: '#34C6A3', // Light mint green for secondary text
+    },
+    action: {
+      active: '#1DCD9F', // Active button color
+      hover: '#169976', // Hover color for buttons and links
     },
   },
   typography: {
     h3: {
       fontWeight: 'bold',
-      color: '#212121',
+      color: '#FFFFFF', // White for headings
     },
     body1: {
-      color: '#757575',
+      color: '#34C6A3', // Light mint green for body text
     },
   },
 });
@@ -75,7 +77,7 @@ export default function Home() {
       sx={{
         height: '100vh',
         p: 4,
-        backgroundColor: reverse ? '#e0e0e0' : '#f5f5f5',
+        backgroundColor: '#222222', // Dark Gray background for sections
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
         alignItems: 'center',
@@ -114,14 +116,14 @@ export default function Home() {
     <ThemeProvider theme={theme}>
       <div style={{ margin: 0, padding: 0 }}>
         {/* Fixed Navigation AppBar */}
-        <AppBar position="fixed" sx={{ zIndex: 1201 }}>
-          <Toolbar disableGutters sx={{ px: 2 }}>
+        <AppBar position="fixed" sx={{ zIndex: 1201, boxShadow: 'none', backgroundColor: '#000000' }}>
+          <Toolbar sx={{ padding: '15px 16px' }}>
             <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
               <Image
                 src="/coin.png"
                 alt="Coin Logo"
                 width={120}
-                height={100}
+                height={120}
                 style={{ borderRadius: '50%' }}
               />
             </Box>
@@ -129,13 +131,19 @@ export default function Home() {
               {[
                 { id: 'home', label: 'Home' },
                 { id: 'vision', label: 'The Vision' },
-                { id: 'tokonomiks', label: 'Tokonomiks' },
+                { id: 'tokenomiks', label: 'tokenomiks' },
                 { id: 'whitepaper', label: 'Whitepaper' },
                 { id: 'team', label: 'Our Team' },
               ].map(({ id, label }) => (
                 <Button
                   key={id}
-                  sx={{ color: 'white', fontWeight: 'bold', mx: 2 }}
+                  sx={{
+                    color: '#FFFFFF', 
+                    fontWeight: 'bold', 
+                    mx: 2, 
+                    '&:hover': { backgroundColor: '#169976' }, 
+                    transition: 'background-color 0.3s',
+                  }}
                   onClick={() => scrollToSection(id)}
                 >
                   {label}
@@ -158,7 +166,7 @@ export default function Home() {
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
-              {['home', 'vision', 'tokonomiks', 'whitepaper', 'team'].map((id) => (
+              {['home', 'vision', 'tokenomiks', 'whitepaper', 'team'].map((id) => (
                 <MenuItem key={id} onClick={() => scrollToSection(id)}>
                   {id.charAt(0).toUpperCase() + id.slice(1).replace(/([A-Z])/g, ' $1')}
                 </MenuItem>
@@ -169,7 +177,7 @@ export default function Home() {
 
         <Box sx={{ height: '120px' }} />
 
-        {/* Home Section with partial left overlay */}
+{/* Home Section with background image and text layout */}
         <Box
           id="home"
           sx={{
@@ -180,19 +188,26 @@ export default function Home() {
             backgroundPosition: 'center',
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'flex-start',
+            pl: '10%',
           }}
         >
           <Box
-            sx={{
-              backgroundColor: 'rgba(0, 0, 255, 0.3)', // Blue overlay
-              width: { xs: '100%', md: '50%' },
-              height: '100%',
-              p: 4,
+            sx={(theme) => ({
+              backgroundColor: theme.palette.background.default, // Using secondary color from theme
+              width: '40%',
+              height: 'auto',
+              padding: '40px',
+              borderRadius: '12px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
-              color: 'white',
-            }}
+              color: '#FFFFFF',
+              textAlign: 'center',
+              marginLeft: '5%',
+              transform: 'translateX(-40%)',
+              opacity: 0.9,
+            })}
           >
             <Typography variant="h3" sx={{ mb: 2 }}>
               Welcome to Land Lord Coin
@@ -210,9 +225,9 @@ export default function Home() {
           true
         )}
         {renderSection(
-          'tokonomiks',
-          'Tokonomiks Section',
-          'Here we detail the tokonomiks. Ut enim ad minim veniam, quis nostrud exercitation ullamco.',
+          'tokenomiks',
+          'tokenomiks Section',
+          'Here we detail the tokenomiks. Ut enim ad minim veniam, quis nostrud exercitation ullamco.',
           false
         )}
         {renderSection(
