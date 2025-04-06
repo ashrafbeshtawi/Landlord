@@ -1,103 +1,233 @@
-import Image from "next/image";
+"use client";
+
+import * as React from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+
+// Create a custom theme with the suggested color palette
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1A237E', // Deep blue
+    },
+    secondary: {
+      main: '#00ACC1', // Cyan
+    },
+    error: {
+      main: '#FFC107', // Amber
+    },
+    background: {
+      default: '#F5F5F5', // Light background color
+    },
+    text: {
+      primary: '#212121', // Dark primary text
+      secondary: '#757575', // Secondary text
+    },
+  },
+  typography: {
+    h3: {
+      fontWeight: 'bold',
+      color: '#212121',
+    },
+    body1: {
+      color: '#757575',
+    },
+  },
+});
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const scrollToSection = (id: string) => {
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+    handleCloseMenu();
+  };
+
+  const renderSection = (
+    id: string,
+    title: string,
+    description: string,
+    reverse: boolean = false
+  ) => (
+    <Box
+      id={id}
+      sx={{
+        height: '100vh',
+        p: 4,
+        backgroundColor: reverse ? '#e0e0e0' : '#f5f5f5',
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {reverse ? (
+        <>
+          <Box sx={{ flex: 1, p: 2, display: 'flex', justifyContent: 'center' }}>
+            <Image src="/coin.png" alt={title} width={300} height={300} />
+          </Box>
+          <Box sx={{ flex: 1, p: 2 }}>
+            <Typography variant="h3" sx={{ mb: 2 }}>
+              {title}
+            </Typography>
+            <Typography variant="body1">{description}</Typography>
+          </Box>
+        </>
+      ) : (
+        <>
+          <Box sx={{ flex: 1, p: 2 }}>
+            <Typography variant="h3" sx={{ mb: 2 }}>
+              {title}
+            </Typography>
+            <Typography variant="body1">{description}</Typography>
+          </Box>
+          <Box sx={{ flex: 1, p: 2, display: 'flex', justifyContent: 'center' }}>
+            <Image src="/coin.png" alt={title} width={300} height={300} />
+          </Box>
+        </>
+      )}
+    </Box>
+  );
+
+  return (
+    <ThemeProvider theme={theme}>
+      <div style={{ margin: 0, padding: 0 }}>
+        {/* Fixed Navigation AppBar */}
+        <AppBar position="fixed" sx={{ zIndex: 1201 }}>
+          <Toolbar disableGutters sx={{ px: 2 }}>
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
+              <Image
+                src="/coin.png"
+                alt="Coin Logo"
+                width={120}
+                height={100}
+                style={{ borderRadius: '50%' }}
+              />
+            </Box>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+              {[
+                { id: 'home', label: 'Home' },
+                { id: 'vision', label: 'The Vision' },
+                { id: 'tokonomiks', label: 'Tokonomiks' },
+                { id: 'whitepaper', label: 'Whitepaper' },
+                { id: 'team', label: 'Our Team' },
+              ].map(({ id, label }) => (
+                <Button
+                  key={id}
+                  sx={{ color: 'white', fontWeight: 'bold', mx: 2 }}
+                  onClick={() => scrollToSection(id)}
+                >
+                  {label}
+                </Button>
+              ))}
+            </Box>
+            <IconButton
+              size="large"
+              aria-label="menu"
+              onClick={handleOpenMenu}
+              color="inherit"
+              sx={{ display: { xs: 'flex', md: 'none' }, ml: 'auto' }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleCloseMenu}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+              {['home', 'vision', 'tokonomiks', 'whitepaper', 'team'].map((id) => (
+                <MenuItem key={id} onClick={() => scrollToSection(id)}>
+                  {id.charAt(0).toUpperCase() + id.slice(1).replace(/([A-Z])/g, ' $1')}
+                </MenuItem>
+              ))}
+            </Menu>
+          </Toolbar>
+        </AppBar>
+
+        <Box sx={{ height: '120px' }} />
+
+        {/* Home Section with partial left overlay */}
+        <Box
+          id="home"
+          sx={{
+            height: '100vh',
+            position: 'relative',
+            backgroundImage: 'url(/house.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              backgroundColor: 'rgba(0, 0, 255, 0.3)', // Blue overlay
+              width: { xs: '100%', md: '50%' },
+              height: '100%',
+              p: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              color: 'white',
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <Typography variant="h3" sx={{ mb: 2 }}>
+              Welcome to Land Lord Coin
+            </Typography>
+            <Typography variant="body1">
+              Invest in real estate. Empower your future. Discover the decentralized way to build property wealth.
+            </Typography>
+          </Box>
+        </Box>
+
+        {renderSection(
+          'vision',
+          'The Vision Section',
+          'This section describes our vision. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+          true
+        )}
+        {renderSection(
+          'tokonomiks',
+          'Tokonomiks Section',
+          'Here we detail the tokonomiks. Ut enim ad minim veniam, quis nostrud exercitation ullamco.',
+          false
+        )}
+        {renderSection(
+          'whitepaper',
+          'Whitepaper Section',
+          'The whitepaper contains in-depth information. Duis aute irure dolor in reprehenderit.',
+          true
+        )}
+        {renderSection(
+          'team',
+          'Our Team Section',
+          'Meet our team! Excepteur sint occaecat cupidatat non proident.',
+          false
+        )}
+      </div>
+    </ThemeProvider>
   );
 }
