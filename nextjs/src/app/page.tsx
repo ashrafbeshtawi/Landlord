@@ -39,10 +39,12 @@ const theme = createTheme({
   typography: {
     h3: {
       fontWeight: 'bold',
-      color: '#FFFFFF', // White for headings
+      color: '#FFFFFF',
+      fontSize: '2.5rem', // Increased from default
     },
     body1: {
-      color: '#34C6A3', // Light mint green for body text
+      color: '#34C6A3',
+      fontSize: '1.2rem', // Increased from default
     },
   },
 });
@@ -77,7 +79,7 @@ export default function Home() {
       sx={{
         height: '100vh',
         p: 4,
-        backgroundColor: '#222222', // Dark Gray background for sections
+        backgroundColor: '#222222',
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
         alignItems: 'center',
@@ -93,7 +95,9 @@ export default function Home() {
             <Typography variant="h3" sx={{ mb: 2 }}>
               {title}
             </Typography>
-            <Typography variant="body1">{description}</Typography>
+            <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
+              {description}
+            </Typography>
           </Box>
         </>
       ) : (
@@ -102,7 +106,9 @@ export default function Home() {
             <Typography variant="h3" sx={{ mb: 2 }}>
               {title}
             </Typography>
-            <Typography variant="body1">{description}</Typography>
+            <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
+              {description}
+            </Typography>
           </Box>
           <Box sx={{ flex: 1, p: 2, display: 'flex', justifyContent: 'center' }}>
             <Image src="/coin.png" alt={title} width={300} height={300} />
@@ -177,7 +183,7 @@ export default function Home() {
 
         <Box sx={{ height: '120px' }} />
 
-{/* Home Section with background image and text layout */}
+        {/* Home Section with background image and text layout */}
         <Box
           id="home"
           sx={{
@@ -192,28 +198,59 @@ export default function Home() {
             pl: '10%',
           }}
         >
-          <Box
-            sx={(theme) => ({
-              backgroundColor: theme.palette.background.default, // Using secondary color from theme
-              width: '60%',
-              height: 'auto',
-              padding: '40px',
-              borderRadius: '12px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              color: '#FFFFFF',
-              textAlign: 'center',
-              marginLeft: '5%',
-              transform: 'translateX(-20%)',
-              opacity: 0.9,
-            })}
-          >
+        <Box
+          sx={(theme) => ({
+            backgroundColor: theme.palette.background.default,
+            width: '60%',
+            height: 'auto',
+            padding: '40px',
+            borderRadius: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            color: '#FFFFFF',
+            textAlign: 'center',
+            marginLeft: '5%',
+            transform: 'translate(-20%, -10%)', // Moved up 10%
+            opacity: 0.95, // Increased opacity
+            position: 'relative',
+            top: '-30px', // Additional upward adjustment
+          })}
+        >
             <Typography variant="h3" sx={{ mb: 2 }}>
-              Welcome to Land Lord Coin
+              Revolutionizing Real Estate Investment
             </Typography>
-            <Typography variant="body1">
-              Invest in real estate. Empower your future. Discover the decentralized way to build property wealth.
+            <Typography variant="body1" sx={{ mb: 3, fontSize: '1.1rem' }}>
+              Welcome to the future of property ownership - where blockchain technology meets 
+              tangible real estate assets. LandLord Coin (LND) offers you:
+            </Typography>
+            
+            <Box sx={{ textAlign: 'left', mx: 'auto', width: '80%' }}>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                ✅ <strong>Asset-Backed Security:</strong> Every LND token is backed by 
+                income-generating properties in prime locations
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                📈 <strong>Stable Growth:</strong> Benefit from both property appreciation 
+                and rental income distributions
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                🌍 <strong>Global Access:</strong> Own fractional real estate assets 
+                worldwide with minimum investment
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 3 }}>
+                🔒 <strong>Blockchain Transparency:</strong> Smart contract-regulated 
+                transactions with full audit trails
+              </Typography>
+            </Box>
+
+            <Typography variant="body1" sx={{ 
+              fontSize: '1.2rem',
+              fontWeight: 'bold',
+              color: theme.palette.primary.main
+            }}>
+              Join the $2.5 trillion real estate market revolution - 
+              Democratized, Decentralized, and Yours to Control
             </Typography>
           </Box>
         </Box>
