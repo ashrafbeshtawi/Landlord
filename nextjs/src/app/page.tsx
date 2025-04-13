@@ -22,10 +22,13 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineDot from '@mui/lab/TimelineDot';
-import FastfoodIcon from '@mui/icons-material/Fastfood';
-import LaptopMacIcon from '@mui/icons-material/LaptopMac';
-import HotelIcon from '@mui/icons-material/Hotel';
-import RepeatIcon from '@mui/icons-material/Repeat';
+
+import HouseIcon from '@mui/icons-material/House';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import CodeIcon from '@mui/icons-material/Code';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import CampaignIcon from '@mui/icons-material/Campaign';
+import ApartmentIcon from '@mui/icons-material/Apartment';
 
 const theme = createTheme({
   palette: {
@@ -61,56 +64,127 @@ const theme = createTheme({
   },
 });
 
-// Timeline component used in the Road Map section.
 function CustomizedTimeline() {
+  // Define a style object for the TimelineConnector to make the lines longer.
+  const connectorStyle = {
+    minHeight: '50px', // Adjust this value to increase the height of the connector lines.
+    bgcolor: 'primary.main'
+  };
+
   return (
-    <Timeline position="alternate">
-      <TimelineItem>
-        <TimelineOppositeContent
-          sx={{ m: 'auto 0' }}
-          variant="body2"
-          color="text.secondary"
-        >
-          2024
-        </TimelineOppositeContent>
-        <TimelineSeparator>
-          <TimelineConnector />
-          <TimelineDot>
-            <FastfoodIcon />
-          </TimelineDot>
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: '12px', px: 2 }}>
-          <Typography variant="h6" component="span">
-            Alayse the Realestate Market
-          </Typography>
-        </TimelineContent>
-      </TimelineItem>
+    <Box>
+      <Timeline position="alternate">
+        {/* 2023: Analyzing the real estate market (updated icon) */}
+        <TimelineItem>
+          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
+            2023
+          </TimelineOppositeContent>
+          
+          <TimelineSeparator>
+            <TimelineConnector sx={connectorStyle} />
+            <TimelineDot color="primary">
+              <HouseIcon />
+            </TimelineDot>
+          </TimelineSeparator>
 
-      <TimelineItem>
-        <TimelineOppositeContent
-          sx={{ m: 'auto 0' }}
-          variant="body2"
-          color="text.secondary"
-        >
-          2023
-        </TimelineOppositeContent>
-        <TimelineSeparator>
-          <TimelineConnector />
-          <TimelineDot>
-            <FastfoodIcon />
-          </TimelineDot>
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: '12px', px: 2 }}>
-          <Typography variant="h6" component="span">
-            Analayse the Realestate Market
-          </Typography>
-        </TimelineContent>
-      </TimelineItem>
-      
+          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+            <Typography variant="h6" component="span">
+              Analyzing the real estate market
+            </Typography>
+          </TimelineContent>
+        </TimelineItem>
 
-    </Timeline>
+        {/* 2024: Finding best location in emerging markets */}
+        <TimelineItem>
+          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
+            2024
+          </TimelineOppositeContent>
+          <TimelineSeparator>
+            <TimelineConnector sx={connectorStyle} />
+            <TimelineDot color="primary">
+              <LocationOnIcon />
+            </TimelineDot>
+          </TimelineSeparator>
+          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+            <Typography variant="h6" component="span">
+              Finding best location in emerging markets
+            </Typography>
+          </TimelineContent>
+        </TimelineItem>
+
+        {/* 2025: Building & Testing Blockchain code */}
+        <TimelineItem>
+          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
+            2025
+          </TimelineOppositeContent>
+          <TimelineSeparator>
+            <TimelineConnector sx={connectorStyle} />
+            <TimelineDot color="primary">
+              <CodeIcon />
+            </TimelineDot>
+          </TimelineSeparator>
+          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+            <Typography variant="h6" component="span">
+              Building & Testing Blockchain code
+            </Typography>
+          </TimelineContent>
+        </TimelineItem>
+
+        {/* May 2025: Fund Run */}
+        <TimelineItem>
+          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
+            May 2025
+          </TimelineOppositeContent>
+          <TimelineSeparator>
+            <TimelineConnector sx={connectorStyle} />
+            <TimelineDot color="primary">
+              <MonetizationOnIcon />
+            </TimelineDot>
+          </TimelineSeparator>
+          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+            <Typography variant="h6" component="span">
+              Fund Run
+            </Typography>
+          </TimelineContent>
+        </TimelineItem>
+
+        {/* June 2025: Coin Listing & Social Media Marketing */}
+        <TimelineItem>
+          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
+            June 2025
+          </TimelineOppositeContent>
+          <TimelineSeparator>
+            <TimelineConnector sx={connectorStyle} />
+            <TimelineDot color="primary">
+              <CampaignIcon />
+            </TimelineDot>
+          </TimelineSeparator>
+          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+            <Typography variant="h6" component="span">
+              Coin Listing & Social Media Marketing
+            </Typography>
+          </TimelineContent>
+        </TimelineItem>
+
+        {/* July 2025: First property purchase */}
+        <TimelineItem>
+          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
+            July 2025
+          </TimelineOppositeContent>
+          <TimelineSeparator>
+            <TimelineConnector sx={connectorStyle} />
+            <TimelineDot color="primary">
+              <ApartmentIcon />
+            </TimelineDot>
+          </TimelineSeparator>
+          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+            <Typography variant="h6" component="span">
+              First property purchase
+            </Typography>
+          </TimelineContent>
+        </TimelineItem>
+      </Timeline>
+    </Box>
   );
 }
 
