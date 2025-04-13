@@ -83,8 +83,7 @@ function CustomizedTimeline() {
     <Box sx={{ 
       width: '100%', 
       bgcolor: theme.palette.background.default, // Dark background like in your image
-      color: '#00BFA5', // Teal text
-      p: 4,
+      color: theme.palette.primary.main,
       borderRadius: 2
     }}>
 
@@ -311,7 +310,7 @@ export default function Home() {
         {/* Fixed Navigation AppBar */}
         <AppBar
           position="fixed"
-          sx={{ zIndex: 1201, boxShadow: 'none', backgroundColor: '#000000' }}
+          sx={{ zIndex: 1201, boxShadow: 'none', backgroundColor: theme.palette.background.default }}
         >
           <Toolbar sx={{ p: { xs: '10px 12px', md: '15px 16px' } }}>
             <Box sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}>
