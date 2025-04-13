@@ -29,6 +29,7 @@ import CodeIcon from '@mui/icons-material/Code';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import ApartmentIcon from '@mui/icons-material/Apartment';
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 
 const theme = createTheme({
   palette: {
@@ -143,7 +144,7 @@ function CustomizedTimeline() {
             variant="body1" 
             color="inherit"
           >
-            <Typography variant="h6">2025</Typography>
+            <Typography variant="h6"> April 2025</Typography>
           </TimelineOppositeContent>
           
           <TimelineSeparator>
@@ -191,7 +192,7 @@ function CustomizedTimeline() {
             variant="body1" 
             color="inherit"
           >
-            <Typography variant="h6">June 2025</Typography>
+            <Typography variant="h6">Jun 2025</Typography>
           </TimelineOppositeContent>
           
           <TimelineSeparator>
@@ -215,18 +216,67 @@ function CustomizedTimeline() {
             variant="body1" 
             color="inherit"
           >
-            <Typography variant="h6">July 2025</Typography>
+            <Typography variant="h6">Jul 2025</Typography>
           </TimelineOppositeContent>
           
           <TimelineSeparator>
             <TimelineDot sx={timelineDotStyle}>
               <ApartmentIcon sx={{ color: 'black' }} />
             </TimelineDot>
+            <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
 
           <TimelineContent >
             <Typography variant="h6" component="span">
               First property purchase
+            </Typography>
+          </TimelineContent>
+        </TimelineItem>
+
+        {/* First rent distribution End of 2025 */}
+        <TimelineItem>
+          <TimelineOppositeContent 
+            
+            variant="body1" 
+            color="inherit"
+          >
+            <Typography variant="h6">Dec 2025</Typography>
+          </TimelineOppositeContent>
+          
+          <TimelineSeparator>
+            <TimelineDot sx={timelineDotStyle}>
+              <ApartmentIcon sx={{ color: 'black' }} />
+            </TimelineDot>
+            <TimelineConnector sx={connectorStyle} />
+
+          </TimelineSeparator>
+
+          <TimelineContent >
+            <Typography variant="h6" component="span">
+              First Rent Distribution on coin holders
+            </Typography>
+          </TimelineContent>
+        </TimelineItem>
+
+        {/* New plans */}
+         <TimelineItem>
+          <TimelineOppositeContent 
+            
+            variant="body1" 
+            color="inherit"
+          >
+            <Typography variant="h6">2026</Typography>
+          </TimelineOppositeContent>
+          
+          <TimelineSeparator>
+            <TimelineDot sx={timelineDotStyle}>
+              <HourglassBottomIcon sx={{ color: 'black' }} />
+            </TimelineDot>
+          </TimelineSeparator>
+
+          <TimelineContent >
+            <Typography variant="h6" component="span">
+              Coming Soon
             </Typography>
           </TimelineContent>
         </TimelineItem>
