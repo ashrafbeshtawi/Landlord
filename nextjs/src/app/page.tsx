@@ -511,7 +511,45 @@ export default function Home() {
         {renderSection(
           'tokenomiks',
           'Our Project: LandLord (Lnd)',
-          `LandLord (Lnd) is a blockchain-based digital currency backed by income-generating real estate assets. Investors can purchase Lnd tokens, and the capital raised is used to acquire, manage, and rent out properties. Rental income is periodically distributed among token holders, thereby providing a steady return on investment. The value of Lnd is intrinsically linked to the performance of the real estate portfolio, ensuring transparency and stability. By merging the security of real estate with the flexibility of digital finance, LandLord offers a revolutionary investment model that democratizes access to the real estate market.`,
+          `💰 LandLord Tokenomics
+
+LandLord (LND) is a utility token designed for a real estate-backed ecosystem — with built-in profit sharing and a carefully controlled token supply.
+
+✅ Fixed Supply:
+100 trillion tokens minted at launch (18 decimals) — fully transparent from day one.
+
+📈 Profit Sharing:
+LND holders (excluding the owner) receive periodic profit distributions based on their holdings — secured and verifiable.
+
+🔒 Trustworthy Mechanics:
+Signature-based claims and protection against reentrancy ensure all distributions are safe, fair, and technically sound.
+
+🔥 Burnable Tokens:
+Any holder can reduce the total supply by burning tokens — helping to increase scarcity and long-term value.
+
+🏠 Controlled Minting:
+New tokens can only be minted by the owner and only up to 10% of the existing supply, strictly for real estate acquisitions — ensuring real utility and responsible expansion.
+
+LandLord is more than just a token — it's a real-value distribution system designed for the future of decentralized property ownership and income sharing.
+
+✅ What’s Not in the Contract — By Design
+
+To build trust and fairness into the system, LandLordToken intentionally avoids features that can be misused or create imbalance:
+
+🚫 No Transfer Restrictions:
+Tokens can be freely bought, held, and sold — there are no mechanisms that block users from accessing their assets.
+
+🚫 No Transaction Fees or Hidden Deductions:
+Transfers happen 1:1 — there are no built-in taxes or fees applied to send, receive, or trade.
+
+🚫 No Blacklisting or Special Privileges:
+The contract contains no functions that allow addresses to be blocked or given unfair priority — everyone is treated equally.
+
+🚫 No Wallet or Transaction Limits:
+There are no artificial caps on how much you can hold or move — promoting free, open participation.
+
+🚫 No Complex Tokenomics Gimmicks:
+The token does not rely on reflections, auto-liquidity, or rebasing mechanics — it's built for clarity, simplicity, and long-term reliability.`,
           false
         )}
         {renderSection(
