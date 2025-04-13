@@ -65,29 +65,66 @@ const theme = createTheme({
 });
 
 function CustomizedTimeline() {
-  // Define a style object for the TimelineConnector to make the lines longer.
+  // Style for the vertical connecting lines
   const connectorStyle = {
-    minHeight: '50px', // Adjust this value to increase the height of the connector lines.
-    bgcolor: 'primary.main'
+    minHeight: '30px', // Increased height for more spacing
+    bgcolor: '#00BFA5', // Matching the teal color from your image
+  };
+
+  // Custom styles for the left side content (for odd items in alternate layout)
+  const leftContentStyle = {
+    textAlign: 'right',
+    pr: 4,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  };
+
+  // Custom styles for the right side content (for even items in alternate layout)
+  const rightContentStyle = {
+    textAlign: 'left',
+    pl: 4,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  };
+
+  // Style for the timeline dots
+  const timelineDotStyle = {
+    bgcolor: '#00BFA5', // Teal background
+    boxShadow: '0 0 30px rgba(0, 191, 165, 0.5)', // Glow effect
+    p: 1.5 // Larger dots
   };
 
   return (
-    <Box>
-      <Timeline position="alternate">
-        {/* 2023: Analyzing the real estate market (updated icon) */}
+    <Box sx={{ 
+      width: '100%', 
+      bgcolor: theme.palette.background.default, // Dark background like in your image
+      color: '#00BFA5', // Teal text
+      p: 4,
+      borderRadius: 2
+    }}>
+
+
+      <Timeline position="right">
+        {/* 2023: Analyzing the real estate market */}
         <TimelineItem>
-          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
-            2023
+          <TimelineOppositeContent 
+            sx={leftContentStyle} 
+            variant="body1" 
+            color="inherit"
+          >
+            <Typography variant="h6">2023</Typography>
           </TimelineOppositeContent>
           
           <TimelineSeparator>
-            <TimelineConnector sx={connectorStyle} />
-            <TimelineDot color="primary">
-              <HouseIcon />
+            <TimelineDot sx={timelineDotStyle}>
+              <HouseIcon sx={{ color: 'black' }} />
             </TimelineDot>
+            <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
 
-          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+          <TimelineContent sx={rightContentStyle}>
             <Typography variant="h6" component="span">
               Analyzing the real estate market
             </Typography>
@@ -96,16 +133,23 @@ function CustomizedTimeline() {
 
         {/* 2024: Finding best location in emerging markets */}
         <TimelineItem>
-          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
-            2024
+          <TimelineOppositeContent 
+            sx={leftContentStyle} 
+            variant="body1" 
+            color="inherit"
+          >
+            <Typography variant="h6">2024</Typography>
           </TimelineOppositeContent>
+          
           <TimelineSeparator>
             <TimelineConnector sx={connectorStyle} />
-            <TimelineDot color="primary">
-              <LocationOnIcon />
+            <TimelineDot sx={timelineDotStyle}>
+              <LocationOnIcon sx={{ color: 'black' }} />
             </TimelineDot>
+            <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
-          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+
+          <TimelineContent sx={rightContentStyle}>
             <Typography variant="h6" component="span">
               Finding best location in emerging markets
             </Typography>
@@ -114,16 +158,23 @@ function CustomizedTimeline() {
 
         {/* 2025: Building & Testing Blockchain code */}
         <TimelineItem>
-          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
-            2025
+          <TimelineOppositeContent 
+            sx={leftContentStyle} 
+            variant="body1" 
+            color="inherit"
+          >
+            <Typography variant="h6">2025</Typography>
           </TimelineOppositeContent>
+          
           <TimelineSeparator>
             <TimelineConnector sx={connectorStyle} />
-            <TimelineDot color="primary">
-              <CodeIcon />
+            <TimelineDot sx={timelineDotStyle}>
+              <CodeIcon sx={{ color: 'black' }} />
             </TimelineDot>
+            <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
-          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+
+          <TimelineContent sx={rightContentStyle}>
             <Typography variant="h6" component="span">
               Building & Testing Blockchain code
             </Typography>
@@ -132,16 +183,23 @@ function CustomizedTimeline() {
 
         {/* May 2025: Fund Run */}
         <TimelineItem>
-          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
-            May 2025
+          <TimelineOppositeContent 
+            sx={leftContentStyle} 
+            variant="body1" 
+            color="inherit"
+          >
+            <Typography variant="h6">May 2025</Typography>
           </TimelineOppositeContent>
+          
           <TimelineSeparator>
             <TimelineConnector sx={connectorStyle} />
-            <TimelineDot color="primary">
-              <MonetizationOnIcon />
+            <TimelineDot sx={timelineDotStyle}>
+              <MonetizationOnIcon sx={{ color: 'black' }} />
             </TimelineDot>
+            <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
-          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+
+          <TimelineContent sx={rightContentStyle}>
             <Typography variant="h6" component="span">
               Fund Run
             </Typography>
@@ -150,16 +208,23 @@ function CustomizedTimeline() {
 
         {/* June 2025: Coin Listing & Social Media Marketing */}
         <TimelineItem>
-          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
-            June 2025
+          <TimelineOppositeContent 
+            sx={leftContentStyle} 
+            variant="body1" 
+            color="inherit"
+          >
+            <Typography variant="h6">June 2025</Typography>
           </TimelineOppositeContent>
+          
           <TimelineSeparator>
             <TimelineConnector sx={connectorStyle} />
-            <TimelineDot color="primary">
-              <CampaignIcon />
+            <TimelineDot sx={timelineDotStyle}>
+              <CampaignIcon sx={{ color: 'black' }} />
             </TimelineDot>
+            <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
-          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+
+          <TimelineContent sx={rightContentStyle}>
             <Typography variant="h6" component="span">
               Coin Listing & Social Media Marketing
             </Typography>
@@ -168,16 +233,23 @@ function CustomizedTimeline() {
 
         {/* July 2025: First property purchase */}
         <TimelineItem>
-          <TimelineOppositeContent sx={{ m: 'auto 0' }} variant="body2" color="text.secondary">
-            July 2025
+          <TimelineOppositeContent 
+            sx={leftContentStyle} 
+            variant="body1" 
+            color="inherit"
+          >
+            <Typography variant="h6">July 2025</Typography>
           </TimelineOppositeContent>
+          
           <TimelineSeparator>
             <TimelineConnector sx={connectorStyle} />
-            <TimelineDot color="primary">
-              <ApartmentIcon />
+            <TimelineDot sx={timelineDotStyle}>
+              <ApartmentIcon sx={{ color: 'black' }} />
             </TimelineDot>
+            <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
-          <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
+
+          <TimelineContent sx={rightContentStyle}>
             <Typography variant="h6" component="span">
               First property purchase
             </Typography>
@@ -187,6 +259,7 @@ function CustomizedTimeline() {
     </Box>
   );
 }
+
 
 // A generic section renderer for sections that include image and text.
 const renderSection = (
