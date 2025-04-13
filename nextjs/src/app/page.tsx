@@ -14,45 +14,161 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 
-// Create a custom theme with the suggested color palette
+// Import MUI lab components for the timeline
+import Timeline from '@mui/lab/Timeline';
+import TimelineItem from '@mui/lab/TimelineItem';
+import TimelineSeparator from '@mui/lab/TimelineSeparator';
+import TimelineConnector from '@mui/lab/TimelineConnector';
+import TimelineContent from '@mui/lab/TimelineContent';
+import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
+import TimelineDot from '@mui/lab/TimelineDot';
+import FastfoodIcon from '@mui/icons-material/Fastfood';
+import LaptopMacIcon from '@mui/icons-material/LaptopMac';
+import HotelIcon from '@mui/icons-material/Hotel';
+import RepeatIcon from '@mui/icons-material/Repeat';
+
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1DCD9F', // Mint Green (primary accent color)
+      main: '#1DCD9F',
     },
     secondary: {
-      main: '#169976', // Darker Mint Green (secondary accent color)
+      main: '#169976',
     },
     background: {
-      default: '#222222', // Dark Gray for backgrounds
-      paper: '#000000', // Black background for paper elements
+      default: '#222222',
+      paper: '#000000',
     },
     text: {
-      primary: '#FFFFFF', // White text on dark backgrounds
-      secondary: '#34C6A3', // Light mint green for secondary text
+      primary: '#FFFFFF',
+      secondary: '#34C6A3',
     },
     action: {
-      active: '#1DCD9F', // Active button color
-      hover: '#169976', // Hover color for buttons and links
+      active: '#1DCD9F',
+      hover: '#169976',
     },
   },
   typography: {
     h3: {
       fontWeight: 'bold',
       color: '#FFFFFF',
-      fontSize: '2.5rem', // Increased from default
+      fontSize: '2.5rem',
     },
     body1: {
       color: '#34C6A3',
-      fontSize: '1.2rem', // Increased from default
+      fontSize: '1.2rem',
     },
   },
 });
 
-export default function Home() {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+// Timeline component used in the Road Map section.
+function CustomizedTimeline() {
+  return (
+    <Timeline position="alternate">
+      <TimelineItem>
+        <TimelineOppositeContent
+          sx={{ m: 'auto 0' }}
+          variant="body2"
+          color="text.secondary"
+        >
+          2024
+        </TimelineOppositeContent>
+        <TimelineSeparator>
+          <TimelineConnector />
+          <TimelineDot>
+            <FastfoodIcon />
+          </TimelineDot>
+          <TimelineConnector />
+        </TimelineSeparator>
+        <TimelineContent sx={{ py: '12px', px: 2 }}>
+          <Typography variant="h6" component="span">
+            Alayse the Realestate Market
+          </Typography>
+        </TimelineContent>
+      </TimelineItem>
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+      <TimelineItem>
+        <TimelineOppositeContent
+          sx={{ m: 'auto 0' }}
+          variant="body2"
+          color="text.secondary"
+        >
+          2023
+        </TimelineOppositeContent>
+        <TimelineSeparator>
+          <TimelineConnector />
+          <TimelineDot>
+            <FastfoodIcon />
+          </TimelineDot>
+          <TimelineConnector />
+        </TimelineSeparator>
+        <TimelineContent sx={{ py: '12px', px: 2 }}>
+          <Typography variant="h6" component="span">
+            Analayse the Realestate Market
+          </Typography>
+        </TimelineContent>
+      </TimelineItem>
+      
+
+    </Timeline>
+  );
+}
+
+// A generic section renderer for sections that include image and text.
+const renderSection = (
+  id,
+  title,
+  description,
+  reverse = false
+) => (
+  <Box
+    id={id}
+    sx={{
+      height: '100vh',
+      p: { xs: 2, md: 4 },
+      backgroundColor: '#222222',
+      display: 'flex',
+      flexDirection: { xs: 'column', md: 'row' },
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    {reverse ? (
+      <>
+        <Box sx={{ flex: 1, p: 2, display: 'flex', justifyContent: 'center' }}>
+          <Image src="/coin.png" alt={title} width={300} height={300} />
+        </Box>
+        <Box sx={{ flex: 1, p: 2 }}>
+          <Typography variant="h3" sx={{ mb: 2 }}>
+            {title}
+          </Typography>
+          <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
+            {description}
+          </Typography>
+        </Box>
+      </>
+    ) : (
+      <>
+        <Box sx={{ flex: 1, p: 2 }}>
+          <Typography variant="h3" sx={{ mb: 2 }}>
+            {title}
+          </Typography>
+          <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
+            {description}
+          </Typography>
+        </Box>
+        <Box sx={{ flex: 1, p: 2, display: 'flex', justifyContent: 'center' }}>
+          <Image src="/coin.png" alt={title} width={300} height={300} />
+        </Box>
+      </>
+    )}
+  </Box>
+);
+
+export default function Home() {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -60,71 +176,22 @@ export default function Home() {
     setAnchorEl(null);
   };
 
-  const scrollToSection = (id: string) => {
+  const scrollToSection = (id) => {
     const section = document.getElementById(id);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
     handleCloseMenu();
   };
-
-  const renderSection = (
-    id: string,
-    title: string,
-    description: string,
-    reverse: boolean = false
-  ) => (
-    <Box
-      id={id}
-      sx={{
-        height: '100vh',
-        p: 4,
-        backgroundColor: '#222222',
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      {reverse ? (
-        <>
-          <Box sx={{ flex: 1, p: 2, display: 'flex', justifyContent: 'center' }}>
-            <Image src="/coin.png" alt={title} width={300} height={300} />
-          </Box>
-          <Box sx={{ flex: 1, p: 2 }}>
-            <Typography variant="h3" sx={{ mb: 2 }}>
-              {title}
-            </Typography>
-            <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-              {description}
-            </Typography>
-          </Box>
-        </>
-      ) : (
-        <>
-          <Box sx={{ flex: 1, p: 2 }}>
-            <Typography variant="h3" sx={{ mb: 2 }}>
-              {title}
-            </Typography>
-            <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-              {description}
-            </Typography>
-          </Box>
-          <Box sx={{ flex: 1, p: 2, display: 'flex', justifyContent: 'center' }}>
-            <Image src="/coin.png" alt={title} width={300} height={300} />
-          </Box>
-        </>
-      )}
-    </Box>
-  );
 
   return (
     <ThemeProvider theme={theme}>
       <div style={{ margin: 0, padding: 0 }}>
         {/* Fixed Navigation AppBar */}
-        <AppBar position="fixed" sx={{ zIndex: 1201, boxShadow: 'none', backgroundColor: '#000000' }}>
-          <Toolbar sx={{ padding: '15px 16px' }}>
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
+        <AppBar
+          position="fixed"
+          sx={{ zIndex: 1201, boxShadow: 'none', backgroundColor: '#000000' }}
+        >
+          <Toolbar sx={{ p: { xs: '10px 12px', md: '15px 16px' } }}>
+            <Box sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}>
               <Image
                 src="/coin.png"
                 alt="Coin Logo"
@@ -136,7 +203,7 @@ export default function Home() {
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {[
                 { id: 'home', label: 'Home' },
-                { id: 'vision', label: 'The Vision' },
+                { id: 'roadmap', label: 'Road Map' },
                 { id: 'tokenomiks', label: 'tokenomiks' },
                 { id: 'whitepaper', label: 'Whitepaper' },
                 { id: 'team', label: 'Our Team' },
@@ -144,10 +211,10 @@ export default function Home() {
                 <Button
                   key={id}
                   sx={{
-                    color: '#FFFFFF', 
-                    fontWeight: 'bold', 
-                    mx: 2, 
-                    '&:hover': { backgroundColor: '#169976' }, 
+                    color: '#FFFFFF',
+                    fontWeight: 'bold',
+                    mx: { xs: 1, md: 2 },
+                    '&:hover': { backgroundColor: '#169976' },
                     transition: 'background-color 0.3s',
                   }}
                   onClick={() => scrollToSection(id)}
@@ -160,7 +227,7 @@ export default function Home() {
               size="large"
               aria-label="menu"
               onClick={handleOpenMenu}
-              color="inherit"
+              color="primary"
               sx={{ display: { xs: 'flex', md: 'none' }, ml: 'auto' }}
             >
               <MenuIcon />
@@ -172,7 +239,7 @@ export default function Home() {
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
-              {['home', 'vision', 'tokenomiks', 'whitepaper', 'team'].map((id) => (
+              {['home', 'roadmap', 'tokenomiks', 'whitepaper', 'team'].map((id) => (
                 <MenuItem key={id} onClick={() => scrollToSection(id)}>
                   {id.charAt(0).toUpperCase() + id.slice(1).replace(/([A-Z])/g, ' $1')}
                 </MenuItem>
@@ -181,9 +248,10 @@ export default function Home() {
           </Toolbar>
         </AppBar>
 
-        <Box sx={{ height: '120px' }} />
+        {/* Spacer for the fixed AppBar */}
+        <Box sx={{ height: { xs: '80px', md: '120px' } }} />
 
-        {/* Home Section with background image and text layout */}
+        {/* Home Section */}
         <Box
           id="home"
           sx={{
@@ -194,74 +262,80 @@ export default function Home() {
             backgroundPosition: 'center',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'flex-start',
-            pl: '10%',
+            justifyContent: 'center',
+            pl: { xs: 2, md: '10%' },
           }}
         >
-        <Box
-          sx={(theme) => ({
-            backgroundColor: theme.palette.background.default,
-            width: '60%',
-            height: 'auto',
-            padding: '40px',
-            borderRadius: '12px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            color: '#FFFFFF',
-            textAlign: 'center',
-            marginLeft: '5%',
-            transform: 'translate(-20%, -10%)', // Moved up 10%
-            opacity: 0.95, // Increased opacity
-            position: 'relative',
-            top: '-30px', // Additional upward adjustment
-          })}
-        >
-            <Typography variant="h3" sx={{ mb: 2 }}>
+          <Box
+            sx={(theme) => ({
+              backgroundColor: theme.palette.background.default,
+              width: { xs: '90%', md: '60%' },
+              padding: { xs: '20px', md: '40px' },
+              borderRadius: '12px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              color: '#FFFFFF',
+              textAlign: 'center',
+              marginLeft: { xs: 0, md: '5%' },
+              transform: { xs: 'none', md: 'translate(-20%, -10%)' },
+              opacity: 0.95,
+              position: 'relative',
+              top: { xs: 0, md: '-30px' },
+              fontSize: {
+                xs: '1rem',
+                sm: '1.25rem',
+                md: '1.25rem',
+                lg: '1.25rem',
+                xl: '1.25rem',
+              },
+            })}
+          >
+            <Typography variant="h3" sx={{ mb: 2, fontSize: 'inherit' }}>
               Revolutionizing Real Estate Investment
             </Typography>
-            <Typography variant="body1" sx={{ mb: 3, fontSize: '1.1rem' }}>
-              Welcome to the future of property ownership - where blockchain technology meets 
-              tangible real estate assets. LandLord Coin (LND) offers you:
+            <Typography variant="body1" sx={{ mb: 3, fontSize: 'inherit' }}>
+              Welcome to the future of property ownership - where blockchain technology meets tangible real estate assets. LandLord Coin (LND) offers you:
             </Typography>
-            
             <Box sx={{ textAlign: 'left', mx: 'auto', width: '80%' }}>
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                ✅ <strong>Asset-Backed Security:</strong> Every LND token is backed by 
-                income-generating properties in prime locations
+              <Typography variant="body1" sx={{ mb: 2, fontSize: 'inherit' }}>
+                ✅ <strong>Asset-Backed Security:</strong> Every LND token is backed by income-generating properties in prime locations
               </Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                📈 <strong>Stable Growth:</strong> Benefit from both property appreciation 
-                and rental income distributions
+              <Typography variant="body1" sx={{ mb: 2, fontSize: 'inherit' }}>
+                📈 <strong>Stable Growth:</strong> Benefit from both property appreciation and rental income distributions
               </Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                🌍 <strong>Global Access:</strong> Own fractional real estate assets 
-                worldwide with minimum investment
+              <Typography variant="body1" sx={{ mb: 2, fontSize: 'inherit' }}>
+                🌍 <strong>Global Access:</strong> Own fractional real estate assets worldwide with minimum investment
               </Typography>
-              <Typography variant="body1" sx={{ mb: 3 }}>
-                🔒 <strong>Blockchain Transparency:</strong> Smart contract-regulated 
-                transactions with full audit trails
+              <Typography variant="body1" sx={{ mb: 3, fontSize: 'inherit' }}>
+                🔒 <strong>Blockchain Transparency:</strong> Smart contract-regulated transactions with full audit trails
               </Typography>
             </Box>
-
-            <Typography variant="body1" sx={{ 
-              fontSize: '1.2rem',
-              fontWeight: 'bold',
-              color: theme.palette.primary.main
-            }}>
-              Join the $2.5 trillion real estate market revolution - 
-              Democratized, Decentralized, and Yours to Control
+            <Typography variant="body1" sx={{ fontSize: { xs: 'inherit', md: '1.2rem' }, fontWeight: 'bold', color: theme.palette.primary.main }}>
+              Join the $2.5 trillion real estate market revolution - Democratized, Decentralized, and Yours to Control
             </Typography>
           </Box>
         </Box>
 
-        {renderSection(
-          'vision',
-          'Establishing a Tangible Asset Backing for Digital Currencies',
-          `One of the major criticisms of many digital currencies is their lack of intrinsic value or tangible backing. This absence of real-world anchors often leads to high volatility and speculative trading. Backing a digital currency with physical assets, such as real estate, introduces a foundation of trust and stability. Investors are not only acquiring digital tokens, but also gaining exposure to income-generating, real-world properties. This model aligns digital finance with traditional asset management, offering a hybrid solution that is both innovative and fundamentally sound.`,
-          true
-        )}
+        {/* Road Map Section */}
+        <Box
+          id="roadmap"
+          sx={{
+            p: { xs: 2, md: 4 },
+            backgroundColor: '#222222',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            }}
+        >
+          <Typography variant="h3" sx={{ mb: 4, marginTop: '100px', }}>
+            Road Map
+          </Typography>
+          <CustomizedTimeline />
+        </Box>
 
+        {/* Other Sections */}
         {renderSection(
           'tokenomiks',
           'Our Project: LandLord (Lnd)',
