@@ -289,9 +289,9 @@ const renderSection = (
 );
 
 export default function Home() {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);;
 
-  const handleOpenMenu = (event: React.SyntheticEvent) => {
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
