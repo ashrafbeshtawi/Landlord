@@ -239,9 +239,9 @@ function CustomizedTimeline() {
 
 // A generic section renderer for sections that include image and text.
 const renderSection = (
-  id,
-  title,
-  description,
+  id: string,
+  title: string,
+  description: string,
   reverse = false
 ) => (
   <Box
@@ -291,7 +291,7 @@ const renderSection = (
 export default function Home() {
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleOpenMenu = (event) => {
+  const handleOpenMenu = (event: { currentTarget: React.SetStateAction<null>; }) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -299,7 +299,7 @@ export default function Home() {
     setAnchorEl(null);
   };
 
-  const scrollToSection = (id) => {
+  const scrollToSection = (id: string) => {
     const section = document.getElementById(id);
     if (section) section.scrollIntoView({ behavior: 'smooth' });
     handleCloseMenu();
