@@ -67,33 +67,16 @@ const theme = createTheme({
 function CustomizedTimeline() {
   // Style for the vertical connecting lines
   const connectorStyle = {
-    minHeight: '30px', // Increased height for more spacing
+    minHeight: '50px', // Increased height for more spacing
     bgcolor: '#00BFA5', // Matching the teal color from your image
   };
 
-  // Custom styles for the left side content (for odd items in alternate layout)
-  const leftContentStyle = {
-    textAlign: 'right',
-    pr: 4,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-  };
 
-  // Custom styles for the right side content (for even items in alternate layout)
-  const rightContentStyle = {
-    textAlign: 'left',
-    pl: 4,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-  };
 
   // Style for the timeline dots
   const timelineDotStyle = {
     bgcolor: '#00BFA5', // Teal background
     boxShadow: '0 0 30px rgba(0, 191, 165, 0.5)', // Glow effect
-    p: 1.5 // Larger dots
   };
 
   return (
@@ -110,7 +93,6 @@ function CustomizedTimeline() {
         {/* 2023: Analyzing the real estate market */}
         <TimelineItem>
           <TimelineOppositeContent 
-            sx={leftContentStyle} 
             variant="body1" 
             color="inherit"
           >
@@ -124,7 +106,7 @@ function CustomizedTimeline() {
             <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
 
-          <TimelineContent sx={rightContentStyle}>
+          <TimelineContent >
             <Typography variant="h6" component="span">
               Analyzing the real estate market
             </Typography>
@@ -134,7 +116,7 @@ function CustomizedTimeline() {
         {/* 2024: Finding best location in emerging markets */}
         <TimelineItem>
           <TimelineOppositeContent 
-            sx={leftContentStyle} 
+            
             variant="body1" 
             color="inherit"
           >
@@ -142,14 +124,13 @@ function CustomizedTimeline() {
           </TimelineOppositeContent>
           
           <TimelineSeparator>
-            <TimelineConnector sx={connectorStyle} />
             <TimelineDot sx={timelineDotStyle}>
               <LocationOnIcon sx={{ color: 'black' }} />
             </TimelineDot>
             <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
 
-          <TimelineContent sx={rightContentStyle}>
+          <TimelineContent >
             <Typography variant="h6" component="span">
               Finding best location in emerging markets
             </Typography>
@@ -159,7 +140,7 @@ function CustomizedTimeline() {
         {/* 2025: Building & Testing Blockchain code */}
         <TimelineItem>
           <TimelineOppositeContent 
-            sx={leftContentStyle} 
+            
             variant="body1" 
             color="inherit"
           >
@@ -167,14 +148,13 @@ function CustomizedTimeline() {
           </TimelineOppositeContent>
           
           <TimelineSeparator>
-            <TimelineConnector sx={connectorStyle} />
             <TimelineDot sx={timelineDotStyle}>
               <CodeIcon sx={{ color: 'black' }} />
             </TimelineDot>
             <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
 
-          <TimelineContent sx={rightContentStyle}>
+          <TimelineContent >
             <Typography variant="h6" component="span">
               Building & Testing Blockchain code
             </Typography>
@@ -184,7 +164,7 @@ function CustomizedTimeline() {
         {/* May 2025: Fund Run */}
         <TimelineItem>
           <TimelineOppositeContent 
-            sx={leftContentStyle} 
+            
             variant="body1" 
             color="inherit"
           >
@@ -192,14 +172,13 @@ function CustomizedTimeline() {
           </TimelineOppositeContent>
           
           <TimelineSeparator>
-            <TimelineConnector sx={connectorStyle} />
             <TimelineDot sx={timelineDotStyle}>
               <MonetizationOnIcon sx={{ color: 'black' }} />
             </TimelineDot>
             <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
 
-          <TimelineContent sx={rightContentStyle}>
+          <TimelineContent >
             <Typography variant="h6" component="span">
               Fund Run
             </Typography>
@@ -209,7 +188,7 @@ function CustomizedTimeline() {
         {/* June 2025: Coin Listing & Social Media Marketing */}
         <TimelineItem>
           <TimelineOppositeContent 
-            sx={leftContentStyle} 
+            
             variant="body1" 
             color="inherit"
           >
@@ -217,14 +196,13 @@ function CustomizedTimeline() {
           </TimelineOppositeContent>
           
           <TimelineSeparator>
-            <TimelineConnector sx={connectorStyle} />
             <TimelineDot sx={timelineDotStyle}>
               <CampaignIcon sx={{ color: 'black' }} />
             </TimelineDot>
             <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
 
-          <TimelineContent sx={rightContentStyle}>
+          <TimelineContent >
             <Typography variant="h6" component="span">
               Coin Listing & Social Media Marketing
             </Typography>
@@ -234,7 +212,7 @@ function CustomizedTimeline() {
         {/* July 2025: First property purchase */}
         <TimelineItem>
           <TimelineOppositeContent 
-            sx={leftContentStyle} 
+            
             variant="body1" 
             color="inherit"
           >
@@ -242,14 +220,12 @@ function CustomizedTimeline() {
           </TimelineOppositeContent>
           
           <TimelineSeparator>
-            <TimelineConnector sx={connectorStyle} />
             <TimelineDot sx={timelineDotStyle}>
               <ApartmentIcon sx={{ color: 'black' }} />
             </TimelineDot>
-            <TimelineConnector sx={connectorStyle} />
           </TimelineSeparator>
 
-          <TimelineContent sx={rightContentStyle}>
+          <TimelineContent >
             <Typography variant="h6" component="span">
               First property purchase
             </Typography>
