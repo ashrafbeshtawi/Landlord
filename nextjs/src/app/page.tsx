@@ -588,7 +588,7 @@ export default function Home() {
               ensuring real utility and responsible expansion.
             </Typography>
             <Typography variant="body1" sx={{ lineHeight: 1.6, mt: 2 }}>
-              LandLord is more than just a token — it's a real-value
+              LandLord is more than just a token — its a real-value
               distribution system designed for the future of decentralized
               property ownership and income sharing.
             </Typography>
@@ -660,7 +660,7 @@ export default function Home() {
             </Typography>
             <Typography variant="body1" sx={{ lineHeight: 1.6, ml: 2 }}>
               The token does not rely on reflections, auto-liquidity, or
-              rebasing mechanics — it's built for clarity, simplicity, and
+              rebasing mechanics — its built for clarity, simplicity, and
               long-term reliability.
             </Typography>
           </Box>
