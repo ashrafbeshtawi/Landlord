@@ -443,7 +443,7 @@ export default function Home() {
               color: '#FFFFFF',
               borderRadius: 2,
               p: 3,
-              marginTop: '30px',
+              marginTop: '40px',
               opacity: 0.95,
             }}
           >
