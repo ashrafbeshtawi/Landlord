@@ -444,30 +444,34 @@ export default function Home() {
               color: '#FFFFFF',
               borderRadius: 2,
               p: 3,
-              marginTop: '50px',
+              marginTop: '110px',
               opacity: 0.95,
+              fontSize: { xs: '0.7rem', md: '1.2rem' },
             }}
           >
-            <Typography variant="h3" sx={{ mb: 3, textAlign: 'center' }}>
+            <Typography variant="h3" sx={{ mb: 3, textAlign: 'center', fontSize: { xs: '1.2rem', md: '2rem' }}}>
               Revolutionizing Real Estate Investment
             </Typography>
 
             <Typography variant="body1" sx={{ mb: 3, fontSize: 'inherit', textAlign: 'center' }}>
-              Welcome to the future of property ownership – where blockchain technology meets tangible real estate assets. LandLord Coin (LND) offers you:
+              Welcome to the future of property ownership — where blockchain technology meets tangible real estate assets. LandLord Coin (LND) is creating a bridge between decentralized finance and real-world investment opportunities, giving everyday people the chance to own, profit from, and participate in the global real estate market like never before.
             </Typography>
 
             <Box sx={{ textAlign: 'left', mx: 'auto', width: '80%' }}>
               <Typography variant="body1" sx={{ mb: 2, fontSize: 'inherit' }}>
-                ✅ <strong>Asset‑Backed Security:</strong> Every LND token is backed by income‑generating properties in prime locations
+                ✅ <strong>Asset‑Backed Security:</strong> Each LND token is secured by income‑generating real estate in high‑demand areas, ensuring your digital asset reflects real‑world value.
               </Typography>
               <Typography variant="body1" sx={{ mb: 2, fontSize: 'inherit' }}>
-                📈 <strong>Stable Growth:</strong> Benefit from both property appreciation and rental income distributions
+                📈 <strong>Stable Growth:</strong> Enjoy dual income streams — benefit from property value appreciation over time and receive regular rental income distributions directly to your wallet.
               </Typography>
               <Typography variant="body1" sx={{ mb: 2, fontSize: 'inherit' }}>
-                🌍 <strong>Global Access:</strong> Own fractional real estate assets worldwide with minimum investment
+                🌍 <strong>Global Access:</strong> Break the barriers of traditional property investing. With LandLord Coin, you can own a fraction of premium real estate anywhere in the world, starting with just a small investment.
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2, fontSize: 'inherit' }}>
+                🔒 <strong>Blockchain Transparency:</strong> All transactions are regulated by smart contracts and recorded on the blockchain. This guarantees full auditability, eliminating fraud and ensuring fair treatment for all stakeholders.
               </Typography>
               <Typography variant="body1" sx={{ mb: 0, fontSize: 'inherit' }}>
-                🔒 <strong>Blockchain Transparency:</strong> Smart contract‑regulated transactions with full audit trails
+                🚀 <strong>Future‑Proof Investment:</strong> Traditional property investment is slow, expensive, and exclusive. With LND, we make it fast, affordable, and accessible to anyone — regardless of geography or financial status.
               </Typography>
             </Box>
 
@@ -475,16 +479,17 @@ export default function Home() {
               variant="body1"
               sx={{
                 mt: 3,
-                fontSize: { xs: 'inherit', md: '1.2rem' },
+                fontSize: { xs: '0.9rem', md: '1.2rem' },
                 fontWeight: 'bold',
                 color: theme.palette.primary.main,
                 textAlign: 'center',
               }}
             >
-              Join the $2.5 trillion real estate market revolution – Democratized, Decentralized, and Yours to Control
+              Join the $2.5 trillion real estate market revolution – Democratized, Decentralized, and Yours to Control
             </Typography>
           </Box>
         </Box>
+
 
 
         {/* Road Map Section */}
