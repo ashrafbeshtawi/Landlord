@@ -444,7 +444,7 @@ export default function Home() {
               color: '#FFFFFF',
               borderRadius: 2,
               p: 3,
-              mt: '50px',
+              mt: '100px',
               opacity: 0.95,
             }}
           >
