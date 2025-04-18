@@ -425,68 +425,66 @@ export default function Home() {
         <Box
           id="home"
           sx={{
-            height: '100vh',
-            position: 'relative',
             backgroundImage: 'url(/house.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
+            p: { xs: 2, md: 4 },
+            backgroundColor: '#222222',
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            pl: { xs: 2, md: '10%' },
           }}
         >
           <Box
-            sx={(theme) => ({
-              backgroundColor: theme.palette.background.default,
+            sx={{
               width: { xs: '90%', md: '60%' },
-              padding: { xs: '20px', md: '40px' },
-              borderRadius: '12px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
+              bgcolor: theme.palette.background.default,
               color: '#FFFFFF',
-              textAlign: 'center',
-              marginLeft: { xs: 0, md: '5%' },
+              borderRadius: 2,
+              p: 3,
               marginTop: '30px',
-              transform: { xs: 'none', md: 'translate(-20%, -10%)' },
               opacity: 0.95,
-              position: 'relative',
-              top: { xs: 0, md: '-30px' },
-              fontSize: {
-                xs: '1rem',
-                sm: '1.25rem',
-                md: '1.25rem',
-                lg: '1.25rem',
-                xl: '1.25rem',
-              },
-            })}
+            }}
           >
-            <Typography variant="h3" sx={{ mb: 2 }}>
+            <Typography variant="h3" sx={{ mb: 3, textAlign: 'center' }}>
               Revolutionizing Real Estate Investment
             </Typography>
-            <Typography variant="body1" sx={{ mb: 3, fontSize: 'inherit' }}>
-              Welcome to the future of property ownership - where blockchain technology meets tangible real estate assets. LandLord Coin (LND) offers you:
+
+            <Typography variant="body1" sx={{ mb: 3, fontSize: 'inherit', textAlign: 'center' }}>
+              Welcome to the future of property ownership – where blockchain technology meets tangible real estate assets. LandLord Coin (LND) offers you:
             </Typography>
+
             <Box sx={{ textAlign: 'left', mx: 'auto', width: '80%' }}>
               <Typography variant="body1" sx={{ mb: 2, fontSize: 'inherit' }}>
-                ✅ <strong>Asset-Backed Security:</strong> Every LND token is backed by income-generating properties in prime locations
+                ✅ <strong>Asset‑Backed Security:</strong> Every LND token is backed by income‑generating properties in prime locations
               </Typography>
               <Typography variant="body1" sx={{ mb: 2, fontSize: 'inherit' }}>
-                📈 <strong>Stable Growth:</strong> Benefit from both property appreciation and rental income distributions
+                📈 <strong>Stable Growth:</strong> Benefit from both property appreciation and rental income distributions
               </Typography>
               <Typography variant="body1" sx={{ mb: 2, fontSize: 'inherit' }}>
-                🌍 <strong>Global Access:</strong> Own fractional real estate assets worldwide with minimum investment
+                🌍 <strong>Global Access:</strong> Own fractional real estate assets worldwide with minimum investment
               </Typography>
-              <Typography variant="body1" sx={{ mb: 3, fontSize: 'inherit' }}>
-                🔒 <strong>Blockchain Transparency:</strong> Smart contract-regulated transactions with full audit trails
+              <Typography variant="body1" sx={{ mb: 0, fontSize: 'inherit' }}>
+                🔒 <strong>Blockchain Transparency:</strong> Smart contract‑regulated transactions with full audit trails
               </Typography>
             </Box>
-            <Typography variant="body1" sx={{ fontSize: { xs: 'inherit', md: '1.2rem' }, fontWeight: 'bold', color: theme.palette.primary.main }}>
-              Join the $2.5 trillion real estate market revolution - Democratized, Decentralized, and Yours to Control
+
+            <Typography
+              variant="body1"
+              sx={{
+                mt: 3,
+                fontSize: { xs: 'inherit', md: '1.2rem' },
+                fontWeight: 'bold',
+                color: theme.palette.primary.main,
+                textAlign: 'center',
+              }}
+            >
+              Join the $2.5 trillion real estate market revolution – Democratized, Decentralized, and Yours to Control
             </Typography>
           </Box>
         </Box>
+
 
         {/* Road Map Section */}
         <Box
@@ -601,7 +599,7 @@ export default function Home() {
         </Box>
 
         <Box
-          id="tokenomiks"
+          id="tokenomiks2"
           sx={{
             p: { xs: 2, md: 4 },
             backgroundColor: '#222222',
