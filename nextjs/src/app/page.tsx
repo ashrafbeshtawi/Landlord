@@ -362,13 +362,13 @@ export default function Home() {
           position="fixed"
           sx={{ zIndex: 1201, boxShadow: 'none', backgroundColor: theme.palette.background.default }}
         >
-          <Toolbar sx={{ p: { xs: '10px 12px', md: '15px 16px' } }}>
+          <Toolbar>
             <Box sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}>
               <Image
                 src="/coin.png"
                 alt="Coin Logo"
-                width={120}
-                height={120}
+                width={70}
+                height={70}
                 style={{ borderRadius: '50%' }}
               />
             </Box>
@@ -420,8 +420,6 @@ export default function Home() {
           </Toolbar>
         </AppBar>
 
-        {/* Spacer for the fixed AppBar */}
-        <Box sx={{ height: { xs: '80px', md: '120px' } }} />
 
         {/* Home Section */}
         <Box
@@ -450,6 +448,7 @@ export default function Home() {
               color: '#FFFFFF',
               textAlign: 'center',
               marginLeft: { xs: 0, md: '5%' },
+              marginTop: '30px',
               transform: { xs: 'none', md: 'translate(-20%, -10%)' },
               opacity: 0.95,
               position: 'relative',
@@ -463,7 +462,7 @@ export default function Home() {
               },
             })}
           >
-            <Typography variant="h3" sx={{ mb: 2, fontSize: 'inherit' }}>
+            <Typography variant="h3" sx={{ mb: 2 }}>
               Revolutionizing Real Estate Investment
             </Typography>
             <Typography variant="body1" sx={{ mb: 3, fontSize: 'inherit' }}>
@@ -507,10 +506,14 @@ export default function Home() {
           <CustomizedTimeline />
         </Box>
 
+
         {/* Other Sections */}
         <Box
           id="tokenomiks"
           sx={{
+            backgroundImage: 'url(/house6.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
             p: { xs: 2, md: 4 },
             backgroundColor: '#222222',
             display: 'flex',
@@ -519,18 +522,20 @@ export default function Home() {
             justifyContent: 'center',
           }}
         >
-          <Typography variant="h3" sx={{ mb: 4, marginTop: '100px' }}>
-            LandLord (LND) Tokenomics
-          </Typography>
           <Box
             sx={{
-              width: '80%',
+              width: { xs: '90%', md: '60%' },
               bgcolor: theme.palette.background.default,
               color: theme.palette.primary.main,
               borderRadius: 2,
               p: 3,
+              marginTop: '100px',
+              opacity: 0.95,
             }}
           >
+           <Typography variant="h3" sx={{ mb: 3, textAlign: 'center' }}>
+            Tokenomics
+          </Typography>
             <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
               LandLord (LND) is a utility token designed for a real
               estate-backed ecosystem — with built-in profit sharing and a
@@ -593,7 +598,19 @@ export default function Home() {
               property ownership and income sharing.
             </Typography>
           </Box>
+        </Box>
 
+        <Box
+          id="tokenomiks"
+          sx={{
+            p: { xs: 2, md: 4 },
+            backgroundColor: '#222222',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <Typography variant="h3" sx={{ mb: 4, marginTop: '100px' }}>
             What’s Not in the Contract — By Design
           </Typography>
@@ -665,6 +682,7 @@ export default function Home() {
             </Typography>
           </Box>
         </Box>
+
         {renderSection(
           'whitepaper',
           'Whitepaper Section',
