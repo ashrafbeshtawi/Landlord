@@ -425,6 +425,7 @@ export default function Home() {
         <Box
           id="home"
           sx={{
+            height: '100vh',
             backgroundImage: 'url(/house.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
