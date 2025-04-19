@@ -495,7 +495,7 @@ export default function Home() {
 
             <Typography
               variant="body1"
-              sx={{ mt: 3, fontSize: { xs: 'inherit', md: '1.2rem' }, fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'center' }}
+              sx={{ mt: 3, fontSize: { xs: '0.7rem', md: '1.2rem' }, fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'center' }}
             >
               Join the $2.5 trillion real estate market revolution – Democratized, Decentralized, and Yours to Control
             </Typography>
