@@ -321,7 +321,7 @@ export default function Home() {
           <Toolbar>
             <Box sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}>
               <Image
-                src="/coin2.png"
+                src="/coin3.png"
                 alt="Coin Logo"
                 width={70}
                 height={70}
