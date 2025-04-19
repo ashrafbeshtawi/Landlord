@@ -82,10 +82,9 @@ function CustomizedTimeline() {
 
   return (
     <Box sx={{ 
-      width: '100%', 
-      bgcolor: theme.palette.background.default, // Dark background like in your image
       color: theme.palette.primary.main,
-      borderRadius: 2
+      borderRadius: 3,
+      width: { xs: '90%', md: '60%' },
     }}>
 
 
@@ -286,56 +285,6 @@ function CustomizedTimeline() {
 }
 
 
-// A generic section renderer for sections that include image and text.
-const renderSection = (
-  id: string,
-  title: string,
-  description: string,
-  reverse = false
-) => (
-  <Box
-    id={id}
-    sx={{
-      height: '100vh',
-      p: { xs: 2, md: 4 },
-      backgroundColor: '#222222',
-      display: 'flex',
-      flexDirection: { xs: 'column', md: 'row' },
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}
-  >
-    {reverse ? (
-      <>
-        <Box sx={{ flex: 1, p: 2, display: 'flex', justifyContent: 'center' }}>
-          <Image src="/coin.png" alt={title} width={300} height={300} />
-        </Box>
-        <Box sx={{ flex: 1, p: 2 }}>
-          <Typography variant="h3" sx={{ mb: 2 }}>
-            {title}
-          </Typography>
-          <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-            {description}
-          </Typography>
-        </Box>
-      </>
-    ) : (
-      <>
-        <Box sx={{ flex: 1, p: 2 }}>
-          <Typography variant="h3" sx={{ mb: 2 }}>
-            {title}
-          </Typography>
-          <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-            {description}
-          </Typography>
-        </Box>
-        <Box sx={{ flex: 1, p: 2, display: 'flex', justifyContent: 'center' }}>
-          <Image src="/coin.png" alt={title} width={300} height={300} />
-        </Box>
-      </>
-    )}
-  </Box>
-);
 
 export default function Home() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);;
@@ -356,7 +305,14 @@ export default function Home() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div style={{ margin: 0, padding: 0 }}>
+      <Box
+        className= 'gradient-background'
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Fixed Navigation AppBar */}
         <AppBar
           position="fixed"
@@ -430,7 +386,6 @@ export default function Home() {
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             p: { xs: 2, md: 4 },
-            backgroundColor: '#222222',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -547,15 +502,11 @@ export default function Home() {
           </Box>
         </Box>
 
-
-
-
         {/* Road Map Section */}
         <Box
           id="roadmap"
           sx={{
             p: { xs: 2, md: 4 },
-            backgroundColor: '#222222',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -569,15 +520,11 @@ export default function Home() {
         </Box>
 
 
-        {/* Other Sections */}
+        {/* Tokenomiks */}
         <Box
           id="tokenomiks"
           sx={{
-            backgroundImage: 'url(/house6.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
             p: { xs: 2, md: 4 },
-            backgroundColor: '#222222',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -666,7 +613,6 @@ export default function Home() {
           id="tokenomiks2"
           sx={{
             p: { xs: 2, md: 4 },
-            backgroundColor: '#222222',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -678,7 +624,7 @@ export default function Home() {
           </Typography>
           <Box
             sx={{
-              width: '80%',
+              width: { xs: '90%', md: '60%' },
               bgcolor: theme.palette.background.default,
               color: theme.palette.primary.main,
               borderRadius: 2,
@@ -745,19 +691,32 @@ export default function Home() {
           </Box>
         </Box>
 
-        {renderSection(
-          'whitepaper',
-          'Whitepaper Section',
-          'The whitepaper contains in-depth information. Duis aute irure dolor in reprehenderit.',
-          true
-        )}
-        {renderSection(
-          'team',
-          'Our Team Section',
-          'Meet our team! Excepteur sint occaecat cupidatat non proident.',
-          false
-        )}
-      </div>
+        {/* Whitepaper Section */}
+        <Box
+          id="whitepaper"
+          sx={{
+            p: { xs: 2, md: 4 },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography variant="h3" sx={{ mb: 2, marginTop: '100px', color: '#FFFFFF' }}>
+            Whitepaper
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.6, color: '#34C6A3', width: { xs: '90%', md: '60%' }, textAlign: 'center' }}>
+            Our comprehensive whitepaper provides in-depth details on the LandLord Coin vision, tokenomics, technical architecture, and roadmap. Explore the full documentation to understand our project’s foundation and future plans.
+          </Typography>
+          <Button
+            variant="contained"
+            sx={{ backgroundColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main } }}
+            onClick={() => window.open('/whitepaper.pdf', '_blank')}
+          >
+            <strong>Download Whitepaper</strong>
+          </Button>
+        </Box>
+      </Box>
     </ThemeProvider>
   );
 }
