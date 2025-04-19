@@ -534,7 +534,6 @@ export default function Home() {
           <Box
             sx={{
               width: { xs: '90%', md: '60%' },
-              bgcolor: theme.palette.background.default,
               color: theme.palette.primary.main,
               borderRadius: 2,
               p: 3,
@@ -625,7 +624,6 @@ export default function Home() {
           <Box
             sx={{
               width: { xs: '90%', md: '60%' },
-              bgcolor: theme.palette.background.default,
               color: theme.palette.primary.main,
               borderRadius: 2,
               p: 3,
