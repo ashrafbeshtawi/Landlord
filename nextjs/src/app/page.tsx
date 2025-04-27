@@ -45,8 +45,8 @@ const handleConnectWallet = async () => {
       setAccount(selectedAccount);
 
       // You can also initialize a provider or signer if needed
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
+      //const provider = new ethers.providers.Web3Provider(window.ethereum);
+      //const signer = provider.getSigner();
       
       console.log('Connected wallet address:', selectedAccount);
       // Optionally, you can get additional wallet details (balance, etc.)
