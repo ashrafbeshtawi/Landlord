@@ -33,9 +33,29 @@ import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet'; // Import a wallet icon
 
 
-const handleConnectWallet = () => {
-  console.log('Connecting wallet...');
-  // Later: trigger your wallet connection logic here
+const handleConnectWallet = async () => {
+  if (window.ethereum) {
+    try {
+      // Requesting access to the user's accounts
+      const [selectedAccount] = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      });
+      
+      // Setting the account state
+      setAccount(selectedAccount);
+
+      // You can also initialize a provider or signer if needed
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      
+      console.log('Connected wallet address:', selectedAccount);
+      // Optionally, you can get additional wallet details (balance, etc.)
+    } catch (error) {
+      console.error('User denied wallet connection', error);
+    }
+  } else {
+    alert('MetaMask not installed!');
+  }
 };
 const theme = createTheme({
   palette: {
@@ -289,8 +309,6 @@ function CustomizedTimeline() {
     </Box>
   );
 }
-
-
 
 export default function Home() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);;
