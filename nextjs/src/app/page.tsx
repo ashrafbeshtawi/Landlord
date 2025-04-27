@@ -13,6 +13,7 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
+import { ethers } from 'ethers';
 
 // Import MUI lab components for the timeline
 import Timeline from '@mui/lab/Timeline';
@@ -33,30 +34,41 @@ import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet'; // Import a wallet icon
 
 
-const handleConnectWallet = async () => {
-  if (window.ethereum) {
-    try {
-      // Requesting access to the user's accounts
-      const [selectedAccount] = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-      
-      // Setting the account state
-      setAccount(selectedAccount);
+export interface ConnectResult {
+  provider: ethers.BrowserProvider;
+  signer: ethers.JsonRpcSigner;
+  address: string;
+}
 
-      // You can also initialize a provider or signer if needed
-      //const provider = new ethers.providers.Web3Provider(window.ethereum);
-      //const signer = provider.getSigner();
-      
-      console.log('Connected wallet address:', selectedAccount);
-      // Optionally, you can get additional wallet details (balance, etc.)
-    } catch (error) {
-      console.error('User denied wallet connection', error);
-    }
-  } else {
-    alert('MetaMask not installed!');
+export const handleConnectWallet = async (): Promise<ConnectResult | null> => {
+  // 1) Prüfen, ob der Code client-seitig läuft und MetaMask verfügbar ist
+  if (typeof window === 'undefined' || !window.ethereum) {
+    console.error('Ethereum-Provider nicht gefunden. Bitte MetaMask installieren.');
+    return null;
+  }
+
+  try {
+    // 2) BrowserProvider aus ethers v6 erstellen
+    const provider = new ethers.BrowserProvider(window.ethereum); 
+
+    // 3) Accounts (Wallet-Adresse) anfragen
+    await provider.send('eth_requestAccounts', []);
+
+    // 4) Signer (der autorisierte Account) holen
+    const signer = await provider.getSigner();
+
+    // 5) Wallet-Adresse ermitteln
+    const address = await signer.getAddress();
+
+    console.log('Wallet verbunden:', address);
+    return { provider, signer, address };
+
+  } catch (error) {
+    console.error('Fehler beim Verbinden der Wallet:', error);
+    return null;
   }
 };
+
 const theme = createTheme({
   palette: {
     primary: {
