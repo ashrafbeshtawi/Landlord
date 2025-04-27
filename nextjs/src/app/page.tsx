@@ -34,13 +34,13 @@ import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet'; // Import a wallet icon
 
 
-export interface ConnectResult {
+interface ConnectResult {
   provider: ethers.BrowserProvider;
   signer: ethers.JsonRpcSigner;
   address: string;
 }
 
-export const handleConnectWallet = async (): Promise<ConnectResult | null> => {
+const handleConnectWallet = async (): Promise<ConnectResult | null> => {
   // 1) Prüfen, ob der Code client-seitig läuft und MetaMask verfügbar ist
   if (typeof window === 'undefined' || !window.ethereum) {
     console.error('Ethereum-Provider nicht gefunden. Bitte MetaMask installieren.');
