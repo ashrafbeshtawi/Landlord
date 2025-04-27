@@ -30,7 +30,13 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
+import WalletIcon from '@mui/icons-material/AccountBalanceWallet'; // Import a wallet icon
 
+
+const handleConnectWallet = () => {
+  console.log('Connecting wallet...');
+  // Later: trigger your wallet connection logic here
+};
 const theme = createTheme({
   palette: {
     primary: {
@@ -319,6 +325,7 @@ export default function Home() {
           sx={{ zIndex: 1201, boxShadow: 'none', backgroundColor: theme.palette.background.default }}
         >
           <Toolbar>
+            {/* Logo */}
             <Box sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}>
               <Image
                 src="/coin3.png"
@@ -328,11 +335,13 @@ export default function Home() {
                 style={{ borderRadius: '50%' }}
               />
             </Box>
+
+            {/* Navigation Buttons (Desktop only) */}
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {[
                 { id: 'home', label: 'Home' },
                 { id: 'roadmap', label: 'Road Map' },
-                { id: 'tokenomiks', label: 'tokenomiks' },
+                { id: 'tokenomiks', label: 'Tokenomiks' },
                 { id: 'whitepaper', label: 'Whitepaper' },
                 { id: 'team', label: 'Our Team' },
               ].map(({ id, label }) => (
@@ -351,15 +360,55 @@ export default function Home() {
                 </Button>
               ))}
             </Box>
+
+            {/* Connect Wallet Button */}
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {/* Desktop: Full Button */}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleConnectWallet}
+                sx={{
+                  display: { xs: 'none', md: 'flex' },
+                  backgroundColor: '#169976',
+                  color: 'white',
+                  textTransform: 'none',
+                  fontWeight: 'bold',
+                  ml: 2,
+                  '&:hover': { backgroundColor: '#127a5c' },
+                }}
+              >
+                Connect Wallet
+              </Button>
+
+              {/* Mobile: Icon Only */}
+              <IconButton
+                color="primary"
+                onClick={handleConnectWallet}
+                sx={{
+                  display: { xs: 'flex', md: 'none' },
+                  ml: 1,
+                  backgroundColor: '#169976',
+                  '&:hover': { backgroundColor: '#127a5c' },
+                  color: 'white',
+                }}
+              >
+                <WalletIcon />
+              </IconButton>
+            </Box>
+
+            {/* Mobile Menu Button */}
             <IconButton
               size="large"
               aria-label="menu"
               onClick={handleOpenMenu}
               color="primary"
-              sx={{ display: { xs: 'flex', md: 'none' }, ml: 'auto' }}
+              sx={{ display: { xs: 'flex', md: 'none' }, ml: 1 }}
             >
               <MenuIcon />
             </IconButton>
+
+            {/* Menu Items */}
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
