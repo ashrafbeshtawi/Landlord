@@ -324,9 +324,9 @@ export default function Home() {
           position="fixed"
           sx={{ zIndex: 1201, boxShadow: 'none', backgroundColor: theme.palette.background.default }}
         >
-          <Toolbar>
-            {/* Logo */}
-            <Box sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }}>
+          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {/* Left Side: Logo */}
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Image
                 src="/coin3.png"
                 alt="Coin Logo"
@@ -336,8 +336,8 @@ export default function Home() {
               />
             </Box>
 
-            {/* Navigation Buttons (Desktop only) */}
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {/* Center Side (optional) */}
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
               {[
                 { id: 'home', label: 'Home' },
                 { id: 'roadmap', label: 'Road Map' },
@@ -361,9 +361,9 @@ export default function Home() {
               ))}
             </Box>
 
-            {/* Connect Wallet Button */}
+            {/* Right Side: Connect Wallet + Menu */}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {/* Desktop: Full Button */}
+              {/* Connect Wallet Button */}
               <Button
                 variant="contained"
                 color="primary"
@@ -380,8 +380,6 @@ export default function Home() {
               >
                 Connect Wallet
               </Button>
-
-              {/* Mobile: Icon Only */}
               <IconButton
                 color="primary"
                 onClick={handleConnectWallet}
@@ -395,33 +393,33 @@ export default function Home() {
               >
                 <WalletIcon />
               </IconButton>
+
+              {/* Mobile Menu Button */}
+              <IconButton
+                size="large"
+                aria-label="menu"
+                onClick={handleOpenMenu}
+                color="primary"
+                sx={{ display: { xs: 'flex', md: 'none' }, ml: 1 }}
+              >
+                <MenuIcon />
+              </IconButton>
+
+              {/* Menu for Small Screens */}
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleCloseMenu}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              >
+                {['home', 'roadmap', 'tokenomiks', 'whitepaper', 'team'].map((id) => (
+                  <MenuItem key={id} onClick={() => { scrollToSection(id); handleCloseMenu(); }}>
+                    {id.charAt(0).toUpperCase() + id.slice(1).replace(/([A-Z])/g, ' $1')}
+                  </MenuItem>
+                ))}
+              </Menu>
             </Box>
-
-            {/* Mobile Menu Button */}
-            <IconButton
-              size="large"
-              aria-label="menu"
-              onClick={handleOpenMenu}
-              color="primary"
-              sx={{ display: { xs: 'flex', md: 'none' }, ml: 1 }}
-            >
-              <MenuIcon />
-            </IconButton>
-
-            {/* Menu Items */}
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleCloseMenu}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            >
-              {['home', 'roadmap', 'tokenomiks', 'whitepaper', 'team'].map((id) => (
-                <MenuItem key={id} onClick={() => scrollToSection(id)}>
-                  {id.charAt(0).toUpperCase() + id.slice(1).replace(/([A-Z])/g, ' $1')}
-                </MenuItem>
-              ))}
-            </Menu>
           </Toolbar>
         </AppBar>
 
