@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Box, Button, IconButton, Menu, MenuItem } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import { AppBar, Toolbar, Box, Button, Menu, MenuItem } from '@mui/material';
 import Image from 'next/image';
 import WalletConnectButton from './WalletConnectButton';
 
@@ -35,23 +33,7 @@ const NavigationBar = () => {
           ))}
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <WalletConnectButton />
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ display: { xs: 'none', md: 'flex' }, ml: 2 }}
-          >
-            Connect Wallet
-          </Button>
-          <IconButton sx={{ display: { xs: 'flex', md: 'none' }, ml: 1, backgroundColor: '#169976' }}>
-            <WalletIcon sx={{ color: '#fff' }} />
-          </IconButton>
-
-          <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <MenuIcon />
-          </IconButton>
-        </Box>
+        <WalletConnectButton />
 
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
           {['home', 'roadmap', 'tokenomiks', 'whitepaper', 'team'].map(id => (

@@ -3,22 +3,14 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Image from 'next/image';
-import WalletConnectButton from '../components/WalletConnectButton'; // Import your wallet connect button component
 
-import WalletIcon from '@mui/icons-material/AccountBalanceWallet'; // Import a wallet icon
 import theme from '../theme/theme'; // Import your theme
 import TimelineSection from '../components/TimelineSection'; // Import your timeline section component
-
+import NavigationBar from '../components/NavigationBar';
 
 export default function Home() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);;
@@ -48,110 +40,7 @@ export default function Home() {
         }}
       >
         {/* Fixed Navigation AppBar */}
-        <AppBar
-          position="fixed"
-          sx={{ zIndex: 1201, boxShadow: 'none', backgroundColor: theme.palette.background.default }}
-        >
-          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            {/* Left Side: Logo */}
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Image
-                src="/coin3.png"
-                alt="Coin Logo"
-                width={70}
-                height={70}
-                style={{ borderRadius: '50%' }}
-              />
-            </Box>
-
-            {/* Center Side (optional) */}
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-start' }}>
-              {[
-                { id: 'home', label: 'Home' },
-                { id: 'roadmap', label: 'Road Map' },
-                { id: 'tokenomiks', label: 'Tokenomiks' },
-                { id: 'whitepaper', label: 'Whitepaper' },
-                { id: 'team', label: 'Our Team' },
-              ].map(({ id, label }) => (
-                <Button
-                  key={id}
-                  sx={{
-                    color: '#FFFFFF',
-                    fontWeight: 'bold',
-                    mx: { xs: 1, md: 2 },
-                    '&:hover': { backgroundColor: '#169976' },
-                    transition: 'background-color 0.3s',
-                  }}
-                  onClick={() => scrollToSection(id)}
-                >
-                  {label}
-                </Button>
-              ))}
-            </Box>
-
-            {/* Right Side: Connect Wallet + Menu */}
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <WalletConnectButton />
-
-              {/* Connect Wallet Button */}
-              <Button
-                variant="contained"
-                color="primary"
-                //onClick={handleConnectWallet}
-                sx={{
-                  display: { xs: 'none', md: 'flex' },
-                  backgroundColor: '#169976',
-                  color: 'white',
-                  textTransform: 'none',
-                  fontWeight: 'bold',
-                  ml: 2,
-                  '&:hover': { backgroundColor: '#127a5c' },
-                }}
-              >
-                Connect Wallet
-              </Button>
-              <IconButton
-                color="primary"
-                //onClick={handleConnectWallet}
-                sx={{
-                  display: { xs: 'flex', md: 'none' },
-                  ml: 1,
-                  backgroundColor: '#169976',
-                  '&:hover': { backgroundColor: '#127a5c' },
-                  color: 'white',
-                }}
-              >
-                <WalletIcon />
-              </IconButton>
-
-              {/* Mobile Menu Button */}
-              <IconButton
-                size="large"
-                aria-label="menu"
-                onClick={handleOpenMenu}
-                color="primary"
-                sx={{ display: { xs: 'flex', md: 'none' }, ml: 1 }}
-              >
-                <MenuIcon />
-              </IconButton>
-
-              {/* Menu for Small Screens */}
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleCloseMenu}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-              >
-                {['home', 'roadmap', 'tokenomiks', 'whitepaper', 'team'].map((id) => (
-                  <MenuItem key={id} onClick={() => { scrollToSection(id); handleCloseMenu(); }}>
-                    {id.charAt(0).toUpperCase() + id.slice(1).replace(/([A-Z])/g, ' $1')}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
-          </Toolbar>
-        </AppBar>
+        <NavigationBar />
 
 
         {/* Home Section */}
