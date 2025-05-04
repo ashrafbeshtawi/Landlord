@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from 'react';
-import { useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 
 import Box from '@mui/material/Box';
@@ -26,7 +25,6 @@ export default function Home() {
       >
         {/* Fixed Navigation AppBar */}
         <NavigationBar />
-
 
         {/* Home Section */}
         <HeroSection />
