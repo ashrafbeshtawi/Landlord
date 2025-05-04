@@ -32,206 +32,220 @@ const TimelineSection = function() {
     };
   
     return (
-      <Box sx={{ 
-        color: theme.palette.primary.main,
-        borderRadius: 3,
-        width: { xs: '90%', md: '60%' },
-      }}>
-  
-  
-        <Timeline position="right">
-          {/* 2023: Analyzing the real estate market */}
-          <TimelineItem>
-            <TimelineOppositeContent 
-              variant="body1" 
-              color="inherit"
-            >
-              <Typography variant="h6">2023</Typography>
-            </TimelineOppositeContent>
-            
-            <TimelineSeparator>
-              <TimelineDot sx={timelineDotStyle}>
-                <HouseIcon sx={{ color: 'black' }} />
-              </TimelineDot>
-              <TimelineConnector sx={connectorStyle} />
-            </TimelineSeparator>
-  
-            <TimelineContent >
-              <Typography variant="h6" component="span">
-                Analyzing the real estate market
-              </Typography>
-            </TimelineContent>
-          </TimelineItem>
-  
-          {/* 2024: Finding best location in emerging markets */}
-          <TimelineItem>
-            <TimelineOppositeContent 
-              
-              variant="body1" 
-              color="inherit"
-            >
-              <Typography variant="h6">2024</Typography>
-            </TimelineOppositeContent>
-            
-            <TimelineSeparator>
-              <TimelineDot sx={timelineDotStyle}>
-                <LocationOnIcon sx={{ color: 'black' }} />
-              </TimelineDot>
-              <TimelineConnector sx={connectorStyle} />
-            </TimelineSeparator>
-  
-            <TimelineContent >
-              <Typography variant="h6" component="span">
-                Finding best location in emerging markets
-              </Typography>
-            </TimelineContent>
-          </TimelineItem>
-  
-          {/* 2025: Building & Testing Blockchain code */}
-          <TimelineItem>
-            <TimelineOppositeContent 
-              
-              variant="body1" 
-              color="inherit"
-            >
-              <Typography variant="h6"> April 2025</Typography>
-            </TimelineOppositeContent>
-            
-            <TimelineSeparator>
-              <TimelineDot sx={timelineDotStyle}>
-                <CodeIcon sx={{ color: 'black' }} />
-              </TimelineDot>
-              <TimelineConnector sx={connectorStyle} />
-            </TimelineSeparator>
-  
-            <TimelineContent >
-              <Typography variant="h6" component="span">
-                Building & Testing Blockchain code
-              </Typography>
-            </TimelineContent>
-          </TimelineItem>
-  
-          {/* May 2025: Fund Run */}
-          <TimelineItem>
-            <TimelineOppositeContent 
-              
-              variant="body1" 
-              color="inherit"
-            >
-              <Typography variant="h6">May 2025</Typography>
-            </TimelineOppositeContent>
-            
-            <TimelineSeparator>
-              <TimelineDot sx={timelineDotStyle}>
-                <MonetizationOnIcon sx={{ color: 'black' }} />
-              </TimelineDot>
-              <TimelineConnector sx={connectorStyle} />
-            </TimelineSeparator>
-  
-            <TimelineContent >
-              <Typography variant="h6" component="span">
-                Fund Run
-              </Typography>
-            </TimelineContent>
-          </TimelineItem>
-  
-          {/* June 2025: Coin Listing & Social Media Marketing */}
-          <TimelineItem>
-            <TimelineOppositeContent 
-              
-              variant="body1" 
-              color="inherit"
-            >
-              <Typography variant="h6">Jun 2025</Typography>
-            </TimelineOppositeContent>
-            
-            <TimelineSeparator>
-              <TimelineDot sx={timelineDotStyle}>
-                <CampaignIcon sx={{ color: 'black' }} />
-              </TimelineDot>
-              <TimelineConnector sx={connectorStyle} />
-            </TimelineSeparator>
-  
-            <TimelineContent >
-              <Typography variant="h6" component="span">
-                Coin Listing & Social Media Marketing
-              </Typography>
-            </TimelineContent>
-          </TimelineItem>
-  
-          {/* July 2025: First property purchase */}
-          <TimelineItem>
-            <TimelineOppositeContent 
-              
-              variant="body1" 
-              color="inherit"
-            >
-              <Typography variant="h6">Jul 2025</Typography>
-            </TimelineOppositeContent>
-            
-            <TimelineSeparator>
-              <TimelineDot sx={timelineDotStyle}>
-                <ApartmentIcon sx={{ color: 'black' }} />
-              </TimelineDot>
-              <TimelineConnector sx={connectorStyle} />
-            </TimelineSeparator>
-  
-            <TimelineContent >
-              <Typography variant="h6" component="span">
-                First property purchase
-              </Typography>
-            </TimelineContent>
-          </TimelineItem>
-  
-          {/* First rent distribution End of 2025 */}
-          <TimelineItem>
-            <TimelineOppositeContent 
-              
-              variant="body1" 
-              color="inherit"
-            >
-              <Typography variant="h6">Dec 2025</Typography>
-            </TimelineOppositeContent>
-            
-            <TimelineSeparator>
-              <TimelineDot sx={timelineDotStyle}>
-                <ApartmentIcon sx={{ color: 'black' }} />
-              </TimelineDot>
-              <TimelineConnector sx={connectorStyle} />
-  
-            </TimelineSeparator>
-  
-            <TimelineContent >
-              <Typography variant="h6" component="span">
-                First Rent Distribution on coin holders
-              </Typography>
-            </TimelineContent>
-          </TimelineItem>
-  
-          {/* New plans */}
-           <TimelineItem>
-            <TimelineOppositeContent 
-              
-              variant="body1" 
-              color="inherit"
-            >
-              <Typography variant="h6">2026</Typography>
-            </TimelineOppositeContent>
-            
-            <TimelineSeparator>
-              <TimelineDot sx={timelineDotStyle}>
-                <HourglassBottomIcon sx={{ color: 'black' }} />
-              </TimelineDot>
-            </TimelineSeparator>
-  
-            <TimelineContent >
-              <Typography variant="h6" component="span">
-                Coming Soon
-              </Typography>
-            </TimelineContent>
-          </TimelineItem>
-        </Timeline>
+
+        <Box
+        id="roadmap"
+        sx={{
+          p: { xs: 2, md: 4 },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          }}
+      >
+        <Typography variant="h3" sx={{ mb: 4, marginTop: '100px', }}>
+          Road Map
+        </Typography>
+        <Box sx={{ 
+            color: theme.palette.primary.main,
+            borderRadius: 3,
+            width: { xs: '90%', md: '60%' },
+        }}>
+            <Timeline position="right">
+            {/* 2023: Analyzing the real estate market */}
+            <TimelineItem>
+                <TimelineOppositeContent 
+                variant="body1" 
+                color="inherit"
+                >
+                <Typography variant="h6">2023</Typography>
+                </TimelineOppositeContent>
+                
+                <TimelineSeparator>
+                <TimelineDot sx={timelineDotStyle}>
+                    <HouseIcon sx={{ color: 'black' }} />
+                </TimelineDot>
+                <TimelineConnector sx={connectorStyle} />
+                </TimelineSeparator>
+    
+                <TimelineContent >
+                <Typography variant="h6" component="span">
+                    Analyzing the real estate market
+                </Typography>
+                </TimelineContent>
+            </TimelineItem>
+    
+            {/* 2024: Finding best location in emerging markets */}
+            <TimelineItem>
+                <TimelineOppositeContent 
+                
+                variant="body1" 
+                color="inherit"
+                >
+                <Typography variant="h6">2024</Typography>
+                </TimelineOppositeContent>
+                
+                <TimelineSeparator>
+                <TimelineDot sx={timelineDotStyle}>
+                    <LocationOnIcon sx={{ color: 'black' }} />
+                </TimelineDot>
+                <TimelineConnector sx={connectorStyle} />
+                </TimelineSeparator>
+    
+                <TimelineContent >
+                <Typography variant="h6" component="span">
+                    Finding best location in emerging markets
+                </Typography>
+                </TimelineContent>
+            </TimelineItem>
+    
+            {/* 2025: Building & Testing Blockchain code */}
+            <TimelineItem>
+                <TimelineOppositeContent 
+                
+                variant="body1" 
+                color="inherit"
+                >
+                <Typography variant="h6"> April 2025</Typography>
+                </TimelineOppositeContent>
+                
+                <TimelineSeparator>
+                <TimelineDot sx={timelineDotStyle}>
+                    <CodeIcon sx={{ color: 'black' }} />
+                </TimelineDot>
+                <TimelineConnector sx={connectorStyle} />
+                </TimelineSeparator>
+    
+                <TimelineContent >
+                <Typography variant="h6" component="span">
+                    Building & Testing Blockchain code
+                </Typography>
+                </TimelineContent>
+            </TimelineItem>
+    
+            {/* May 2025: Fund Run */}
+            <TimelineItem>
+                <TimelineOppositeContent 
+                
+                variant="body1" 
+                color="inherit"
+                >
+                <Typography variant="h6">May 2025</Typography>
+                </TimelineOppositeContent>
+                
+                <TimelineSeparator>
+                <TimelineDot sx={timelineDotStyle}>
+                    <MonetizationOnIcon sx={{ color: 'black' }} />
+                </TimelineDot>
+                <TimelineConnector sx={connectorStyle} />
+                </TimelineSeparator>
+    
+                <TimelineContent >
+                <Typography variant="h6" component="span">
+                    Fund Run
+                </Typography>
+                </TimelineContent>
+            </TimelineItem>
+    
+            {/* June 2025: Coin Listing & Social Media Marketing */}
+            <TimelineItem>
+                <TimelineOppositeContent 
+                
+                variant="body1" 
+                color="inherit"
+                >
+                <Typography variant="h6">Jun 2025</Typography>
+                </TimelineOppositeContent>
+                
+                <TimelineSeparator>
+                <TimelineDot sx={timelineDotStyle}>
+                    <CampaignIcon sx={{ color: 'black' }} />
+                </TimelineDot>
+                <TimelineConnector sx={connectorStyle} />
+                </TimelineSeparator>
+    
+                <TimelineContent >
+                <Typography variant="h6" component="span">
+                    Coin Listing & Social Media Marketing
+                </Typography>
+                </TimelineContent>
+            </TimelineItem>
+    
+            {/* July 2025: First property purchase */}
+            <TimelineItem>
+                <TimelineOppositeContent 
+                
+                variant="body1" 
+                color="inherit"
+                >
+                <Typography variant="h6">Jul 2025</Typography>
+                </TimelineOppositeContent>
+                
+                <TimelineSeparator>
+                <TimelineDot sx={timelineDotStyle}>
+                    <ApartmentIcon sx={{ color: 'black' }} />
+                </TimelineDot>
+                <TimelineConnector sx={connectorStyle} />
+                </TimelineSeparator>
+    
+                <TimelineContent >
+                <Typography variant="h6" component="span">
+                    First property purchase
+                </Typography>
+                </TimelineContent>
+            </TimelineItem>
+    
+            {/* First rent distribution End of 2025 */}
+            <TimelineItem>
+                <TimelineOppositeContent 
+                
+                variant="body1" 
+                color="inherit"
+                >
+                <Typography variant="h6">Dec 2025</Typography>
+                </TimelineOppositeContent>
+                
+                <TimelineSeparator>
+                <TimelineDot sx={timelineDotStyle}>
+                    <ApartmentIcon sx={{ color: 'black' }} />
+                </TimelineDot>
+                <TimelineConnector sx={connectorStyle} />
+    
+                </TimelineSeparator>
+    
+                <TimelineContent >
+                <Typography variant="h6" component="span">
+                    First Rent Distribution on coin holders
+                </Typography>
+                </TimelineContent>
+            </TimelineItem>
+    
+            {/* New plans */}
+            <TimelineItem>
+                <TimelineOppositeContent 
+                
+                variant="body1" 
+                color="inherit"
+                >
+                <Typography variant="h6">2026</Typography>
+                </TimelineOppositeContent>
+                
+                <TimelineSeparator>
+                <TimelineDot sx={timelineDotStyle}>
+                    <HourglassBottomIcon sx={{ color: 'black' }} />
+                </TimelineDot>
+                </TimelineSeparator>
+    
+                <TimelineContent >
+                <Typography variant="h6" component="span">
+                    Coming Soon
+                </Typography>
+                </TimelineContent>
+            </TimelineItem>
+            </Timeline>
+        </Box>
       </Box>
+
     );
   }
   

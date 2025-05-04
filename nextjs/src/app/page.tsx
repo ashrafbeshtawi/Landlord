@@ -280,21 +280,8 @@ export default function Home() {
         </Box>
 
         {/* Road Map Section */}
-        <Box
-          id="roadmap"
-          sx={{
-            p: { xs: 2, md: 4 },
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            }}
-        >
-          <Typography variant="h3" sx={{ mb: 4, marginTop: '100px', }}>
-            Road Map
-          </Typography>
-          <TimelineSection />
-        </Box>
+        <TimelineSection />
+
 
 
         {/* Tokenomiks */}
