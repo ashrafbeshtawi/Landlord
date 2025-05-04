@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import { Button } from '@mui/material';
-import {Box} from '@mui/material';
+import { Box } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet'; // Import a wallet icon
@@ -38,7 +38,7 @@ export default function WalletConnectButton() {
         onClick={handleConnectWallet}
         sx={{ display: { xs: 'none', md: 'flex' }, ml: 2,  fontWeight: 'bold' }}
         >
-        Connect Wallet
+            Connect Wallet
         </Button>
         <IconButton sx={{ display: { xs: 'flex', md: 'none' }, ml: 1, backgroundColor: theme.palette.primary.main }} onClick={handleConnectWallet}>
         <WalletIcon sx={{ color: '#fff' }} />
