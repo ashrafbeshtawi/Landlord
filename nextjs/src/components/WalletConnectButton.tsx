@@ -1,5 +1,11 @@
 'use client';
 
+declare global {
+    interface Window {
+      ethereum?: undefined;
+    }
+  }
+
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import { Button } from '@mui/material';
