@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useState } from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Menu from '@mui/material/Menu';
@@ -13,314 +13,12 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
-import { ethers } from 'ethers';
+import WalletConnectButton from '../components/WalletConnectButton'; // Import your wallet connect button component
 
-// Import MUI lab components for the timeline
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-
-import HouseIcon from '@mui/icons-material/House';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import CodeIcon from '@mui/icons-material/Code';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import CampaignIcon from '@mui/icons-material/Campaign';
-import ApartmentIcon from '@mui/icons-material/Apartment';
-import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet'; // Import a wallet icon
+import theme from '../theme/theme'; // Import your theme
+import TimelineSection from '../components/TimelineSection'; // Import your timeline section component
 
-
-interface ConnectResult {
-  provider: ethers.BrowserProvider;
-  signer: ethers.JsonRpcSigner;
-  address: string;
-}
-
-const handleConnectWallet = async (): Promise<ConnectResult | null> => {
-  // 1) Prüfen, ob der Code client-seitig läuft und MetaMask verfügbar ist
-  if (typeof window === 'undefined' || !window.ethereum) {
-    console.error('Ethereum-Provider nicht gefunden. Bitte MetaMask installieren.');
-    return null;
-  }
-
-  try {
-    // 2) BrowserProvider aus ethers v6 erstellen
-    const provider = new ethers.BrowserProvider(window.ethereum); 
-
-    // 3) Accounts (Wallet-Adresse) anfragen
-    await provider.send('eth_requestAccounts', []);
-
-    // 4) Signer (der autorisierte Account) holen
-    const signer = await provider.getSigner();
-
-    // 5) Wallet-Adresse ermitteln
-    const address = await signer.getAddress();
-
-    console.log('Wallet verbunden:', address);
-    return { provider, signer, address };
-
-  } catch (error) {
-    console.error('Fehler beim Verbinden der Wallet:', error);
-    return null;
-  }
-};
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1DCD9F',
-    },
-    secondary: {
-      main: '#169976',
-    },
-    background: {
-      default: '#222222',
-      paper: '#000000',
-    },
-    text: {
-      primary: '#FFFFFF',
-      secondary: '#34C6A3',
-    },
-    action: {
-      active: '#1DCD9F',
-      hover: '#169976',
-    },
-  },
-  typography: {
-    h3: {
-      fontWeight: 'bold',
-      color: '#FFFFFF',
-      fontSize: '2.5rem',
-    },
-    body1: {
-      color: '#34C6A3',
-      fontSize: '1.2rem',
-    },
-  },
-});
-
-function CustomizedTimeline() {
-  // Style for the vertical connecting lines
-  const connectorStyle = {
-    minHeight: '50px', // Increased height for more spacing
-    bgcolor: '#00BFA5', // Matching the teal color from your image
-  };
-
-
-
-  // Style for the timeline dots
-  const timelineDotStyle = {
-    bgcolor: '#00BFA5', // Teal background
-    boxShadow: '0 0 30px rgba(0, 191, 165, 0.5)', // Glow effect
-  };
-
-  return (
-    <Box sx={{ 
-      color: theme.palette.primary.main,
-      borderRadius: 3,
-      width: { xs: '90%', md: '60%' },
-    }}>
-
-
-      <Timeline position="right">
-        {/* 2023: Analyzing the real estate market */}
-        <TimelineItem>
-          <TimelineOppositeContent 
-            variant="body1" 
-            color="inherit"
-          >
-            <Typography variant="h6">2023</Typography>
-          </TimelineOppositeContent>
-          
-          <TimelineSeparator>
-            <TimelineDot sx={timelineDotStyle}>
-              <HouseIcon sx={{ color: 'black' }} />
-            </TimelineDot>
-            <TimelineConnector sx={connectorStyle} />
-          </TimelineSeparator>
-
-          <TimelineContent >
-            <Typography variant="h6" component="span">
-              Analyzing the real estate market
-            </Typography>
-          </TimelineContent>
-        </TimelineItem>
-
-        {/* 2024: Finding best location in emerging markets */}
-        <TimelineItem>
-          <TimelineOppositeContent 
-            
-            variant="body1" 
-            color="inherit"
-          >
-            <Typography variant="h6">2024</Typography>
-          </TimelineOppositeContent>
-          
-          <TimelineSeparator>
-            <TimelineDot sx={timelineDotStyle}>
-              <LocationOnIcon sx={{ color: 'black' }} />
-            </TimelineDot>
-            <TimelineConnector sx={connectorStyle} />
-          </TimelineSeparator>
-
-          <TimelineContent >
-            <Typography variant="h6" component="span">
-              Finding best location in emerging markets
-            </Typography>
-          </TimelineContent>
-        </TimelineItem>
-
-        {/* 2025: Building & Testing Blockchain code */}
-        <TimelineItem>
-          <TimelineOppositeContent 
-            
-            variant="body1" 
-            color="inherit"
-          >
-            <Typography variant="h6"> April 2025</Typography>
-          </TimelineOppositeContent>
-          
-          <TimelineSeparator>
-            <TimelineDot sx={timelineDotStyle}>
-              <CodeIcon sx={{ color: 'black' }} />
-            </TimelineDot>
-            <TimelineConnector sx={connectorStyle} />
-          </TimelineSeparator>
-
-          <TimelineContent >
-            <Typography variant="h6" component="span">
-              Building & Testing Blockchain code
-            </Typography>
-          </TimelineContent>
-        </TimelineItem>
-
-        {/* May 2025: Fund Run */}
-        <TimelineItem>
-          <TimelineOppositeContent 
-            
-            variant="body1" 
-            color="inherit"
-          >
-            <Typography variant="h6">May 2025</Typography>
-          </TimelineOppositeContent>
-          
-          <TimelineSeparator>
-            <TimelineDot sx={timelineDotStyle}>
-              <MonetizationOnIcon sx={{ color: 'black' }} />
-            </TimelineDot>
-            <TimelineConnector sx={connectorStyle} />
-          </TimelineSeparator>
-
-          <TimelineContent >
-            <Typography variant="h6" component="span">
-              Fund Run
-            </Typography>
-          </TimelineContent>
-        </TimelineItem>
-
-        {/* June 2025: Coin Listing & Social Media Marketing */}
-        <TimelineItem>
-          <TimelineOppositeContent 
-            
-            variant="body1" 
-            color="inherit"
-          >
-            <Typography variant="h6">Jun 2025</Typography>
-          </TimelineOppositeContent>
-          
-          <TimelineSeparator>
-            <TimelineDot sx={timelineDotStyle}>
-              <CampaignIcon sx={{ color: 'black' }} />
-            </TimelineDot>
-            <TimelineConnector sx={connectorStyle} />
-          </TimelineSeparator>
-
-          <TimelineContent >
-            <Typography variant="h6" component="span">
-              Coin Listing & Social Media Marketing
-            </Typography>
-          </TimelineContent>
-        </TimelineItem>
-
-        {/* July 2025: First property purchase */}
-        <TimelineItem>
-          <TimelineOppositeContent 
-            
-            variant="body1" 
-            color="inherit"
-          >
-            <Typography variant="h6">Jul 2025</Typography>
-          </TimelineOppositeContent>
-          
-          <TimelineSeparator>
-            <TimelineDot sx={timelineDotStyle}>
-              <ApartmentIcon sx={{ color: 'black' }} />
-            </TimelineDot>
-            <TimelineConnector sx={connectorStyle} />
-          </TimelineSeparator>
-
-          <TimelineContent >
-            <Typography variant="h6" component="span">
-              First property purchase
-            </Typography>
-          </TimelineContent>
-        </TimelineItem>
-
-        {/* First rent distribution End of 2025 */}
-        <TimelineItem>
-          <TimelineOppositeContent 
-            
-            variant="body1" 
-            color="inherit"
-          >
-            <Typography variant="h6">Dec 2025</Typography>
-          </TimelineOppositeContent>
-          
-          <TimelineSeparator>
-            <TimelineDot sx={timelineDotStyle}>
-              <ApartmentIcon sx={{ color: 'black' }} />
-            </TimelineDot>
-            <TimelineConnector sx={connectorStyle} />
-
-          </TimelineSeparator>
-
-          <TimelineContent >
-            <Typography variant="h6" component="span">
-              First Rent Distribution on coin holders
-            </Typography>
-          </TimelineContent>
-        </TimelineItem>
-
-        {/* New plans */}
-         <TimelineItem>
-          <TimelineOppositeContent 
-            
-            variant="body1" 
-            color="inherit"
-          >
-            <Typography variant="h6">2026</Typography>
-          </TimelineOppositeContent>
-          
-          <TimelineSeparator>
-            <TimelineDot sx={timelineDotStyle}>
-              <HourglassBottomIcon sx={{ color: 'black' }} />
-            </TimelineDot>
-          </TimelineSeparator>
-
-          <TimelineContent >
-            <Typography variant="h6" component="span">
-              Coming Soon
-            </Typography>
-          </TimelineContent>
-        </TimelineItem>
-      </Timeline>
-    </Box>
-  );
-}
 
 export default function Home() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);;
@@ -367,7 +65,7 @@ export default function Home() {
             </Box>
 
             {/* Center Side (optional) */}
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-start' }}>
               {[
                 { id: 'home', label: 'Home' },
                 { id: 'roadmap', label: 'Road Map' },
@@ -393,11 +91,13 @@ export default function Home() {
 
             {/* Right Side: Connect Wallet + Menu */}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <WalletConnectButton />
+
               {/* Connect Wallet Button */}
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleConnectWallet}
+                //onClick={handleConnectWallet}
                 sx={{
                   display: { xs: 'none', md: 'flex' },
                   backgroundColor: '#169976',
@@ -412,7 +112,7 @@ export default function Home() {
               </Button>
               <IconButton
                 color="primary"
-                onClick={handleConnectWallet}
+                //onClick={handleConnectWallet}
                 sx={{
                   display: { xs: 'flex', md: 'none' },
                   ml: 1,
@@ -593,7 +293,7 @@ export default function Home() {
           <Typography variant="h3" sx={{ mb: 4, marginTop: '100px', }}>
             Road Map
           </Typography>
-          <CustomizedTimeline />
+          <TimelineSection />
         </Box>
 
 
