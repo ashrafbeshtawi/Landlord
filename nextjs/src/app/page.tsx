@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-
 import Box from '@mui/material/Box';
 import theme from '../theme/theme'; // Import your theme
 import TimelineSection from '@/components/TimelineSection';
