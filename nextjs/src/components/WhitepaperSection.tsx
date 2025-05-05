@@ -25,7 +25,7 @@ const WhitepaperSection = () => {
           </Typography>
           <Button
             variant="contained"
-            sx={{ color: theme.palette.text.primary,backgroundColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main } }}
+            sx={{backgroundColor: theme.palette.primary.main, '&:hover': { backgroundColor: theme.palette.secondary.main } }}
             onClick={() => window.open('/whitepaper.pdf', '_blank')}
           >
             <strong>Download Whitepaper</strong>

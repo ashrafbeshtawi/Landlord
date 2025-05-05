@@ -45,7 +45,7 @@ export default function WalletConnectButton() {
             variant="contained"
             color="primary"
             onClick={handleConnectWallet}
-            sx={{ display: { xs: 'none', md: 'flex' }, ml: 2, fontWeight: 'bold', color: theme.palette.text.primary }}
+            sx={{ display: { xs: 'none', md: 'flex' }, ml: 2, fontWeight: 'bold' }}
           >
             Connect Wallet
           </Button>
