@@ -17,7 +17,7 @@ export default function WalletConnectButton() {
 
   const handleConnectWallet = async (): Promise<void> => {
     if (typeof window === 'undefined' || !window.ethereum) {
-      console.error('MetaMask not available');
+      alert('MetaMask not available on your browser. Please install it.');
       return;
     }
     try {
@@ -28,7 +28,8 @@ export default function WalletConnectButton() {
       console.log('Wallet connected:', addr);
       setAddress(addr);
     } catch (err) {
-      console.error('Error connecting wallet:', err);
+        console.error('Error connecting wallet:', err);
+        alert('Error connecting wallet');
     }
   };
 
