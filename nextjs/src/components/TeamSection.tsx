@@ -30,6 +30,7 @@ export default function TeamSection() {
                 bgcolor: theme.palette.background.default + 'B3', 
                 borderRadius: 4,
                 boxShadow: 6,
+                width: 250,
                 transition: 'transform 0.3s, box-shadow 0.3s',
                 '&:hover': {
                   transform: 'translateY(-6px)',
