@@ -9,6 +9,7 @@ import NavigationBar from '@/components/NavigationBar';
 import TokenomiksSection from '@/components/TokenomiksSection';
 import WhitepaperSection from '@/components/WhitepaperSection';
 import HeroSection from '@/components/HeroSection';
+import TeamSection from '@/components/TeamSection';
 
 export default function Home() {
 
@@ -34,10 +35,11 @@ export default function Home() {
         {/* Tokenomiks */}
         <TokenomiksSection />
 
-        {/* Team Section */}
-
         {/* Whitepaper Section */}
-         <WhitepaperSection />
+        <WhitepaperSection />
+        
+        {/* Team Section */}
+        <TeamSection />
       </Box>
     </ThemeProvider>
   );
