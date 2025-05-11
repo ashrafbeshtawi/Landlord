@@ -1,4 +1,4 @@
-'use client'; // needed for interactivity in Next.js 13+ App Router
+'use client';
 
 import { Box, Typography, Button, Divider } from '@mui/material';
 import theme from '../theme/theme';
