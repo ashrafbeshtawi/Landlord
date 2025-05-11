@@ -104,11 +104,12 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
     function getDistribution(uint256 distributionId) external view returns (
         uint256 totalAmount,
         uint256 distributionDate,
+        uint256 distributionBlock,
         uint256 tokensExcludingOwner
     ) {
         require(distributionId < profitDistributions.length, "Distribution does not exist");
         ProfitDistribution storage distribution = profitDistributions[distributionId];
-        return (distribution.totalAmount, distribution.distributionDate, distribution.tokensExcludingOwner);
+        return (distribution.totalAmount, distribution.distributionDate, distribution.tokensExcludingOwner, distribution.distributionBlock);
     }
 
     // Helper function to check if an address has claimed a specific profit distribution.
