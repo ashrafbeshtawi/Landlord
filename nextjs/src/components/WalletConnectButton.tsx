@@ -28,7 +28,7 @@ export default function WalletConnectButton() {
       await provider.send('eth_requestAccounts', []);
       const signer = await provider.getSigner();
       const addr = await signer.getAddress();
-      actionStore.setWalletConnected();
+      actionStore.setWalletConnected(addr);
       console.log('Wallet connected:', addr);
       setAddress(addr);
     } catch (err) {

@@ -11,6 +11,7 @@ import WhitepaperSection from '@/components/WhitepaperSection';
 import HeroSection from '@/components/HeroSection';
 import TeamSection from '@/components/TeamSection';
 import { useActionStore } from '@/store/store';
+import HolderPanel from '@/components/HolderPanel';
 
 export default function Home() {
   const { walletConnected } = useActionStore();
@@ -30,7 +31,7 @@ export default function Home() {
 
         {/* Home Section */}
         <HeroSection />
-        {walletConnected ? <HeroSection /> : ''}
+        {walletConnected ? <HolderPanel /> : ''}
         
 
         {/* Road Map Section */}
