@@ -3,16 +3,17 @@
 import * as React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import theme from '../theme/theme'; // Import your theme
+import theme from '../theme/theme';
 import TimelineSection from '@/components/TimelineSection';
 import NavigationBar from '@/components/NavigationBar';
 import TokenomiksSection from '@/components/TokenomiksSection';
 import WhitepaperSection from '@/components/WhitepaperSection';
 import HeroSection from '@/components/HeroSection';
 import TeamSection from '@/components/TeamSection';
+import { useActionStore } from '@/store/store';
 
 export default function Home() {
-
+  const { walletConnected } = useActionStore();
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -26,8 +27,11 @@ export default function Home() {
         {/* Fixed Navigation AppBar */}
         <NavigationBar />
 
+
         {/* Home Section */}
         <HeroSection />
+        {walletConnected ? <HeroSection /> : ''}
+        
 
         {/* Road Map Section */}
         <TimelineSection />

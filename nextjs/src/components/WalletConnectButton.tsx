@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import { Button, Box, IconButton } from '@mui/material';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import theme from '../theme/theme';
+import { useActionStore } from '@/store/store';
 
 declare global {
   interface Window {
@@ -14,6 +15,8 @@ declare global {
 
 export default function WalletConnectButton() {
   const [address, setAddress] = useState<string | null>(null);
+  const actionStore = useActionStore();
+  
 
   const handleConnectWallet = async (): Promise<void> => {
     if (typeof window === 'undefined' || !window.ethereum) {
@@ -25,6 +28,7 @@ export default function WalletConnectButton() {
       await provider.send('eth_requestAccounts', []);
       const signer = await provider.getSigner();
       const addr = await signer.getAddress();
+      actionStore.setWalletConnected();
       console.log('Wallet connected:', addr);
       setAddress(addr);
     } catch (err) {
@@ -34,6 +38,7 @@ export default function WalletConnectButton() {
   };
 
   const handleLogout = (): void => {
+    actionStore.setWalletDisconnected();
     console.log('Wallet disconnected');
     setAddress(null);
   };
