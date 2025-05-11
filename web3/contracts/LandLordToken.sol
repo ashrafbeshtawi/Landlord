@@ -18,6 +18,7 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
     struct ProfitDistribution {
         uint256 totalAmount;
         uint256 distributionDate;
+        uint256 distributionBlock;
         uint256 tokensExcludingOwner;  // total supply - owner balance at distribution time
         mapping(address => bool) claimed;
     }
@@ -51,6 +52,7 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
         ProfitDistribution storage newDistribution = profitDistributions.push();
         newDistribution.totalAmount = profitAmount;
         newDistribution.distributionDate = block.timestamp;
+        newDistribution.distributionBlock = block.number;
         
         // Calculate tokens excluding owner at this point
         uint256 ownerBalance = balanceOf(owner());
