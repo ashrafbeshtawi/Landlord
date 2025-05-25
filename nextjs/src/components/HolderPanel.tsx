@@ -51,22 +51,25 @@ const HolderPanel = () => {
         ⚙️ Holder Dashboard
       </Typography>
 
-      <Typography variant="body1" sx={{ mb: 1 }}>
-        🔐 Connected Wallet: <strong>{walletAdresse}</strong>
-      </Typography>
+      <Box sx={{ alignSelf: 'flex-start' }}>
+        <Typography variant="body1" sx={{ mb: 1 }}>
+          🔐 Connected Wallet: <strong>{walletAdresse}</strong>
+        </Typography>
 
-      <Typography variant="body1" sx={{ mb: 1 }}>
-        💰 Your LND Balance:{' '}
-        <strong>
-          {loading ? '⏳ loading...' : error ? `❌ ${error}` : `${balance} LND`}
-        </strong>
-      </Typography>
+        <Typography variant="body1" sx={{ mb: 1 }}>
+          💰 Your LND Balance:{' '}
+          <strong>
+            {loading ? '⏳ loading...' : error ? `❌ ${error}` : `${balance} LND`}
+          </strong>
+        </Typography>
+      </Box>
 
       <Divider sx={{ width: '100%', my: 2 }} />
 
       <Button variant="outlined" color="secondary">
         View Distribution History
       </Button>
+
     </Box>
   );
 };
