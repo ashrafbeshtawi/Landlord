@@ -33,9 +33,9 @@ describe("LandLordToken", function () {
       expect(await landlordToken.totalSupply()).to.equal(INITIAL_SUPPLY);
       const ownerBalance = await landlordToken.balanceOf(owner.address);
       // Owner balance should be initial supply minus transfers to users
-      const expectedOwnerBalance = INITIAL_SUPPLY - 
-        ethers.parseUnits("1000", 18) - 
-        ethers.parseUnits("2000", 18) - 
+      const expectedOwnerBalance = INITIAL_SUPPLY -
+        ethers.parseUnits("1000", 18) -
+        ethers.parseUnits("2000", 18) -
         ethers.parseUnits("3000", 18);
       expect(ownerBalance).to.equal(expectedOwnerBalance);
     });
@@ -43,7 +43,7 @@ describe("LandLordToken", function () {
     it("should allow users to transfer tokens", async function () {
       const transferAmount = ethers.parseUnits("100", 18);
       await landlordToken.connect(user).transfer(user2.address, transferAmount);
-      
+
       expect(await landlordToken.balanceOf(user.address)).to.equal(ethers.parseUnits("900", 18));
       expect(await landlordToken.balanceOf(user2.address)).to.equal(ethers.parseUnits("2100", 18));
     });
@@ -52,9 +52,9 @@ describe("LandLordToken", function () {
       const burnAmount = ethers.parseUnits("100", 18);
       const initialBalance = await landlordToken.balanceOf(user.address);
       const initialSupply = await landlordToken.totalSupply();
-      
+
       await landlordToken.connect(user).burn(burnAmount);
-      
+
       expect(await landlordToken.balanceOf(user.address)).to.equal(initialBalance - burnAmount);
       expect(await landlordToken.totalSupply()).to.equal(initialSupply - burnAmount);
     });
@@ -121,7 +121,7 @@ describe("LandLordToken", function () {
         .connect(user)
         .claimProfit(distributionId, balanceAtDistribution, signature);
       await claimTx.wait();
-      
+
       // Check that user's balance increased by the profit amount
       const finalUserBalance = await landlordToken.balanceOf(user.address);
       expect(finalUserBalance).to.equal(userBalanceBefore + expectedProfit);
@@ -182,10 +182,10 @@ describe("LandLordToken", function () {
       const profitAmount = ethers.parseUnits("1000", 18);
       await landlordToken.connect(owner).distributeProfit(profitAmount);
       const distributionId = 0;
-    
+
       // Get distribution details
       const [totalAmount, , tokensExcludingOwner] = await landlordToken.getDistribution(distributionId);
-    
+
       // Claim for user
       const userBalanceAtDistribution = await landlordToken.balanceOf(user.address);
       const userMessageHash = ethers.solidityPackedKeccak256(
@@ -194,7 +194,7 @@ describe("LandLordToken", function () {
       );
       const userMessageHashBytes = ethers.getBytes(userMessageHash);
       const userSignature = await backend.signMessage(userMessageHashBytes);
-    
+
       // Claim for user2
       const user2BalanceAtDistribution = await landlordToken.balanceOf(user2.address);
       const user2MessageHash = ethers.solidityPackedKeccak256(
@@ -203,22 +203,22 @@ describe("LandLordToken", function () {
       );
       const user2MessageHashBytes = ethers.getBytes(user2MessageHash);
       const user2Signature = await backend.signMessage(user2MessageHashBytes);
-    
+
       // Calculate expected profits using the exact same division as the contract
       const expectedUserProfit = (totalAmount * userBalanceAtDistribution) / tokensExcludingOwner;
       const expectedUser2Profit = (totalAmount * user2BalanceAtDistribution) / tokensExcludingOwner;
-    
+
       // Both users should be able to claim
       const userBalanceBefore = await landlordToken.balanceOf(user.address);
       await landlordToken.connect(user).claimProfit(distributionId, userBalanceAtDistribution, userSignature);
-      
+
       const user2BalanceBefore = await landlordToken.balanceOf(user2.address);
       await landlordToken.connect(user2).claimProfit(distributionId, user2BalanceAtDistribution, user2Signature);
-    
+
       // Verify balances increased correctly
       const finalUserBalance = await landlordToken.balanceOf(user.address);
       const finalUser2Balance = await landlordToken.balanceOf(user2.address);
-    
+
       expect(finalUserBalance).to.equal(userBalanceBefore + expectedUserProfit);
       expect(finalUser2Balance).to.equal(user2BalanceBefore + expectedUser2Profit);
     });
@@ -249,7 +249,7 @@ describe("LandLordToken", function () {
     it("should not allow claiming from non-existent distribution", async function () {
       const nonExistentDistributionId = 999;
       const userBalanceAtDistribution = await landlordToken.balanceOf(user.address);
-      
+
       // Prepare message hash
       const messageHash = ethers.solidityPackedKeccak256(
         ["address", "uint256", "uint256"],
@@ -257,78 +257,78 @@ describe("LandLordToken", function () {
       );
       const messageHashBytes = ethers.getBytes(messageHash);
       const signature = await backend.signMessage(messageHashBytes);
-      
+
       // Attempt to claim from non-existent distribution should revert
       await expect(
         landlordToken.connect(user).claimProfit(nonExistentDistributionId, userBalanceAtDistribution, signature)
       ).to.be.revertedWith("Distribution does not exist");
     });
-    
+
     it("should allow multiple profit distributions over time", async function () {
       // First distribution
       const profitAmount1 = ethers.parseUnits("500", 18);
       await landlordToken.connect(owner).distributeProfit(profitAmount1);
-      
+
       // Second distribution after some time
       await time.increase(86400); // 1 day later
       const profitAmount2 = ethers.parseUnits("1000", 18);
       await landlordToken.connect(owner).distributeProfit(profitAmount2);
-      
+
       // Get distribution details for exact calculations
       const [totalAmount1, , tokensExcludingOwner1] = await landlordToken.getDistribution(0);
       const [totalAmount2, , tokensExcludingOwner2] = await landlordToken.getDistribution(1);
-      
+
       // User claims from first distribution
       const distributionId1 = 0;
       const userBalanceAtDistribution1 = ethers.parseUnits("1000", 18); // Initial balance
-      
+
       const messageHash1 = ethers.solidityPackedKeccak256(
         ["address", "uint256", "uint256"],
         [user.address, distributionId1, userBalanceAtDistribution1]
       );
       const messageHashBytes1 = ethers.getBytes(messageHash1);
       const signature1 = await backend.signMessage(messageHashBytes1);
-      
+
       const userBalanceBefore1 = await landlordToken.balanceOf(user.address);
       await landlordToken.connect(user).claimProfit(distributionId1, userBalanceAtDistribution1, signature1);
       const userBalanceAfter1 = await landlordToken.balanceOf(user.address);
-      
+
       const expectedProfit1 = (totalAmount1 * userBalanceAtDistribution1) / tokensExcludingOwner1;
       expect(userBalanceAfter1).to.equal(userBalanceBefore1 + expectedProfit1);
-      
+
       // User claims from second distribution
       const distributionId2 = 1;
       // For the second distribution, use the balance at the time of that distribution
       const userBalanceAtDistribution2 = await landlordToken.balanceOf(user.address);
-      
+
       const messageHash2 = ethers.solidityPackedKeccak256(
         ["address", "uint256", "uint256"],
         [user.address, distributionId2, userBalanceAtDistribution2]
       );
       const messageHashBytes2 = ethers.getBytes(messageHash2);
       const signature2 = await backend.signMessage(messageHashBytes2);
-      
+
       const userBalanceBefore2 = await landlordToken.balanceOf(user.address);
       await landlordToken.connect(user).claimProfit(distributionId2, userBalanceAtDistribution2, signature2);
       const userBalanceAfter2 = await landlordToken.balanceOf(user.address);
-      
+
       const expectedProfit2 = (totalAmount2 * userBalanceAtDistribution2) / tokensExcludingOwner2;
       expect(userBalanceAfter2).to.equal(userBalanceBefore2 + expectedProfit2);
-      
+
       // Verify distributions were recorded correctly
       expect(totalAmount1).to.equal(profitAmount1);
       expect(totalAmount2).to.equal(profitAmount2);
     });
-    
+
     it("should correctly check if a user has claimed", async function () {
       // Distribute profit
       const profitAmount = ethers.parseUnits("500", 18);
       await landlordToken.connect(owner).distributeProfit(profitAmount);
       const distributionId = 0;
-      
+
       // Initially user should not have claimed
       expect(await landlordToken.hasClaimed(distributionId, user.address)).to.be.false;
-      
+
       // User claims profit
       const userBalanceAtDistribution = await landlordToken.balanceOf(user.address);
       const messageHash = ethers.solidityPackedKeccak256(
@@ -337,12 +337,12 @@ describe("LandLordToken", function () {
       );
       const messageHashBytes = ethers.getBytes(messageHash);
       const signature = await backend.signMessage(messageHashBytes);
-      
+
       await landlordToken.connect(user).claimProfit(distributionId, userBalanceAtDistribution, signature);
-      
+
       // After claiming, hasClaimed should return true
       expect(await landlordToken.hasClaimed(distributionId, user.address)).to.be.true;
-      
+
       // Should still be false for a different user
       expect(await landlordToken.hasClaimed(distributionId, user2.address)).to.be.false;
     });
@@ -352,25 +352,25 @@ describe("LandLordToken", function () {
     it("should allow owner to generate new tokens within limits", async function () {
       const initialSupply = await landlordToken.totalSupply();
       const maxMintAmount = initialSupply / BigInt(10); // 10% of total supply
-      
+
       await landlordToken.connect(owner).generateTokensForRealEstatePurchase(maxMintAmount);
-      
+
       const newSupply = await landlordToken.totalSupply();
       expect(newSupply).to.equal(initialSupply + maxMintAmount);
     });
-    
+
     it("should not allow generating tokens beyond 10% of supply", async function () {
       const initialSupply = await landlordToken.totalSupply();
       const excessiveAmount = (initialSupply / BigInt(10)) + BigInt(1); // 10% + 1
-      
+
       await expect(
         landlordToken.connect(owner).generateTokensForRealEstatePurchase(excessiveAmount)
       ).to.be.revertedWith("Minting amount exceeds 10% of total supply");
     });
-    
+
     it("should not allow non-owners to generate new tokens", async function () {
       const mintAmount = ethers.parseUnits("1000", 18);
-      
+
       await expect(
         landlordToken.connect(user).generateTokensForRealEstatePurchase(mintAmount)
       ).to.be.reverted; // With AccessControl error
@@ -383,36 +383,36 @@ describe("LandLordToken", function () {
         landlordToken.connect(owner).distributeProfit(0)
       ).to.be.revertedWith("Number of Tokens must be bigger than 0");
     });
-    
+
     it("should not distribute if there are no eligible holders", async function () {
       // Create a new token where owner holds 100% of supply
       const newToken = await LandLordToken.deploy();
       await newToken.waitForDeployment();
-      
+
       // Try to distribute profit
       const profitAmount = ethers.parseUnits("500", 18);
       await expect(
         newToken.connect(owner).distributeProfit(profitAmount)
       ).to.be.revertedWith("No eligible holders for distribution");
     });
-    
+
     it("should handle correct profit distribution when supply changes", async function () {
       // Distribute initial profit
       const profitAmount = ethers.parseUnits("1000", 18);
       await landlordToken.connect(owner).distributeProfit(profitAmount);
       const distributionId = 0;
-      
+
       // Get distribution details for exact calculation
       const [totalAmount, , tokensExcludingOwner] = await landlordToken.getDistribution(distributionId);
-      
+
       // Burn some tokens to change total supply
       const burnAmount = ethers.parseUnits("500", 18);
       await landlordToken.connect(user).burn(burnAmount);
-      
+
       // Generate new tokens for owner
       const mintAmount = ethers.parseUnits("50", 18);
       await landlordToken.connect(owner).generateTokensForRealEstatePurchase(mintAmount);
-      
+
       // Check that user can still claim their correct profit
       const userBalanceAtDistribution = ethers.parseUnits("1000", 18); // Original balance
       const messageHash = ethers.solidityPackedKeccak256(
@@ -421,32 +421,32 @@ describe("LandLordToken", function () {
       );
       const messageHashBytes = ethers.getBytes(messageHash);
       const signature = await backend.signMessage(messageHashBytes);
-      
+
       const userBalanceBefore = await landlordToken.balanceOf(user.address);
       await landlordToken.connect(user).claimProfit(distributionId, userBalanceAtDistribution, signature);
       const userBalanceAfter = await landlordToken.balanceOf(user.address);
-      
+
       // Calculate expected profit using the exact contract's division
       const expectedProfit = (totalAmount * userBalanceAtDistribution) / tokensExcludingOwner;
       expect(userBalanceAfter).to.equal(userBalanceBefore + expectedProfit);
-      
+
       // Check that distribution details match expected
       expect(totalAmount).to.equal(profitAmount);
-      
+
       // Total supply - owner balance at distribution time should be tokensExcludingOwner
       const initialTransfers = ethers.parseUnits("6000", 18); // 1000 + 2000 + 3000
       expect(tokensExcludingOwner).to.equal(initialTransfers);
     });
-    
+
     it("should accept claims with incorrect balance if signed from Backend", async function () {
       // Distribute profit
       const profitAmount = ethers.parseUnits("500", 18);
       await landlordToken.connect(owner).distributeProfit(profitAmount);
       const distributionId = 0;
-      
+
       // Get distribution details for exact calculation
       const [totalAmount, , tokensExcludingOwner] = await landlordToken.getDistribution(distributionId);
-      
+
       // Actual balance is 1000, but prepare signature for fake balance of 2000
       const fakeBalance = ethers.parseUnits("2000", 18);
       const messageHash = ethers.solidityPackedKeccak256(
@@ -455,19 +455,127 @@ describe("LandLordToken", function () {
       );
       const messageHashBytes = ethers.getBytes(messageHash);
       const signature = await backend.signMessage(messageHashBytes);
-      
+
       // Get user balance before claiming
       const userBalanceBefore = await landlordToken.balanceOf(user.address);
-      
+
       // Try to claim with the fake balance (should work since backend signed it)
       await landlordToken.connect(user).claimProfit(distributionId, fakeBalance, signature);
-      
+
       // Calculate expected profit exactly as the contract does
       const expectedProfit = (totalAmount * fakeBalance) / tokensExcludingOwner;
-      
+
       // Verify user received the profit based on the fake balance
       const finalUserBalance = await landlordToken.balanceOf(user.address);
       expect(finalUserBalance).to.equal(userBalanceBefore + expectedProfit);
+    });
+  });
+
+  describe("getUnclaimedDistributions", function () {
+    it("should return an empty array if no distributions exist", async function () {
+      const unclaimed = await landlordToken.getUnclaimedDistributions(user.address);
+      expect(unclaimed).to.deep.equal([]);
+    });
+
+    it("should return an empty array if user has claimed all distributions", async function () {
+      // Distribute profit
+      const profitAmount1 = ethers.parseUnits("100", 18);
+      await landlordToken.connect(owner).distributeProfit(profitAmount1); // id 0
+      const profitAmount2 = ethers.parseUnits("200", 18);
+      await landlordToken.connect(owner).distributeProfit(profitAmount2); // id 1
+
+      // Claim both distributions for user
+      for (let i = 0; i < 2; i++) {
+        const balanceAtDistribution = await landlordToken.balanceOf(user.address);
+        const messageHash = ethers.solidityPackedKeccak256(
+          ["address", "uint256", "uint256"],
+          [user.address, i, balanceAtDistribution]
+        );
+        const messageHashBytes = ethers.getBytes(messageHash);
+        const signature = await backend.signMessage(messageHashBytes);
+        await landlordToken.connect(user).claimProfit(i, balanceAtDistribution, signature);
+      }
+
+      const unclaimed = await landlordToken.getUnclaimedDistributions(user.address);
+      expect(unclaimed).to.deep.equal([]);
+    });
+
+    it("should return correct unclaimed distributions when some are claimed", async function () {
+      // Distribute multiple profits
+      const profitAmount1 = ethers.parseUnits("100", 18);
+      await landlordToken.connect(owner).distributeProfit(profitAmount1); // id 0
+      const profitAmount2 = ethers.parseUnits("200", 18);
+      await landlordToken.connect(owner).distributeProfit(profitAmount2); // id 1
+      const profitAmount3 = ethers.parseUnits("300", 18);
+      await landlordToken.connect(owner).distributeProfit(profitAmount3); // id 2
+
+      // Claim distribution 0 and 2 for user
+      const distributionsToClaim = [0, 2];
+      for (const id of distributionsToClaim) {
+        const balanceAtDistribution = await landlordToken.balanceOf(user.address);
+        const messageHash = ethers.solidityPackedKeccak256(
+          ["address", "uint256", "uint256"],
+          [user.address, id, balanceAtDistribution]
+        );
+        const messageHashBytes = ethers.getBytes(messageHash);
+        const signature = await backend.signMessage(messageHashBytes);
+        await landlordToken.connect(user).claimProfit(id, balanceAtDistribution, signature);
+      }
+
+      const unclaimed = await landlordToken.getUnclaimedDistributions(user.address);
+      expect(unclaimed).to.deep.equal([1n]); // Only distribution 1 should be unclaimed
+    });
+
+    it("should return all distributions if none have been claimed by the user", async function () {
+      // Distribute multiple profits
+      const profitAmount1 = ethers.parseUnits("100", 18);
+      await landlordToken.connect(owner).distributeProfit(profitAmount1); // id 0
+      const profitAmount2 = ethers.parseUnits("200", 18);
+      await landlordToken.connect(owner).distributeProfit(profitAmount2); // id 1
+      const profitAmount3 = ethers.parseUnits("300", 18);
+      await landlordToken.connect(owner).distributeProfit(profitAmount3); // id 2
+
+      const unclaimed = await landlordToken.getUnclaimedDistributions(user.address);
+      expect(unclaimed).to.deep.equal([0n, 1n, 2n]); // All distributions should be unclaimed
+    });
+
+    it("should return different unclaimed distributions for different users", async function () {
+      // Distribute multiple profits
+      await landlordToken.connect(owner).distributeProfit(ethers.parseUnits("100", 18)); // id 0
+      await landlordToken.connect(owner).distributeProfit(ethers.parseUnits("200", 18)); // id 1
+      await landlordToken.connect(owner).distributeProfit(ethers.parseUnits("300", 18)); // id 2
+
+      // User claims distribution 0
+      const userBalanceAtDistribution0 = await landlordToken.balanceOf(user.address);
+      const userMessageHash0 = ethers.solidityPackedKeccak256(
+        ["address", "uint256", "uint256"],
+        [user.address, 0, userBalanceAtDistribution0]
+      );
+      const userMessageHashBytes0 = ethers.getBytes(userMessageHash0);
+      const userSignature0 = await backend.signMessage(userMessageHashBytes0);
+      await landlordToken.connect(user).claimProfit(0, userBalanceAtDistribution0, userSignature0);
+
+      // User2 claims distribution 1
+      const user2BalanceAtDistribution1 = await landlordToken.balanceOf(user2.address);
+      const user2MessageHash1 = ethers.solidityPackedKeccak256(
+        ["address", "uint256", "uint256"],
+        [user2.address, 1, user2BalanceAtDistribution1]
+      );
+      const user2MessageHashBytes1 = ethers.getBytes(user2MessageHash1);
+      const user2Signature1 = await backend.signMessage(user2MessageHashBytes1);
+      await landlordToken.connect(user2).claimProfit(1, user2BalanceAtDistribution1, user2Signature1);
+
+      // Check unclaimed for user
+      const userUnclaimed = await landlordToken.getUnclaimedDistributions(user.address);
+      expect(userUnclaimed).to.deep.equal([1n, 2n]);
+
+      // Check unclaimed for user2
+      const user2Unclaimed = await landlordToken.getUnclaimedDistributions(user2.address);
+      expect(user2Unclaimed).to.deep.equal([0n, 2n]);
+
+      // Check unclaimed for user3 (claimed none)
+      const user3Unclaimed = await landlordToken.getUnclaimedDistributions(user3.address);
+      expect(user3Unclaimed).to.deep.equal([0n, 1n, 2n]);
     });
   });
 });
