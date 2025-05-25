@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-
 contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
     // Set decimals to 18 for BNB/BSC compatibility
     uint8 private constant _decimals = 18;
@@ -109,7 +108,12 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
     ) {
         require(distributionId < profitDistributions.length, "Distribution does not exist");
         ProfitDistribution storage distribution = profitDistributions[distributionId];
-        return (distribution.totalAmount, distribution.distributionDate, distribution.tokensExcludingOwner, distribution.distributionBlock);
+        return (
+            distribution.totalAmount,
+            distribution.distributionDate,
+            distribution.tokensExcludingOwner,
+            distribution.distributionBlock
+        );
     }
 
     // Helper function to check if an address has claimed a specific profit distribution.
@@ -119,6 +123,36 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
         return distribution.claimed[user];
     }
 
+    /**
+     * @notice Returns an array of distribution IDs that the given user has not yet claimed.
+     * @param user The address to check unclaimed distributions for.
+     * @return unclaimedIds Array of distribution IDs not claimed by the user.
+    */
+    function getUnclaimedDistributions(address user) external view returns (uint256[] memory) {
+        uint256 total = profitDistributions.length;
+        uint256 count = 0;
+
+        // First pass: count unclaimed
+        for (uint256 i = 0; i < total; i++) {
+            if (!profitDistributions[i].claimed[user]) {
+                count++;
+            }
+        }
+
+        // Allocate array of correct size
+        uint256[] memory unclaimedIds = new uint256[](count);
+        uint256 index = 0;
+
+        // Second pass: populate array
+        for (uint256 i = 0; i < total; i++) {
+            if (!profitDistributions[i].claimed[user]) {
+                unclaimedIds[index] = i;
+                index++;
+            }
+        }
+
+        return unclaimedIds;
+    }
 
     function burn(uint256 amount) public {
         _burn(msg.sender, amount);

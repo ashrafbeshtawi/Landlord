@@ -438,7 +438,7 @@ describe("LandLordToken", function () {
       expect(tokensExcludingOwner).to.equal(initialTransfers);
     });
     
-    it("should reject claim with incorrect balance proof", async function () {
+    it("should accept claims with incorrect balance if signed from Backend", async function () {
       // Distribute profit
       const profitAmount = ethers.parseUnits("500", 18);
       await landlordToken.connect(owner).distributeProfit(profitAmount);
