@@ -8,6 +8,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
+      - '8545:8545'  # For Ethereum JSON-RPC
     volumes:
       - ./nextjs:/app
       - /app/node_modules  # prevent host's node_modules from interfering
