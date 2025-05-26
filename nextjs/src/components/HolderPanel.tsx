@@ -4,7 +4,7 @@ import { Box, Typography, Button, Divider, Paper, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import theme from '../theme/theme';
 import { useActionStore } from '@/store/store';
-import { ethers } from 'ethers'; // Make sure ethers is imported
+import { ethers } from 'ethers';
 
 // Define an interface for the distribution data received from your API
 interface DistributionInfo {
@@ -43,12 +43,8 @@ const HolderPanel = () => {
         }
         const data = await res.json();
         
-        // --- CHANGE HERE: Parse the balance using ethers.formatUnits ---
-        if (data.balance) {
-          setBalance(ethers.formatUnits(data.balance, 18)); // Assuming 18 decimals for LND token
-        } else {
-          setBalance('0'); // Default to 0 if balance is null/undefined
-        }
+        // Keep balance as the raw string from the API
+        setBalance(data.balance); 
         
         setAvailableDistributions(data.availableDistributions || []);
 
@@ -76,7 +72,7 @@ const HolderPanel = () => {
         p: 4,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        alignItems: 'center', // This centers direct children horizontally
         borderRadius: 4,
         boxShadow: 3,
         width: { xs: '90%', md: '80%' },
@@ -96,14 +92,23 @@ const HolderPanel = () => {
         <Typography variant="body1" sx={{ mb: 1 }}>
           💰 Your LND Balance:{' '}
           <strong>
-            {loading ? '⏳ loading...' : error ? `❌ ${error}` : `${balance || '0'} LND`}
+            {loading ? '⏳ loading...' : error ? `❌ ${error}` : `${balance ? ethers.formatUnits(balance, 18) : '0'} LND`}
           </strong>
         </Typography>
       </Box>
 
       <Divider sx={{ width: '100%', my: 2 }} />
 
-      <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', color: theme.palette.secondary.main }}>
+      <Typography
+        variant="h5"
+        sx={{
+          mb: 2,
+          fontWeight: 'bold',
+          color: theme.palette.secondary.main,
+          textAlign: 'center', // ADDED: Centers the text of this Typography component
+          width: '100%' // Ensure it takes full width to center effectively
+        }}
+      >
         🎁 Available Distributions
       </Typography>
 
@@ -114,9 +119,14 @@ const HolderPanel = () => {
       ) : availableDistributions.length === 0 ? (
         <Typography>No unclaimed distributions available for you.</Typography>
       ) : (
-        <Grid container spacing={2} sx={{ width: '100%' }}>
+        <Grid
+          container
+          spacing={2}
+          justifyContent="center" // ADDED: Centers items within the grid
+          sx={{ width: '100%' }}
+        >
           {availableDistributions.map((dist) => (
-            <Grid key={dist.id}>
+            <Grid item xs={12} sm={6} md={4} key={dist.id}>
               <Paper sx={{ p: 2, bgcolor: theme.palette.background.paper, boxShadow: 1, height: '100%' }}>
                 <Typography variant="h6" sx={{ mb: 1, color: theme.palette.primary.light, fontSize: '1rem' }}>
                   Distribution ID: {dist.id}
