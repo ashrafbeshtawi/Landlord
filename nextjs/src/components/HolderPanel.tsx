@@ -1,26 +1,57 @@
 'use client';
 
-import { Box, Typography, Button, Divider } from '@mui/material';
+import { Box, Typography, Button, Divider, Paper, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import theme from '../theme/theme';
 import { useActionStore } from '@/store/store';
+import { ethers } from 'ethers'; // Make sure ethers is imported
+
+// Define an interface for the distribution data received from your API
+interface DistributionInfo {
+  id: string; // The distribution ID (index)
+  totalAmount: string; // Total profit distributed
+  distributionDate: string; // ISO string date
+  distributionBlock: string; // Block number of distribution
+  tokensExcludingOwner: string; // Total supply minus owner ownerBalance at distribution time
+  userBalanceAtDistributionBlock: string; // User's balance at the distribution block
+  userShare: string; // Calculated share for the user
+}
 
 const HolderPanel = () => {
   const walletAdresse = useActionStore((state) => state.walletAdresse);
+
   const [balance, setBalance] = useState<string | null>(null);
+  const [availableDistributions, setAvailableDistributions] = useState<DistributionInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchBalance = async () => {
-      if (!walletAdresse) return;
+    const fetchPanelData = async () => {
+      if (!walletAdresse) {
+        setBalance(null);
+        setAvailableDistributions([]);
+        return;
+      }
 
       setLoading(true);
+      setError(null);
       try {
         const res = await fetch(`/api/balance?userAddress=${walletAdresse}`);
-        if (!res.ok) throw new Error('Fehler beim Abrufen des Guthabens');
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.details || 'Failed to fetch panel data');
+        }
         const data = await res.json();
-        setBalance(data.balance);
+        
+        // --- CHANGE HERE: Parse the balance using ethers.formatUnits ---
+        if (data.balance) {
+          setBalance(ethers.formatUnits(data.balance, 18)); // Assuming 18 decimals for LND token
+        } else {
+          setBalance('0'); // Default to 0 if balance is null/undefined
+        }
+        
+        setAvailableDistributions(data.availableDistributions || []);
+
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -28,8 +59,14 @@ const HolderPanel = () => {
       }
     };
 
-    fetchBalance();
+    fetchPanelData();
   }, [walletAdresse]);
+
+  const handleCollectProfit = async (distribution: DistributionInfo) => {
+    console.log(`Dummy Collect Profit for Distribution ID: ${distribution.id}`);
+    console.log(`Amount: ${ethers.formatUnits(distribution.userShare, 18)} LND`);
+    alert(`Dummy: You would collect ${ethers.formatUnits(distribution.userShare, 18)} LND for Distribution ID ${distribution.id}`);
+  };
 
   return (
     <Box
@@ -42,7 +79,7 @@ const HolderPanel = () => {
         alignItems: 'center',
         borderRadius: 4,
         boxShadow: 3,
-        width: { xs: '90%', md: '50%' },
+        width: { xs: '90%', md: '80%' },
         mx: 'auto',
         bgcolor: theme.palette.background.default + 'B3',
       }}
@@ -51,25 +88,66 @@ const HolderPanel = () => {
         ⚙️ Holder Dashboard
       </Typography>
 
-      <Box sx={{ alignSelf: 'flex-start' }}>
+      <Box sx={{ alignSelf: 'flex-start', width: '100%' }}>
         <Typography variant="body1" sx={{ mb: 1 }}>
-          🔐 Connected Wallet: <strong>{walletAdresse}</strong>
+          🔐 Connected Wallet: <strong>{walletAdresse || 'Not Connected'}</strong>
         </Typography>
 
         <Typography variant="body1" sx={{ mb: 1 }}>
           💰 Your LND Balance:{' '}
           <strong>
-            {loading ? '⏳ loading...' : error ? `❌ ${error}` : `${balance} LND`}
+            {loading ? '⏳ loading...' : error ? `❌ ${error}` : `${balance || '0'} LND`}
           </strong>
         </Typography>
       </Box>
 
       <Divider sx={{ width: '100%', my: 2 }} />
 
-      <Button variant="outlined" color="secondary">
-        View Distribution History
-      </Button>
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', color: theme.palette.secondary.main }}>
+        🎁 Available Distributions
+      </Typography>
 
+      {loading ? (
+        <Typography>⏳ Loading distributions...</Typography>
+      ) : error ? (
+        <Typography color="error">❌ Error: {error}</Typography>
+      ) : availableDistributions.length === 0 ? (
+        <Typography>No unclaimed distributions available for you.</Typography>
+      ) : (
+        <Grid container spacing={2} sx={{ width: '100%' }}>
+          {availableDistributions.map((dist) => (
+            <Grid key={dist.id}>
+              <Paper sx={{ p: 2, bgcolor: theme.palette.background.paper, boxShadow: 1, height: '100%' }}>
+                <Typography variant="h6" sx={{ mb: 1, color: theme.palette.primary.light, fontSize: '1rem' }}>
+                  Distribution ID: {dist.id}
+                </Typography>
+                <Typography variant="body2">
+                  Total Distributed: <strong>{ethers.formatUnits(dist.totalAmount, 18)} LND</strong>
+                </Typography>
+                <Typography variant="body2">
+                  Distribution Date: <strong>{new Date(dist.distributionDate).toLocaleDateString()}</strong> (Block: {dist.distributionBlock})
+                </Typography>
+                <Typography variant="body2">
+                  Your Balance at Dist. Time: <strong>{ethers.formatUnits(dist.userBalanceAtDistributionBlock, 18)} LND</strong>
+                </Typography>
+                <Typography variant="body1" sx={{ mt: 1, fontWeight: 'bold', color: theme.palette.success.main, fontSize: '1.1rem' }}>
+                  Your Estimated Share: <strong>{ethers.formatUnits(dist.userShare, 18)} LND</strong>
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: 2 }}
+                  onClick={() => handleCollectProfit(dist)}
+                  disabled={!walletAdresse}
+                  fullWidth
+                >
+                  Collect Profit (Dummy)
+                </Button>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Box>
   );
 };
