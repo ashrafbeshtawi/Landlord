@@ -141,6 +141,11 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
      * @return unclaimedDistributionsArray Array of ProfitDistributionView objects not claimed by the user.
     */
     function getUnclaimedDistributions(address user) external view returns (ProfitDistributionView[] memory unclaimedDistributionsArray) {
+        // --- ADDED: Return empty array if the caller is the contract owner ---
+        if (user == owner()) {
+            return new ProfitDistributionView[](0);
+        }
+
         uint256 total = profitDistributions.length;
         uint256 count = 0;
 

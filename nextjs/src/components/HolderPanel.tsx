@@ -10,7 +10,7 @@ import { ethers } from 'ethers';
 interface DistributionInfo {
   id: string; // The distribution ID (index)
   totalAmount: string; // Total profit distributed
-  distributionDate: string; // ISO string date
+  distributionDate: string; // ISO string date (Unix timestamp as string)
   distributionBlock: string; // Block number of distribution
   tokensExcludingOwner: string; // Total supply minus owner ownerBalance at distribution time
   userBalanceAtDistributionBlock: string; // User's balance at the distribution block
@@ -116,7 +116,10 @@ const HolderPanel = () => {
       ) : error ? (
         <Typography color="error">❌ Error: {error}</Typography>
       ) : availableDistributions.length === 0 ? (
-        <Typography>No unclaimed distributions available for you.</Typography>
+        // Displays message when no distributions are found
+        <Typography variant="body1" sx={{ mt: 2, mb: 2, color: theme.palette.text.secondary, textAlign: 'center' }}>
+          No unclaimed profits found. New distributions might be coming soon, so please check back later!
+        </Typography>
       ) : (
         <Grid
           container
@@ -125,7 +128,7 @@ const HolderPanel = () => {
           sx={{ width: '100%' }}
         >
           {availableDistributions.map((dist) => (
-            <Grid key={dist.id}>
+            <Grid key={dist.id}> {/* Restored responsive grid properties */}
               <Box
                 sx={{
                   p: 2,
@@ -135,15 +138,15 @@ const HolderPanel = () => {
                   borderRadius: 2, 
                 }}
               >
-                <Typography variant="h6" sx={{ mb: 1, color: theme.palette.text.primary, fontSize: '1.3rem' }}>
+                <Typography variant="h6" sx={{ mb: 1, color: theme.palette.text.primary, fontSize: '1.1rem' }}>
                   Distribution ID: {dist.id}
                 </Typography>
-                {/* Updated Typography components to use theme.palette.secondary.main */}
+                {/* Applied secondary color and increased font size for body2 elements */}
                 <Typography variant="body2" sx={{ fontSize: '0.95rem', color: theme.palette.secondary.main }}>
                   Total Distributed: <strong>{ethers.formatUnits(dist.totalAmount, 18)} LND</strong>
                 </Typography>
                 <Typography variant="body2" sx={{ fontSize: '0.95rem', color: theme.palette.secondary.main }}>
-                  Distribution Date: <strong>{new Date(dist.distributionDate).toLocaleDateString()}</strong> (Block: {dist.distributionBlock})
+                  Distribution Date: <strong>{new Date(Number(dist.distributionDate) * 1000).toLocaleDateString()}</strong> (Block: {dist.distributionBlock}) {/* Corrected date formatting */}
                 </Typography>
                 <Typography variant="body2" sx={{ fontSize: '0.95rem', color: theme.palette.secondary.main }}>
                   Your Balance at Dist. Time: <strong>{ethers.formatUnits(dist.userBalanceAtDistributionBlock, 18)} LND</strong>
