@@ -22,6 +22,14 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
         mapping(address => bool) claimed;
     }
 
+    // New struct for returning distribution details without the `claimed` mapping
+    struct ProfitDistributionView {
+        uint256 totalAmount;
+        uint256 distributionDate;
+        uint256 distributionBlock;
+        uint256 tokensExcludingOwner;
+    }
+
     // Array to store all profit distributions
     ProfitDistribution[] private profitDistributions;
 
@@ -99,21 +107,20 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
         emit ProfitClaimed(msg.sender, distributionId, userShare);
     }
 
-    // Helper function to retrieve details of a specific profit distribution.
-    function getDistribution(uint256 distributionId) external view returns (
-        uint256 totalAmount,
-        uint256 distributionDate,
-        uint256 distributionBlock,
-        uint256 tokensExcludingOwner
-    ) {
+    /**
+     * @notice Helper function to retrieve details of a specific profit distribution as ProfitDistributionView.
+     * @param distributionId The ID of the distribution to retrieve.
+     * @return A ProfitDistributionView struct containing the distribution's details.
+     */
+    function getDistribution(uint256 distributionId) external view returns (ProfitDistributionView memory) {
         require(distributionId < profitDistributions.length, "Distribution does not exist");
         ProfitDistribution storage distribution = profitDistributions[distributionId];
-        return (
-            distribution.totalAmount,
-            distribution.distributionDate,
-            distribution.tokensExcludingOwner,
-            distribution.distributionBlock
-        );
+        return ProfitDistributionView({
+            totalAmount: distribution.totalAmount,
+            distributionDate: distribution.distributionDate,
+            distributionBlock: distribution.distributionBlock,
+            tokensExcludingOwner: distribution.tokensExcludingOwner
+        });
     }
 
     // Helper function to check if an address has claimed a specific profit distribution.
@@ -124,11 +131,12 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Returns an array of distribution IDs that the given user has not yet claimed.
+     * @notice Returns an array of ProfitDistributionView objects for distributions
+     * that the given user has not yet claimed.
      * @param user The address to check unclaimed distributions for.
-     * @return unclaimedIds Array of distribution IDs not claimed by the user.
+     * @return unclaimedDistributionsArray Array of ProfitDistributionView objects not claimed by the user.
     */
-    function getUnclaimedDistributions(address user) external view returns (uint256[] memory) {
+    function getUnclaimedDistributions(address user) external view returns (ProfitDistributionView[] memory unclaimedDistributionsArray) {
         uint256 total = profitDistributions.length;
         uint256 count = 0;
 
@@ -140,18 +148,24 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
         }
 
         // Allocate array of correct size
-        uint256[] memory unclaimedIds = new uint256[](count);
+        unclaimedDistributionsArray = new ProfitDistributionView[](count);
         uint256 index = 0;
 
-        // Second pass: populate array
+        // Second pass: populate array with ProfitDistributionView data
         for (uint256 i = 0; i < total; i++) {
             if (!profitDistributions[i].claimed[user]) {
-                unclaimedIds[index] = i;
+                ProfitDistribution storage distribution = profitDistributions[i];
+                unclaimedDistributionsArray[index] = ProfitDistributionView({
+                    totalAmount: distribution.totalAmount,
+                    distributionDate: distribution.distributionDate,
+                    distributionBlock: distribution.distributionBlock,
+                    tokensExcludingOwner: distribution.tokensExcludingOwner
+                });
                 index++;
             }
         }
 
-        return unclaimedIds;
+        return unclaimedDistributionsArray;
     }
 
     function burn(uint256 amount) public {
