@@ -646,4 +646,29 @@ describe("LandLordToken", function () {
       expect(normalizedUser3Unclaimed).to.deep.equal([dist0View, dist1View, dist2View]);
     });
   });
+
+  describe("Token Generation", function () {
+    it("should correctly update total supply and owner balance after minting new tokens", async function () {
+      const initialSupply = await landlordToken.totalSupply();
+      const initialOwnerBalance = await landlordToken.balanceOf(owner.address);
+  
+      const amountToMint = ethers.parseUnits("5000", 18); // Example amount to mint
+  
+      // Ensure the amount is within the 10% limit for this test
+      const maxMintAmount = initialSupply / BigInt(10);
+      expect(amountToMint).to.be.lte(maxMintAmount, "Test amount exceeds max mint limit for this test setup.");
+  
+      // Mint new tokens as the owner
+      await landlordToken.connect(owner).generateTokensForRealEstatePurchase(amountToMint);
+  
+      const newSupply = await landlordToken.totalSupply();
+      const newOwnerBalance = await landlordToken.balanceOf(owner.address);
+  
+      // Verify total supply increased correctly
+      expect(newSupply).to.equal(initialSupply + amountToMint);
+  
+      // Verify owner's balance increased correctly
+      expect(newOwnerBalance).to.equal(initialOwnerBalance + amountToMint);
+    });
+  });
 });
