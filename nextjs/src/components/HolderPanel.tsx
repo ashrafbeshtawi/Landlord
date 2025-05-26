@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Typography, Button, Divider, Paper, Grid } from '@mui/material';
+import { Box, Typography, Button, Divider, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import theme from '../theme/theme';
 import { useActionStore } from '@/store/store';
@@ -43,7 +43,6 @@ const HolderPanel = () => {
         }
         const data = await res.json();
         
-        // Keep balance as the raw string from the API
         setBalance(data.balance); 
         
         setAvailableDistributions(data.availableDistributions || []);
@@ -72,12 +71,12 @@ const HolderPanel = () => {
         p: 4,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center', // This centers direct children horizontally
+        alignItems: 'center',
         borderRadius: 4,
         boxShadow: 3,
         width: { xs: '90%', md: '80%' },
         mx: 'auto',
-        bgcolor: theme.palette.background.default + 'B3',
+        bgcolor: theme.palette.background.default + 'B3', // This is the main panel background
       }}
     >
       <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold', color: theme.palette.primary.main }}>
@@ -105,8 +104,8 @@ const HolderPanel = () => {
           mb: 2,
           fontWeight: 'bold',
           color: theme.palette.secondary.main,
-          textAlign: 'center', // ADDED: Centers the text of this Typography component
-          width: '100%' // Ensure it takes full width to center effectively
+          textAlign: 'center',
+          width: '100%'
         }}
       >
         🎁 Available Distributions
@@ -122,25 +121,34 @@ const HolderPanel = () => {
         <Grid
           container
           spacing={2}
-          justifyContent="center" // ADDED: Centers items within the grid
+          justifyContent="center"
           sx={{ width: '100%' }}
         >
           {availableDistributions.map((dist) => (
-            <Grid item xs={12} sm={6} md={4} key={dist.id}>
-              <Paper sx={{ p: 2, bgcolor: theme.palette.background.paper, boxShadow: 1, height: '100%' }}>
-                <Typography variant="h6" sx={{ mb: 1, color: theme.palette.primary.light, fontSize: '1rem' }}>
+            <Grid key={dist.id}>
+              <Box
+                sx={{
+                  p: 2,
+                  border: '1px solid #e0e0e0',
+                  boxShadow: 1,
+                  height: '100%',
+                  borderRadius: 2, 
+                }}
+              >
+                <Typography variant="h6" sx={{ mb: 1, color: theme.palette.text.primary, fontSize: '1.3rem' }}>
                   Distribution ID: {dist.id}
                 </Typography>
-                <Typography variant="body2">
+                {/* Updated Typography components to use theme.palette.secondary.main */}
+                <Typography variant="body2" sx={{ fontSize: '0.95rem', color: theme.palette.secondary.main }}>
                   Total Distributed: <strong>{ethers.formatUnits(dist.totalAmount, 18)} LND</strong>
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body2" sx={{ fontSize: '0.95rem', color: theme.palette.secondary.main }}>
                   Distribution Date: <strong>{new Date(dist.distributionDate).toLocaleDateString()}</strong> (Block: {dist.distributionBlock})
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body2" sx={{ fontSize: '0.95rem', color: theme.palette.secondary.main }}>
                   Your Balance at Dist. Time: <strong>{ethers.formatUnits(dist.userBalanceAtDistributionBlock, 18)} LND</strong>
                 </Typography>
-                <Typography variant="body1" sx={{ mt: 1, fontWeight: 'bold', color: theme.palette.success.main, fontSize: '1.1rem' }}>
+                <Typography variant="body1" sx={{ mt: 1, fontWeight: 'bold', color: theme.palette.success.main, fontSize: '1.2rem' }}>
                   Your Estimated Share: <strong>{ethers.formatUnits(dist.userShare, 18)} LND</strong>
                 </Typography>
                 <Button
@@ -153,7 +161,7 @@ const HolderPanel = () => {
                 >
                   Collect Profit (Dummy)
                 </Button>
-              </Paper>
+              </Box>
             </Grid>
           ))}
         </Grid>
