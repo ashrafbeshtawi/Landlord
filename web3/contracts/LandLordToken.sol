@@ -23,7 +23,9 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
     }
 
     // New struct for returning distribution details without the `claimed` mapping
+    // Added 'id' to reflect the distribution's index in the array
     struct ProfitDistributionView {
+        uint256 id; // The index of the distribution in the profitDistributions array
         uint256 totalAmount;
         uint256 distributionDate;
         uint256 distributionBlock;
@@ -116,6 +118,7 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
         require(distributionId < profitDistributions.length, "Distribution does not exist");
         ProfitDistribution storage distribution = profitDistributions[distributionId];
         return ProfitDistributionView({
+            id: distributionId, // Populate the new 'id' field
             totalAmount: distribution.totalAmount,
             distributionDate: distribution.distributionDate,
             distributionBlock: distribution.distributionBlock,
@@ -133,6 +136,7 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
     /**
      * @notice Returns an array of ProfitDistributionView objects for distributions
      * that the given user has not yet claimed.
+     * Includes the distribution ID (its index) in the returned struct.
      * @param user The address to check unclaimed distributions for.
      * @return unclaimedDistributionsArray Array of ProfitDistributionView objects not claimed by the user.
     */
@@ -156,6 +160,7 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
             if (!profitDistributions[i].claimed[user]) {
                 ProfitDistribution storage distribution = profitDistributions[i];
                 unclaimedDistributionsArray[index] = ProfitDistributionView({
+                    id: i, // Populate the 'id' field with the current index 'i'
                     totalAmount: distribution.totalAmount,
                     distributionDate: distribution.distributionDate,
                     distributionBlock: distribution.distributionBlock,
