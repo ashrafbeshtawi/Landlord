@@ -151,7 +151,7 @@ const HolderPanel = () => {
                 <Typography variant="body2" sx={{ fontSize: '0.95rem', color: theme.palette.secondary.main }}>
                   Your Balance at Dist. Time: <strong>{ethers.formatUnits(dist.userBalanceAtDistributionBlock, 18)} LND</strong>
                 </Typography>
-                <Typography variant="body1" sx={{ mt: 1, fontWeight: 'bold', color: theme.palette.success.main, fontSize: '1.2rem' }}>
+                <Typography variant="body1" sx={{ mt: 1, fontWeight: 'bold', color: theme.palette.secondary.main, fontSize: '1.2rem' }}>
                   Your Estimated Share: <strong>{ethers.formatUnits(dist.userShare, 18)} LND</strong>
                 </Typography>
                 <Button
