@@ -1,4 +1,5 @@
-import theme from '../theme/theme'; // Import your theme
+'use client';
+import theme from '../theme/theme';
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
