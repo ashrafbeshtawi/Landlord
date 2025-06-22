@@ -9,7 +9,7 @@ import { useActionStore } from '@/store/store';
 
 declare global {
   interface Window {
-    ethereum?: any;
+    ethereum?: undefined;
   }
 }
 

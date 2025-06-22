@@ -14,7 +14,6 @@ import {
 import Image from 'next/image';
 import WalletConnectButton from './WalletConnectButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import theme from '../theme/theme'; // Import your theme
 
 
 // Replace this with your actual wallet connection logic
