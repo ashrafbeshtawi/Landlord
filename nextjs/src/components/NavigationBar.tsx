@@ -14,6 +14,8 @@ import {
 import Image from 'next/image';
 import WalletConnectButton from './WalletConnectButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import theme from '../theme/theme'; // Import your theme
+
 
 // Replace this with your actual wallet connection logic
 const isWalletConnected = true;
@@ -36,11 +38,11 @@ const NavigationBar = () => {
   };
 
   const navItems = [
-    { label: 'Home', path: '/' },
-    { label: 'Tokenomics', path: '/tokenomics' },
-    { label: 'Whitepaper', path: '/whitepaper' },
-    { label: 'Roadmap', path: '/roadmap' },
-    { label: 'Team', path: '/team' },
+    { label: 'Home', path: '/', isControl: false },
+    { label: 'Tokenomics', path: '/tokenomics', isControl: false },
+    { label: 'Whitepaper', path: '/whitepaper', isControl: false  },
+    { label: 'Roadmap', path: '/roadmap', isControl: false  },
+    { label: 'Team', path: '/team', isControl: false  },
   ];
 
   if (isWalletConnected) {
@@ -74,15 +76,11 @@ const NavigationBar = () => {
             <Button
               key={path}
               onClick={() => handleRouteChange(path)}
+              variant= {isControl ? 'outlined' : 'text'}
+              color= {isControl ? 'primary' : 'secondary'}
               sx={{
                 mx: 2,
                 fontWeight: 'bold',
-                color: isControl ? '#222222' : '#FFFFFF',
-                backgroundColor: isControl ? '#34C6A3' : 'transparent',
-                '&:hover': {
-                  backgroundColor: isControl ? '#169976' : '#169976',
-                  color: '#fff',
-                },
               }}
             >
               {label}

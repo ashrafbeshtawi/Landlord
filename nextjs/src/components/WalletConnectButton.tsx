@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { Button, Box, IconButton } from '@mui/material';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -9,46 +9,54 @@ import { useActionStore } from '@/store/store';
 
 declare global {
   interface Window {
-    ethereum?: undefined;
+    ethereum?: any;
   }
 }
 
 export default function WalletConnectButton() {
   const [address, setAddress] = useState<string | null>(null);
-  const actionStore = useActionStore();
-  
+  const { signer, setWalletConnected, setWalletDisconnected } = useActionStore();
 
   const handleConnectWallet = async (): Promise<void> => {
     if (typeof window === 'undefined' || !window.ethereum) {
       alert('MetaMask not available on your browser. Please install it.');
       return;
     }
+
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
       await provider.send('eth_requestAccounts', []);
       const signer = await provider.getSigner();
+
+      setWalletConnected(signer);
+
       const addr = await signer.getAddress();
-      actionStore.setWalletConnected(addr);
       console.log('Wallet connected:', addr);
       setAddress(addr);
     } catch (err) {
-        console.error('Error connecting wallet:', err);
-        alert('Error connecting wallet');
+      console.error('Error connecting wallet:', err);
+      alert('Error connecting wallet');
     }
   };
 
   const handleLogout = (): void => {
-    actionStore.setWalletDisconnected();
+    setWalletDisconnected();
     console.log('Wallet disconnected');
     setAddress(null);
   };
+
+  useEffect(() => {
+    if (signer) {
+      signer.getAddress().then(setAddress).catch(() => setAddress(null));
+    }
+  }, [signer]);
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
       {!address ? (
         <>
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             onClick={handleConnectWallet}
             sx={{ display: { xs: 'none', md: 'flex' }, ml: 2, fontWeight: 'bold' }}
@@ -56,7 +64,11 @@ export default function WalletConnectButton() {
             Connect Wallet
           </Button>
           <IconButton
-            sx={{ display: { xs: 'flex', md: 'none' }, ml: 1, backgroundColor: theme.palette.primary.main }}
+            sx={{
+              display: { xs: 'flex', md: 'none' },
+              ml: 1,
+              backgroundColor: theme.palette.primary.main
+            }}
             onClick={handleConnectWallet}
           >
             <WalletIcon sx={{ color: '#fff' }} />
