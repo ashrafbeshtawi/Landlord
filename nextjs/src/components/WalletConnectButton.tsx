@@ -7,7 +7,8 @@ import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import theme from '../theme/theme';
 import { useActionStore } from '@/store/store';
 import { useRouter } from 'next/navigation';
-
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 
 declare global {
   interface Window {
@@ -79,7 +80,7 @@ export default function WalletConnectButton() {
             }}
             onClick={handleConnectWallet}
           >
-            <WalletIcon sx={{ color: '#fff' }} />
+            <VpnKeyIcon sx={{ color: '#fff' }} />
           </IconButton>
         </>
       ) : (
@@ -93,7 +94,8 @@ export default function WalletConnectButton() {
               ml: 1,
               fontWeight: 'bold',
               borderColor: theme.palette.secondary.main,
-              color: theme.palette.secondary.main
+              color: theme.palette.secondary.main,
+              display: { xs: 'none', md: 'flex' }
             }}
           >
             Control Panel
@@ -106,11 +108,34 @@ export default function WalletConnectButton() {
               ml: 1,
               fontWeight: 'bold',
               borderColor: theme.palette.secondary.main,
-              color: theme.palette.secondary.main
+              color: theme.palette.secondary.main,
+              display: { xs: 'none', md: 'flex' }
             }}
           >
             Disconnect
           </Button>
+
+          <IconButton
+            sx={{
+              display: { xs: 'flex', md: 'none' },
+              ml: 1,
+              backgroundColor: theme.palette.primary.main
+            }}
+            onClick={goToControlPanel}
+          >
+            <WalletIcon sx={{ color: '#fff' }} />
+          </IconButton>
+
+          <IconButton
+            sx={{
+              display: { xs: 'flex', md: 'none' },
+              ml: 1,
+              backgroundColor: theme.palette.primary.main
+            }}
+            onClick={handleLogout}
+          >
+            <ExitToAppIcon sx={{ color: '#fff' }} />
+          </IconButton>
         </>
       )}
     </Box>
