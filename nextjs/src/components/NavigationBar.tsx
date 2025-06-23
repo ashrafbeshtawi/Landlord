@@ -14,6 +14,7 @@ import {
 import Image from 'next/image';
 import WalletConnectButton from './WalletConnectButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import theme from '@/theme/theme';
 
 
 // Replace this with your actual wallet connection logic
@@ -76,10 +77,11 @@ const NavigationBar = () => {
               key={path}
               onClick={() => handleRouteChange(path)}
               variant= {isControl ? 'outlined' : 'text'}
-              color= {isControl ? 'primary' : 'secondary'}
               sx={{
                 mx: 2,
                 fontWeight: 'bold',
+                '&:hover': !isControl ? { backgroundColor: theme.palette.primary.main } : {},
+                color: isControl ? 'primary' : '#FFFFFF',
               }}
             >
               {label}
