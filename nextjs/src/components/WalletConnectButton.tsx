@@ -37,6 +37,7 @@ export default function WalletConnectButton() {
       const addr = await signer.getAddress();
       console.log('Wallet connected:', addr);
       setAddress(addr);
+      goToControlPanel();
     } catch (err) {
       console.error('Error connecting wallet:', err);
       alert('Error connecting wallet');
