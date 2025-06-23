@@ -37,7 +37,7 @@ const NavigationBar = () => {
   };
 
   const navItems = [
-    { label: 'Homex', path: '/', isControl: false },
+    { label: 'Home', path: '/', isControl: false },
     { label: 'Tokenomics', path: '/tokenomics', isControl: false },
     { label: 'Whitepaper', path: '/whitepaper', isControl: false  },
     { label: 'Roadmap', path: '/roadmap', isControl: false  },
