@@ -85,7 +85,7 @@ const HolderPanel = () => {
 
       <Box sx={{ alignSelf: 'flex-start', width: '100%' }}>
         <Typography variant="body1" sx={{ mb: 1 }}>
-          🔐 Connected Wallet: <strong>{walletAdresse || 'Not Connected'}</strong>
+          🔐 Connected Wallet: <strong>{walletAdresse.slice(0, 6)}…{walletAdresse.slice(-4) || 'Not Connected'}</strong>
         </Typography>
 
         <Typography variant="body1" sx={{ mb: 1 }}>
