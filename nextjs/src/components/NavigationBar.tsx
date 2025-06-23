@@ -16,10 +16,6 @@ import WalletConnectButton from './WalletConnectButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import theme from '@/theme/theme';
 
-
-// Replace this with your actual wallet connection logic
-const isWalletConnected = true;
-
 const NavigationBar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const router = useRouter();
@@ -38,20 +34,12 @@ const NavigationBar = () => {
   };
 
   const navItems = [
-    { label: 'Home', path: '/', isControl: false },
-    { label: 'Tokenomics', path: '/tokenomics', isControl: false },
-    { label: 'Whitepaper', path: '/whitepaper', isControl: false  },
-    { label: 'Roadmap', path: '/roadmap', isControl: false  },
-    { label: 'Team', path: '/team', isControl: false  },
+    { label: 'Home', path: '/'},
+    { label: 'Tokenomics', path: '/tokenomics'},
+    { label: 'Whitepaper', path: '/whitepaper'},
+    { label: 'Roadmap', path: '/roadmap'},
+    { label: 'Team', path: '/team'},
   ];
-
-  if (isWalletConnected) {
-    navItems.push({
-      label: 'Control Panel',
-      path: '/control',
-      isControl: true, // mark for special styling
-    });
-  }
 
   return (
     <AppBar
@@ -72,16 +60,16 @@ const NavigationBar = () => {
 
         {/* Desktop Links */}
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-          {navItems.map(({ label, path, isControl }) => (
+          {navItems.map(({ label, path }) => (
             <Button
               key={path}
               onClick={() => handleRouteChange(path)}
-              variant= {isControl ? 'outlined' : 'text'}
+              variant= 'text'
               sx={{
                 mx: 2,
                 fontWeight: 'bold',
-                '&:hover': !isControl ? { backgroundColor: theme.palette.primary.main } : {},
-                color: isControl ? 'primary' : '#FFFFFF',
+                '&:hover':{ backgroundColor: theme.palette.primary.main },
+                color:'#FFFFFF',
               }}
             >
               {label}
@@ -110,13 +98,13 @@ const NavigationBar = () => {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          {navItems.map(({ label, path, isControl }) => (
+          {navItems.map(({ label, path }) => (
             <MenuItem
               key={path}
               onClick={() => handleRouteChange(path)}
               sx={{
                 fontWeight: 'bold',
-                color: isControl ? '#34C6A3' : 'inherit',
+                color: 'inherit',
               }}
             >
               {label}

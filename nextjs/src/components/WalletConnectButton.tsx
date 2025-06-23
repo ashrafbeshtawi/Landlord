@@ -6,6 +6,8 @@ import { Button, Box, IconButton } from '@mui/material';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import theme from '../theme/theme';
 import { useActionStore } from '@/store/store';
+import { useRouter } from 'next/navigation';
+
 
 declare global {
   interface Window {
@@ -14,6 +16,7 @@ declare global {
 }
 
 export default function WalletConnectButton() {
+  const router = useRouter();
   const [address, setAddress] = useState<string | null>(null);
   const { signer, setWalletConnected, setWalletDisconnected } = useActionStore();
 
@@ -42,8 +45,13 @@ export default function WalletConnectButton() {
   const handleLogout = (): void => {
     setWalletDisconnected();
     console.log('Wallet disconnected');
+    router.push('/');
     setAddress(null);
   };
+
+  const goToControlPanel = (): void => {
+    router.push('/control');
+  }
 
   useEffect(() => {
     if (signer) {
@@ -76,9 +84,20 @@ export default function WalletConnectButton() {
         </>
       ) : (
         <>
-          <Box sx={{ mr: 2, color: theme.palette.primary.main }}>
-            Connected to: {address.slice(0, 6)}…{address.slice(-4)}
-          </Box>
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={goToControlPanel}
+            sx={{
+              ml: 1,
+              fontWeight: 'bold',
+              borderColor: theme.palette.secondary.main,
+              color: theme.palette.secondary.main
+            }}
+          >
+            Control Panel
+          </Button>
           <Button
             variant="outlined"
             color="secondary"
