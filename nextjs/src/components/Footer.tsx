@@ -1,5 +1,5 @@
 'use client';
-import { Box, Container, Typography, IconButton, Stack } from '@mui/material';
+import { Box, Typography, IconButton, Stack } from '@mui/material';
 import { Facebook, Twitter, Instagram, Telegram } from '@mui/icons-material';
 import theme from '../theme/theme';
 
