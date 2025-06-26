@@ -33,22 +33,20 @@ const HeroSection = () => (
         Revolutionizing Real Estate Investment
       </Typography>
 
-      {/* Short vs. Full Welcome Text */}
       <Typography
         variant="body1"
         sx={{ display: { xs: 'block', md: 'none' }, mb: 3, textAlign: 'center' }}
       >
-        Welcome to the future of real estate — LandLord Coin (LND) connects blockchain with real-world property, making global ownership and profits accessible to everyone.
+        LandLord Coin (LND) connects blockchain with affordable real estate — now focused on rebuilding Syria. Invest in a country on the rise as it recovers and rebuilds.
       </Typography>
       <Typography
         variant="body1"
         sx={{ display: { xs: 'none', md: 'block' }, mb: 3, textAlign: 'center' }}
       >
-        Welcome to the future of property ownership — where blockchain technology meets tangible real estate assets. LandLord Coin (LND) is creating a bridge between decentralized finance and real-world investment opportunities, giving everyday people the chance to own, profit from, and participate in the global real estate market like never before.
+        LandLord Coin (LND) bridges decentralized finance with tangible real estate assets — now with a special focus on rebuilding Syria. After years of conflict, Syria presents a rare investment opportunity: property prices are extremely low, and demand is expected to surge as millions of refugees return and international sanctions begin to lift. Our mission remains unchanged — democratizing global property ownership and delivering long-term profits to everyday investors.
       </Typography>
 
       <Box sx={{ textAlign: 'left', mx: 'auto', width: '80%' }}>
-        {/* Asset‑Backed Security */}
         <Typography
           variant="body1"
           sx={{ display: { xs: 'block', md: 'none' }, mb: 2, fontSize: 'inherit' }}
@@ -59,10 +57,9 @@ const HeroSection = () => (
           variant="body1"
           sx={{ display: { xs: 'none', md: 'block' }, mb: 2, fontSize: 'inherit' }}
         >
-          ✅ <strong>Asset‑Backed Security:</strong> Each LND token is secured by income‑generating real estate in high‑demand areas, ensuring your digital asset reflects real‑world value.
+          ✅ <strong>Asset‑Backed Security:</strong> Each LND token is backed by income‑generating real estate in emerging markets like Syria, giving your digital asset real-world value.
         </Typography>
 
-        {/* Stable Growth */}
         <Typography
           variant="body1"
           sx={{ display: { xs: 'block', md: 'none' }, mb: 2, fontSize: 'inherit' }}
@@ -73,24 +70,22 @@ const HeroSection = () => (
           variant="body1"
           sx={{ display: { xs: 'none', md: 'block' }, mb: 2, fontSize: 'inherit' }}
         >
-          📈 <strong>Stable Growth:</strong> Enjoy dual income streams — benefit from property value appreciation over time and receive regular rental income distributions directly to your wallet.
+          📈 <strong>Stable Growth:</strong> Earn two ways — from long-term property appreciation and recurring rental income paid directly to your wallet.
         </Typography>
 
-        {/* Global Access */}
         <Typography
           variant="body1"
           sx={{ display: { xs: 'block', md: 'none' }, mb: 2, fontSize: 'inherit' }}
         >
-          🌍 Fractional global assets
+          🌍 Global fractional ownership
         </Typography>
         <Typography
           variant="body1"
           sx={{ display: { xs: 'none', md: 'block' }, mb: 2, fontSize: 'inherit' }}
         >
-          🌍 <strong>Global Access:</strong> Break the barriers of traditional property investing. With LandLord Coin, you can own a fraction of premium real estate anywhere in the world, starting with just a small investment.
+          🌍 <strong>Global Access:</strong> Break traditional barriers. Start investing in properties across the world — especially in high-potential regions like Syria — with just a small amount.
         </Typography>
 
-        {/* Blockchain Transparency */}
         <Typography
           variant="body1"
           sx={{ display: { xs: 'block', md: 'none' }, mb: 2, fontSize: 'inherit' }}
@@ -101,10 +96,9 @@ const HeroSection = () => (
           variant="body1"
           sx={{ display: { xs: 'none', md: 'block' }, mb: 2, fontSize: 'inherit' }}
         >
-          🔒 <strong>Blockchain Transparency:</strong> All transactions are regulated by smart contracts and recorded on the blockchain. This guarantees full auditability, eliminating fraud and ensuring fair treatment for all stakeholders.
+          🔒 <strong>Blockchain Transparency:</strong> All transactions are powered by smart contracts and recorded on-chain — ensuring full transparency, traceability, and trust.
         </Typography>
 
-        {/* Future‑Proof Investment */}
         <Typography
           variant="body1"
           sx={{ display: { xs: 'block', md: 'none' }, mb: 0, fontSize: 'inherit' }}
@@ -115,7 +109,7 @@ const HeroSection = () => (
           variant="body1"
           sx={{ display: { xs: 'none', md: 'block' }, mb: 0, fontSize: 'inherit' }}
         >
-          🚀 <strong>Future‑Proof Investment:</strong> Traditional property investment is slow, expensive, and exclusive. With LND, we make it fast, affordable, and accessible to anyone — regardless of geography or financial status.
+          🚀 <strong>Future‑Proof Investment:</strong> Traditional real estate is slow and costly. With LND, it's quick, low-cost, and accessible to anyone — anywhere.
         </Typography>
       </Box>
 
@@ -123,7 +117,7 @@ const HeroSection = () => (
         variant="body1"
         sx={{ mt: 3, fontSize: { xs: '0.7rem', md: '1.2rem' }, fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'center' }}
       >
-        Join the $2.5 trillion real estate market revolution – Democratized, Decentralized, and Yours to Control
+        Be part of Syria’s rebuilding journey — tokenized real estate for a more equitable future.
       </Typography>
     </Box>
   </Box>
