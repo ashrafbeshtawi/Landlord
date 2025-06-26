@@ -101,15 +101,29 @@ const HeroSection = () => (
 
         <Typography
           variant="body1"
-          sx={{ display: { xs: 'block', md: 'none' }, mb: 0, fontSize: 'inherit' }}
+          sx={{ display: { xs: 'block', md: 'none' }, mb: 2, fontSize: 'inherit' }}
         >
           🚀 Fast, affordable, accessible
         </Typography>
         <Typography
           variant="body1"
-          sx={{ display: { xs: 'none', md: 'block' }, mb: 0, fontSize: 'inherit' }}
+          sx={{ display: { xs: 'none', md: 'block' }, mb: 2, fontSize: 'inherit' }}
         >
           🚀 <strong>Future‑Proof Investment:</strong> Traditional real estate is slow and costly. With LND, it's quick, low-cost, and accessible to anyone — anywhere.
+        </Typography>
+
+        <Typography
+          variant="body1"
+          sx={{ display: { xs: 'block', md: 'none' }, mb: 0, fontSize: 'inherit' }}
+        >
+          🌱 Expansion into high-growth markets like Egypt and Turkey is on the roadmap.
+        </Typography>
+
+        <Typography
+          variant="body1"
+          sx={{ display: { xs: 'none', md: 'block' }, mb: 0, fontSize: 'inherit' }}
+        >
+          🌱 <strong>Strategic Growth Ahead:</strong> Our roadmap includes expansion into high-potential emerging markets such as Egypt and Turkey — further diversifying the real estate portfolio.
         </Typography>
       </Box>
 
@@ -117,7 +131,7 @@ const HeroSection = () => (
         variant="body1"
         sx={{ mt: 3, fontSize: { xs: '0.7rem', md: '1.2rem' }, fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'center' }}
       >
-        Be part of Syria’s rebuilding journey — tokenized real estate for a more equitable future.
+        Be part of Syria’s rebuilding journey — tokenized real estate for a more equitable future. 🇸🇾
       </Typography>
     </Box>
   </Box>
