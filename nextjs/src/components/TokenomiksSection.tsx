@@ -72,7 +72,7 @@ const TokenomiksSection = function () {
           </Typography>
 
           <Typography variant="body1" sx={{ lineHeight: 1.6, mt: 2 }}>
-            LandLord is more than just a token — it's a real-value distribution system designed for the future of decentralized property ownership and income sharing.
+            LandLord is more than just a token — it is a real-value distribution system designed for the future of decentralized property ownership and income sharing.
           </Typography>
         </Box>
 
@@ -165,7 +165,7 @@ const TokenomiksSection = function () {
             🚫 No Complex Tokenomics Gimmicks:
           </Typography>
           <Typography variant="body1" sx={{ lineHeight: 1.6, ml: 2 }}>
-            The token does not rely on reflections, auto-liquidity, or rebasing mechanics — it's built for clarity, simplicity, and long-term reliability.
+            The token does not rely on reflections, auto-liquidity, or rebasing mechanics — it is built for clarity, simplicity, and long-term reliability.
           </Typography>
         </Box>
       </Box>

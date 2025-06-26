@@ -109,7 +109,7 @@ const HeroSection = () => (
           variant="body1"
           sx={{ display: { xs: 'none', md: 'block' }, mb: 2, fontSize: 'inherit' }}
         >
-          🚀 <strong>Future‑Proof Investment:</strong> Traditional real estate is slow and costly. With LND, it's quick, low-cost, and accessible to anyone — anywhere.
+          🚀 <strong>Future‑Proof Investment:</strong> Traditional real estate is slow and costly. With LND, it is quick, low-cost, and accessible to anyone — anywhere.
         </Typography>
 
         <Typography
