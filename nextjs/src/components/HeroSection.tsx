@@ -103,7 +103,7 @@ const HeroSection = () => (
           variant="body1"
           sx={{ display: { xs: 'block', md: 'none' }, mb: 0, fontSize: 'inherit' }}
         >
-          🌱 Expansion into high-growth markets like Syria, Egypt and Turkey is on the roadmap.
+          🌱 Expansion into high-growth markets like Syria, Egypt and Turkey.
         </Typography>
 
         <Typography
@@ -116,7 +116,7 @@ const HeroSection = () => (
 
       <Typography
         variant="body1"
-        sx={{ mt: 3, fontSize: { xs: '0.7rem', md: '1.2rem' }, fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'center' }}
+        sx={{ display: { xs: 'none', md: 'block' },mt: 3, fontSize: { xs: '0.7rem', md: '1.2rem' }, fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'center' }}
       >
         Be part of Syria’s rebuilding journey — tokenized real estate for a more equitable future. 🇸🇾
       </Typography>
