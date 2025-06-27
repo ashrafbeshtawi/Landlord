@@ -4,62 +4,68 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Map, Source, Layer, Popup, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Box, Typography } from '@mui/material';
+import type { FeatureCollection, Point } from 'geojson';
 
 
 
-const geojsonData = {
-  type: 'FeatureCollection',
-  features: [
-    {
-      type: 'Feature',
-      id: 'SYR',
-      properties: {
-        name: 'Syria 🇸🇾',
-        color: '#4CAF50',
-        description: `🇸🇾 Syria
-🏠 Price Range: $10k - $30k  
-📊 Avg. Price: ~$20,000  
-💵 Rent (long-term): $150/month  
-🛏️ Rent (short-term): $500/month  
-📈 ROI (long-term): ~9%  
-🔥 High potential market`
+const geojsonData: FeatureCollection<Point, {
+    name: string;
+    color: string;
+    description: string;
+  }> = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        id: 'SYR',
+        properties: {
+          name: 'Syria 🇸🇾',
+          color: '#4CAF50',
+          description: `🇸🇾 Syria
+  🏠 Price Range: $10k - $30k  
+  📊 Avg. Price: ~$20,000  
+  💵 Rent (long-term): $150/month  
+  🛏️ Rent (short-term): $500/month  
+  📈 ROI (long-term): ~9%  
+  🔥 High potential market`
+        },
+        geometry: { type: 'Point', coordinates: [38.5, 35] }
       },
-      geometry: { type: 'Point', coordinates: [38.5, 35] }
-    },
-    {
-      type: 'Feature',
-      id: 'EGY',
-      properties: {
-        name: 'Egypt 🇪🇬',
-        color: '#FFD700',
-        description: `🇪🇬 Egypt
-🏠 Price Range: $40k - $100k  
-📊 Avg. Price: ~$70,000  
-💵 Rent (long-term): $300/month  
-🛏️ Rent (short-term): $700/month  
-📈 ROI (long-term): ~5.1%  
-🔥 Strong tourism and infrastructure growth`
+      {
+        type: 'Feature',
+        id: 'EGY',
+        properties: {
+          name: 'Egypt 🇪🇬',
+          color: '#FFD700',
+          description: `🇪🇬 Egypt
+  🏠 Price Range: $40k - $100k  
+  📊 Avg. Price: ~$70,000  
+  💵 Rent (long-term): $300/month  
+  🛏️ Rent (short-term): $700/month  
+  📈 ROI (long-term): ~5.1%  
+  🔥 Strong tourism and infrastructure growth`
+        },
+        geometry: { type: 'Point', coordinates: [30, 29] }
       },
-      geometry: { type: 'Point', coordinates: [30, 29] }
-    },
-    {
-      type: 'Feature',
-      id: 'TUR',
-      properties: {
-        name: 'Turkey 🇹🇷',
-        color: '#FFD700',
-        description: `🇹🇷 Turkey
-🏠 Price Range: $60k - $200k  
-📊 Avg. Price: ~$130,000  
-💵 Rent (long-term): $350/month  
-🛏️ Rent (short-term): $700/month  
-📈 ROI (long-term): ~3.2%  
-🔥 Major tourism hub with growing urban rents`
-      },
-      geometry: { type: 'Point', coordinates: [35.2433, 39.4] }
-    }
-  ]
-};
+      {
+        type: 'Feature',
+        id: 'TUR',
+        properties: {
+          name: 'Turkey 🇹🇷',
+          color: '#FFD700',
+          description: `🇹🇷 Turkey
+  🏠 Price Range: $60k - $200k  
+  📊 Avg. Price: ~$130,000  
+  💵 Rent (long-term): $350/month  
+  🛏️ Rent (short-term): $700/month  
+  📈 ROI (long-term): ~3.2%  
+  🔥 Major tourism hub with growing urban rents`
+        },
+        geometry: { type: 'Point', coordinates: [35.2433, 39.4] }
+      }
+    ]
+  };
+  
 
 export default function MapComponent() {
     const [initialViewState, setInitialViewState] = useState<null | {
