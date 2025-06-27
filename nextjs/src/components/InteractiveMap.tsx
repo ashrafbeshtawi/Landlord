@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Map, Source, Layer, Popup } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Box, Typography } from '@mui/material';
@@ -61,6 +61,26 @@ const geojsonData = {
 };
 
 export default function MapComponent() {
+    const [initialViewState, setInitialViewState] = useState<null | {
+        longitude: number;
+        latitude: number;
+        zoom: number;
+      }>(null);
+      
+      useEffect(() => {
+        if (typeof window === 'undefined') return;
+      
+        const width = window.innerWidth;
+      
+        if (width < 600) {
+          setInitialViewState({ longitude: 35, latitude: 34.3, zoom: 4 });
+        } else if (width < 960) {
+          setInitialViewState({ longitude: 35, latitude: 34.3, zoom: 4.5 });
+        } else {
+          setInitialViewState({ longitude: 35, latitude: 34.3, zoom: 4.7 });
+        }
+      }, []);
+           
   const [hoverInfo, setHoverInfo] = useState<{
     longitude: number;
     latitude: number;
@@ -120,9 +140,10 @@ export default function MapComponent() {
         </Typography>
 
       {/* Map */}
+      {initialViewState && (
       <Map
         mapLib={import('maplibre-gl')}
-        initialViewState={{ longitude: 35, latitude: 34.3, zoom: 4.7 }}
+        initialViewState={initialViewState}
         style={{ width: '100%', height: '600px' }}
         mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json"
         interactiveLayerIds={['country-labels']}
@@ -167,6 +188,7 @@ export default function MapComponent() {
           </Popup>
         )}
       </Map>
+      )}
     </Box>
   );
 }
