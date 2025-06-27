@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { Map, Source, Layer, Popup } from 'react-map-gl/maplibre';
+import { Map, Source, Layer, Popup, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Box, Typography } from '@mui/material';
+
 
 
 const geojsonData = {
@@ -87,7 +88,7 @@ export default function MapComponent() {
     description: string;
   } | null>(null);
 
-  const onHover = useCallback((event: any) => {
+  const onHover = useCallback((event: MapLayerMouseEvent) => {
     const feature = event.features?.[0];
     if (feature) {
       setHoverInfo({
