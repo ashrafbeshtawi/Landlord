@@ -103,7 +103,7 @@ const HeroSection = () => (
           variant="body1"
           sx={{ display: { xs: 'block', md: 'none' }, mb: 0, fontSize: 'inherit' }}
         >
-          🌱 Expansion into high-growth markets like Egypt and Turkey is on the roadmap.
+          🌱 Expansion into high-growth markets like Syria, Egypt and Turkey is on the roadmap.
         </Typography>
 
         <Typography
