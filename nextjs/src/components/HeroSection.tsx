@@ -101,19 +101,6 @@ const HeroSection = () => (
 
         <Typography
           variant="body1"
-          sx={{ display: { xs: 'block', md: 'none' }, mb: 2, fontSize: 'inherit' }}
-        >
-          🚀 Fast, affordable, accessible
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{ display: { xs: 'none', md: 'block' }, mb: 2, fontSize: 'inherit' }}
-        >
-          🚀 <strong>Future‑Proof Investment:</strong> Traditional real estate is slow and costly. With LND, it is quick, low-cost, and accessible to anyone — anywhere.
-        </Typography>
-
-        <Typography
-          variant="body1"
           sx={{ display: { xs: 'block', md: 'none' }, mb: 0, fontSize: 'inherit' }}
         >
           🌱 Expansion into high-growth markets like Egypt and Turkey is on the roadmap.
