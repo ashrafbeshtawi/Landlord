@@ -22,12 +22,12 @@ const geojsonData: FeatureCollection<Point, {
           name: 'Syria 🇸🇾',
           color: '#4CAF50',
           description: `🇸🇾 Syria
-  🏠 Price Range: $10k - $30k  
-  📊 Avg. Price: ~$20,000  
-  💵 Rent (long-term): $150/month  
-  🛏️ Rent (short-term): $500/month  
-  📈 ROI (long-term): ~9%  
-  🔥 High potential market`
+            🏠 Price Range: $10k - $30k  
+            📊 Avg. Price: ~$15,000  
+            💵 Rent (long-term): $150/month  
+            🛏️ Rent (short-term): $750/month  
+            📈 ROI (long-term): ~12%  
+            🔥 High potential market`
         },
         geometry: { type: 'Point', coordinates: [38.5, 35] }
       },
@@ -40,9 +40,9 @@ const geojsonData: FeatureCollection<Point, {
           description: `🇪🇬 Egypt
   🏠 Price Range: $40k - $100k  
   📊 Avg. Price: ~$70,000  
-  💵 Rent (long-term): $300/month  
-  🛏️ Rent (short-term): $700/month  
-  📈 ROI (long-term): ~5.1%  
+  💵 Rent (long-term): $450/month  
+  🛏️ Rent (short-term): $530/month  
+  📈 ROI (long-term): ~7.88%  
   🔥 Strong tourism and infrastructure growth`
         },
         geometry: { type: 'Point', coordinates: [30, 29] }
@@ -55,10 +55,10 @@ const geojsonData: FeatureCollection<Point, {
           color: '#FFD700',
           description: `🇹🇷 Turkey
   🏠 Price Range: $60k - $200k  
-  📊 Avg. Price: ~$130,000  
-  💵 Rent (long-term): $350/month  
+  📊 Avg. Price: ~$99,000  
+  💵 Rent (long-term): $450/month  
   🛏️ Rent (short-term): $700/month  
-  📈 ROI (long-term): ~3.2%  
+  📈 ROI (long-term): ~5.5%  
   🔥 Major tourism hub with growing urban rents`
         },
         geometry: { type: 'Point', coordinates: [35.2433, 39.4] }
