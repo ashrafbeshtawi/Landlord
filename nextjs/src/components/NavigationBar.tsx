@@ -36,7 +36,7 @@ const NavigationBar = () => {
   const navItems = [
     { label: 'Home', path: '/'},
     { label: 'Tokenomics', path: '/tokenomics'},
-    { label: 'Whitepaper', path: '/whitepaper'},
+    { label: 'Business Model', path: '/whitepaper'},
     { label: 'Roadmap', path: '/roadmap'},
     { label: 'Team', path: '/team'},
   ];

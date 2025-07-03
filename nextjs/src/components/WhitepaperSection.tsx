@@ -56,13 +56,14 @@ const WhitepaperSection = () => (
     {/* Sections */}
     {[
       {
-        title: 'Whitepaper Summary',
+        title: '1. Whitepaper Summary',
         body: (
           <>
           <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.6, color: BODY_COLOR }}>
           Landlord Token (LND) leverages blockchain to make real estate investment accessible and transparent. In Phase 1, the focus is on acquiring and renovating affordable properties in Syria and renting them to generate income, which is then distributed to token holders. Phase 2 includes constructing new buildings and expanding into Egypt and Turkey.<br/><br/>
           The token operates on secure ERC-20 smart contracts with built-in signature verification and reentrancy protection. ROI analysis highlights Syria&apos;s exceptional potential (up to 60% annually via short-term rentals), while Egypt and Turkey offer solid returns. The USA and Germany serve as low-yield benchmarks. LND empowers fractional ownership, income generation, and impact investment in rebuilding regions.            
           </Typography>
+          <br/>
           <motion.div whileHover={{ scale: 1.05 }}>
             <Box sx={{ maxWidth: CONTENT_WIDTH, width: '100%', mx: 'auto', textAlign: 'center' }}>
               <Button
@@ -74,9 +75,7 @@ const WhitepaperSection = () => (
               </Button>
             </Box>
           </motion.div>
-          </>
-
-          
+          </> 
         )
       },
       {

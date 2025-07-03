@@ -2,10 +2,17 @@
 
 import theme from '../theme/theme'; // Import your theme
 import { Box, Typography } from '@mui/material';
+import { motion } from 'framer-motion';
 
+const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+  };
+  
 const TokenomiksSection = function () {
   return (
     <>
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: 0.1 }}>
       {/* Tokenomics Section */}
       <Box
         id="tokenomiks"
@@ -90,6 +97,9 @@ const TokenomiksSection = function () {
         }}
         />
       </Box>
+    </motion.div>
+
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: 0.1 }}>
 
       {/* What’s Not in the Contract Section */}
       <Box
@@ -169,6 +179,8 @@ const TokenomiksSection = function () {
           </Typography>
         </Box>
       </Box>
+      </motion.div>
+
     </>
   );
 };
