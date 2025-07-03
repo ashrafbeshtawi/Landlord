@@ -8,7 +8,7 @@ const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   };
-  
+
 const TokenomiksSection = function () {
   return (
     <>
@@ -86,7 +86,7 @@ const TokenomiksSection = function () {
         {/* Image beside Tokenomics text */}
         <Box
           component="img"
-          src="/tokenomics.png"
+          src="tokenomics/tokenomics.png"
           alt="Tokenomics Illustration"
           sx={{
             display: { xs: 'none', lg: 'block' },
@@ -116,7 +116,7 @@ const TokenomiksSection = function () {
         {/* Image beside What’s Not in the Contract text */}
         <Box
           component="img"
-          src="/tokenomics2.png"
+          src="tokenomics/tokenomics2.png"
           alt="No Gimmicks Illustration"
           sx={{
             display: { xs: 'none', lg: 'block' },

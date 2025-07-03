@@ -8,7 +8,7 @@ const HeroSection = () => (
     id="home"
     sx={{
       height: '100vh',
-      backgroundImage: 'url(/house.jpg)',
+      backgroundImage: 'url(house/house.jpg)',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       p: { xs: 2, md: 4 },
