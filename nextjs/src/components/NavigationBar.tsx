@@ -39,6 +39,8 @@ const NavigationBar = () => {
     { label: 'Business Model', path: '/whitepaper'},
     { label: 'Roadmap', path: '/roadmap'},
     { label: 'Team', path: '/team'},
+    { label: 'Contact Us', path: '/contact'},
+
   ];
 
   return (
