@@ -53,8 +53,8 @@ export default function ContactUsPage() {
         setSuccess(true);
         setForm({ name: '', email: '', message: '' });
       }
-    } catch (err: any) {
-      setError('An unexpected error occurred.');
+    } catch (err: unknown) {
+      setError('An unexpected error occurred.' + (err instanceof Error ? err.message : 'Unknown error'));
     } finally {
       setLoading(false);
     }

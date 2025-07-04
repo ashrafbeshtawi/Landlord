@@ -14,10 +14,17 @@ const TITLE_COLOR = '#FFFFFF';
 const BODY_COLOR = '#34C6A3';
 const CONTENT_WIDTH = '800px';
 
+type Contact = {
+    id: string;
+    name: string;
+    email: string;
+    message: string;
+  };
+
 export default function ContactAdminPage() {
   const [auth, setAuth] = useState({ username: '', password: '' });
   const [authorized, setAuthorized] = useState(false);
-  const [contacts, setContacts] = useState<any[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [error, setError] = useState('');
 
   const fetchContacts = async () => {
@@ -38,8 +45,8 @@ export default function ContactAdminPage() {
       const data = await res.json();
       setContacts(data);
       setAuthorized(true);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
       setAuthorized(false);
     }
   };
@@ -59,8 +66,8 @@ export default function ContactAdminPage() {
       }
 
       setContacts(contacts.filter((c) => c.id !== id));
-    } catch (err: any) {
-      alert('Error deleting: ' + err.message);
+    } catch (err: unknown) {
+      alert('Error deleting: ' + (err instanceof Error ? err.message : 'Unknown error'));
     }
   };
 
