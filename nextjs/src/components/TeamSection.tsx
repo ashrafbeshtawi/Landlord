@@ -5,7 +5,7 @@ import theme from '../theme/theme';
 
 const teamMembers = [
   {
-    role: 'CEO & Solidity Developer',
+    role: 'CEO & Backend',
     name: 'Ashraf',
     image: '/team/ashraf.png',
   },
