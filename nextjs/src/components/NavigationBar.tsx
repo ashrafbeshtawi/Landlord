@@ -50,7 +50,7 @@ const NavigationBar = () => {
         {/* Logo */}
         <Box>
           <Image
-            src="/coin3.png"
+            src="/coin/coin3.png"
             alt="Logo"
             width={70}
             height={70}

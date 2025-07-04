@@ -4,9 +4,21 @@ import { Box, Typography, Grid, Card, CardContent, Avatar } from '@mui/material'
 import theme from '../theme/theme';
 
 const teamMembers = [
-  { role: 'Solidity Developer', name: 'Ashraf' },
-  { role: 'Marketing', name: 'Nagham' },
-  { role: 'Frontend', name: 'Muhammad' },
+  {
+    role: 'CEO & Solidity Developer',
+    name: 'Ashraf',
+    image: '/team/ashraf.png',
+  },
+  {
+    role: 'Marketing',
+    name: 'Nagham',
+    image: '/team/nagham.png',
+  },
+  {
+    role: 'Frontend',
+    name: 'Muhammad',
+    image: '/team/mohammad.png',
+  },
 ];
 
 export default function TeamSection() {
@@ -21,13 +33,13 @@ export default function TeamSection() {
       </Typography>
 
       <Grid container spacing={4} justifyContent="center">
-        {teamMembers.map(({ role, name }) => (
-          <Grid key={role}>
+        {teamMembers.map(({ role, name, image }) => (
+          <Grid key={name}>
             <Card
               sx={{
                 textAlign: 'center',
                 p: 3,
-                bgcolor: theme.palette.background.default + 'B3', 
+                bgcolor: theme.palette.background.default + 'B3',
                 borderRadius: 4,
                 boxShadow: 6,
                 width: 250,
@@ -38,20 +50,22 @@ export default function TeamSection() {
                 },
               }}
             >
-              <Avatar
-                sx={{
-                  width: 80,
-                  height: 80,
-                  mx: 'auto',
-                  mb: 2,
-                  fontSize: 32,
-                  bgcolor: theme.palette.primary.main,
-                  color: theme.palette.primary.contrastText,
-                  border: `7px solid ${theme.palette.secondary.main}`,
-                }}
-              >
-                {name.charAt(0)}
-              </Avatar>
+            <Avatar
+              src={image}
+              sx={{
+                width: 80,
+                height: 80,
+                mx: 'auto',
+                mb: 2,
+                fontSize: 32,
+                bgcolor: image ? 'transparent' : theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                border: `4px solid ${theme.palette.secondary.main}`,
+                objectFit: 'cover',
+              }}
+            >
+              {!image && name.charAt(0)}
+            </Avatar>
               <CardContent>
                 <Typography
                   variant="h5"
