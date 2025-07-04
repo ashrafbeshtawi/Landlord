@@ -21,7 +21,7 @@ const teamMembers = [
   },
   {
     role: 'Frontend',
-    name: 'Muhammad',
+    name: 'Mohammad',
     image: '/team/mohammad.png',
   },
 ];
