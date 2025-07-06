@@ -5,6 +5,7 @@ import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -20,9 +21,21 @@ const EXPLORER_URL = `https://bscscan.com/address/${CONTRACT_ADDRESS}`;
 const CONTRACT_CODE_URL = `${EXPLORER_URL}#code`;
 
 const DEX_LIST = [
-  { name: 'PancakeSwap', url: 'https://pancakeswap.finance/swap' },
-  { name: 'ApeSwap', url: 'https://apeswap.finance/swap' },
-  { name: 'Biswap', url: 'https://biswap.org/swap' },
+  {
+    name: 'PancakeSwap',
+    url: 'https://pancakeswap.finance/swap',
+    icon: '/swap/pancake.png'
+  },
+  {
+    name: 'ApeSwap',
+    url: 'https://apeswap.finance/swap',
+    icon: '/swap/ape.png'
+  },
+  {
+    name: 'Biswap',
+    url: 'https://biswap.org/swap',
+    icon: '/swap/bi.png'
+  }
 ];
 
 const BecomeInvestorSection = () => (
@@ -71,16 +84,28 @@ const BecomeInvestorSection = () => (
         </Typography>
 
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap', mb: 6 }}>
-          {DEX_LIST.map(({ name, url }) => (
+          {DEX_LIST.map(({ name, url, icon }) => (
             <motion.div whileHover={{ scale: 1.05 }} key={name}>
               <Button
                 variant="contained"
+                onClick={() => window.open(url, '_blank')}
                 sx={{
                   backgroundColor: theme.palette.primary.main,
-                  '&:hover': { backgroundColor: theme.palette.secondary.main }
+                  '&:hover': { backgroundColor: theme.palette.secondary.main },
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  px: 2,
+                  py: 1
                 }}
-                onClick={() => window.open(url, '_blank')}
               >
+                <Image
+                  src={icon}
+                  alt={`${name} logo`}
+                  width={20}
+                  height={20}
+                  style={{ borderRadius: '4px' }}
+                />
                 {name}
               </Button>
             </motion.div>
