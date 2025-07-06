@@ -65,16 +65,14 @@ const slideVariants = {
     x: 0,
     opacity: 1,
     transition: {
-      duration: 0.6,
-      ease: 'easeOut'
-    }
+      duration: 0.6
+        }
   },
   exit: (direction: number) => ({
     x: direction < 0 ? 1000 : -1000,
     opacity: 0,
     transition: {
       duration: 0.6,
-      ease: 'easeIn'
     }
   })
 };
@@ -100,7 +98,7 @@ const TokenomiksSection = () => {
       sx={{
         py: { xs: 10, md: 16 },
         px: 2,
-        backgroundImage: `url('/house/house3.jpeg')`,
+        backgroundImage: `url('/house/house.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundColor: '#0e1a1a',
