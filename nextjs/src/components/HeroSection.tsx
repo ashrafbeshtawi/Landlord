@@ -1,229 +1,324 @@
 'use client';
 
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Container, Grid, Card, CardContent, Button, Chip } from '@mui/material';
+import { CheckCircle, TrendingUp, Public, Security, Nature, ArrowForward } from '@mui/icons-material';
+import { motion } from 'framer-motion';
 import theme from '../theme/theme';
 
-const HeroSection = () => (
-  <Box
-    id="home"
-    sx={{
-      height: '100vh',
-      backgroundImage: 'url(house/house.jpg)',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      p: { xs: 2, md: 4 },
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}
-  >
+const HeroSection = () => {
+  const features = [
+    {
+      icon: <CheckCircle sx={{ color: '#4CAF50', fontSize: 24 }} />,
+      title: 'Asset-Backed',
+      description: 'Real estate secured tokens'
+    },
+    {
+      icon: <TrendingUp sx={{ color: '#FF9800', fontSize: 24 }} />,
+      title: 'Dual Income',
+      description: 'Rent + appreciation rewards'
+    },
+    {
+      icon: <Public sx={{ color: '#2196F3', fontSize: 24 }} />,
+      title: 'Global Access',
+      description: 'Fractional ownership worldwide'
+    },
+    {
+      icon: <Security sx={{ color: '#9C27B0', fontSize: 24 }} />,
+      title: 'Transparent',
+      description: 'On-chain smart contracts'
+    }
+  ];
+
+  const fadeInUp = {
+    initial: { opacity: 0, y: 60 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.8, ease: "easeOut" }
+  };
+
+  const staggerChildren = {
+    animate: {
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
+  };
+
+  return (
     <Box
+      id="home"
       sx={{
-        width: { xs: '90%', lg: '70%' },
-        bgcolor: theme.palette.background.default,
-        color: '#FFFFFF',
-        borderRadius: 2,
-        p: 3,
-        mt: '100px',
-        opacity: 0.95,
+        minHeight: '100vh',
+        backgroundImage: 'url(house/house.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: { md: 'fixed' },
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%)',
+          zIndex: 1
+        }
       }}
     >
-      {/* Title */}
-      <Typography
-        variant="h3"
-        sx={{
-          mb: 3,
-          textAlign: 'center',
-          fontSize: { xs: '1.2rem', lg: '2rem' },
-        }}
-      >
-        Revolutionizing Real Estate Investment
-      </Typography>
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2, py: { xs: 6, md: 10 } }}>
+        <Grid container spacing={6} alignItems="center">
+          {/* Main Hero Content */}
+          <Grid item xs={12} lg={7}>
+            <motion.div
+              initial="initial"
+              animate="animate"
+              variants={staggerChildren}
+            >
+              <Box
+                sx={{
+                  background: 'linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)',
+                  backdropFilter: 'blur(25px)',
+                  border: '1px solid rgba(255,255,255,0.25)',
+                  borderRadius: 5,
+                  p: { xs: 4, md: 6 },
+                  boxShadow: '0 25px 50px rgba(0,0,0,0.4)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  textAlign: 'center',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '4px',
+                    background: `linear-gradient(90deg, ${theme.palette.primary.main}, #4CAF50, #2196F3)`,
+                    borderRadius: '5px 5px 0 0'
+                  }
+                }}
+              >
+                {/* Title */}
+                <motion.div variants={fadeInUp}>
+                  <Typography
+                    variant="h1"
+                    sx={{
+                      fontSize: { xs: '2.5rem', md: '4rem', lg: '4.5rem' },
+                      fontWeight: 800,
+                      background: 'linear-gradient(45deg, #ffffff 20%, #e3f2fd 80%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      mb: 3,
+                      lineHeight: 1.1,
+                      letterSpacing: '-0.02em'
+                    }}
+                  >
+                    Revolutionizing
+                    <br />
+                    Real Estate
+                  </Typography>
+                </motion.div>
 
-      {/* Intro */}
-      <Typography
-        variant="body1"
-        sx={{ display: { xs: 'block', lg: 'none' }, mb: 3, textAlign: 'center' }}
-      >
-        LandLord Coin (LND) connects blockchain with affordable real estate — now focused on rebuilding Syria.
-      </Typography>
-      <Typography
-        variant="body1"
-        sx={{
-          display: { xs: 'none', lg: 'block', xl: 'none' },
-          mb: 3,
-          textAlign: 'center',
-        }}
-      >
-        LandLord Coin (LND) brings DeFi to Syrian real estate—low prices today, high demand tomorrow.
-      </Typography>
-      <Typography
-        variant="body1"
-        sx={{ display: { xs: 'none', xl: 'block' }, mb: 3, textAlign: 'center' }}
-      >
-        LandLord Coin (LND) bridges decentralized finance with tangible real estate assets — now with a special focus on rebuilding Syria. After years of conflict, Syria presents a rare investment opportunity: property prices are extremely low, and demand is expected to surge as millions of refugees return and international sanctions begin to lift. Our mission remains unchanged — democratizing global property ownership and delivering long-term profits to everyday investors.
-      </Typography>
+                {/* Subtitle */}
+                <motion.div variants={fadeInUp}>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      color: 'rgba(255,255,255,0.9)',
+                      mb: 4,
+                      fontSize: { xs: '1.1rem', md: '1.4rem' },
+                      fontWeight: 400,
+                      lineHeight: 1.5,
+                      maxWidth: '600px',
+                      mx: 'auto'
+                    }}
+                  >
+                    LandLord Coin (LND) bridges blockchain with Syrian real estate. 
+                    <Box component="span" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
+                      {' '}Low prices today, high demand tomorrow.
+                    </Box>
+                  </Typography>
+                </motion.div>
 
-      {/* Bullet List */}
-      <Box sx={{ textAlign: 'left', mx: 'auto', width: '80%' }}>
-        {/* Bullet 1 */}
-        <Typography
-          variant="body1"
-          sx={{ display: { xs: 'block', lg: 'none' }, mb: 2 }}
-        >
-          ✅ Secured by real estate
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            display: { xs: 'none', lg: 'block', xl: 'none' },
-            mb: 2,
-          }}
-        >
-          ✅ Asset‑backed security with real estate in Syria.
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            display: { xs: 'none', xl: 'block' },
-            mb: 2,
-          }}
-        >
-          ✅ <strong>Asset‑Backed Security:</strong> Each LND token is backed by income‑generating real estate in emerging markets like Syria, giving your digital asset real-world value.
-        </Typography>
+                {/* Key Stats */}
+                <motion.div variants={fadeInUp}>
+                  <Box sx={{ display: 'flex', gap: 4, mb: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Typography variant="h4" sx={{ color: '#2196F3', fontWeight: 700 }}>
+                        3
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+                        Countries
+                      </Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Typography variant="h4" sx={{ color: '#4CAF50', fontWeight: 700 }}>
+                        100%
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+                        Transparency
+                      </Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Typography variant="h4" sx={{ color: '#FF9800', fontWeight: 700 }}>
+                        24/7
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+                        Trading
+                      </Typography>
+                    </Box>
+                  </Box>
+                </motion.div>
 
-        {/* Bullet 2 */}
-        <Typography
-          variant="body1"
-          sx={{ display: { xs: 'block', lg: 'none' }, mb: 2 }}
-        >
-          📈 Dual income
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            display: { xs: 'none', lg: 'block', xl: 'none' },
-            mb: 2,
-          }}
-        >
-          📈 Earn from rent and property value.
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            display: { xs: 'none', xl: 'block' },
-            mb: 2,
-          }}
-        >
-          📈 <strong>Stable Growth:</strong> Earn two ways — from long-term property appreciation and recurring rental income paid directly to your wallet.
-        </Typography>
+                {/* CTA Button */}
+                <motion.div variants={fadeInUp}>
+                  <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      endIcon={<ArrowForward />}
+                      sx={{
+                        background: `linear-gradient(45deg, ${theme.palette.primary.main}, #4CAF50)`,
+                        px: 4,
+                        py: 1.5,
+                        fontSize: '1.1rem',
+                        fontWeight: 600,
+                        borderRadius: 3,
+                        textTransform: 'none',
+                        boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+                        '&:hover': {
+                          background: `linear-gradient(45deg, ${theme.palette.primary.dark}, #45a049)`,
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 15px 30px rgba(0,0,0,0.4)'
+                        }
+                      }}
+                    >
+                      Start Investing
+                    </Button>
+                    <Chip
+                      label="🇸🇾 Syria Focus"
+                      variant="outlined"
+                      sx={{
+                        color: 'white',
+                        borderColor: 'rgba(255,255,255,0.3)',
+                        fontSize: '0.9rem',
+                        height: 'auto',
+                        py: 1
+                      }}
+                    />
+                  </Box>
+                </motion.div>
+              </Box>
+            </motion.div>
+          </Grid>
 
-        {/* Bullet 3 */}
-        <Typography
-          variant="body1"
-          sx={{ display: { xs: 'block', lg: 'none' }, mb: 2 }}
-        >
-          🌍 Global fractional ownership
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            display: { xs: 'none', lg: 'block', xl: 'none' },
-            mb: 2,
-          }}
-        >
-          🌍 Invest worldwide with small capital.
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            display: { xs: 'none', xl: 'block' },
-            mb: 2,
-          }}
-        >
-          🌍 <strong>Global Access:</strong> Break traditional barriers. Start investing in properties across the world — especially in high-potential regions like Syria — with just a small amount.
-        </Typography>
+          {/* Features Sidebar */}
+          <Grid item xs={12} lg={5}>
+            <motion.div
+              initial="initial"
+              animate="animate"
+              variants={staggerChildren}
+            >
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <motion.div variants={fadeInUp}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      color: 'white',
+                      fontWeight: 600,
+                      mb: 2,
+                      textAlign: 'center'
+                    }}
+                  >
+                    Why Choose LandLord Coin?
+                  </Typography>
+                </motion.div>
+                
+                <Grid container spacing={2}>
+                  {features.map((feature, index) => (
+                    <Grid item xs={12} sm={6} lg={12} key={index}>
+                      <motion.div 
+                        variants={fadeInUp}
+                        whileHover={{ scale: 1.05, y: -5 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                      >
+                        <Card
+                          sx={{
+                            background: 'linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+                            backdropFilter: 'blur(15px)',
+                            border: '1px solid rgba(255,255,255,0.2)',
+                            borderRadius: 3,
+                            transition: 'all 0.3s ease',
+                            cursor: 'pointer',
+                            '&:hover': {
+                              boxShadow: '0 15px 30px rgba(0,0,0,0.3)',
+                              border: '1px solid rgba(255,255,255,0.3)'
+                            }
+                          }}
+                        >
+                          <CardContent sx={{ p: 3, textAlign: 'center' }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 1 }}>
+                              {feature.icon}
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  mt: 1,
+                                  color: 'white',
+                                  fontWeight: 700,
+                                  fontSize: '1.1rem'
+                                }}
+                              >
+                                {feature.title}
+                              </Typography>
+                            </Box>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'rgba(255,255,255,0.8)',
+                                fontSize: '0.95rem',
+                                lineHeight: 1.4
+                              }}
+                            >
+                              {feature.description}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    </Grid>
+                  ))}
+                </Grid>
 
-        {/* Bullet 4 */}
-        <Typography
-          variant="body1"
-          sx={{ display: { xs: 'block', lg: 'none' }, mb: 2 }}
-        >
-          🔒 On‑chain transparency
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            display: { xs: 'none', lg: 'block', xl: 'none' },
-            mb: 2,
-          }}
-        >
-          🔒 All deals recorded on‑chain.
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            display: { xs: 'none', xl: 'block' },
-            mb: 2,
-          }}
-        >
-          🔒 <strong>Blockchain Transparency:</strong> All transactions are powered by smart contracts and recorded on-chain — ensuring full transparency, traceability, and trust.
-        </Typography>
-
-        {/* Bullet 5 */}
-        <Typography
-          variant="body1"
-          sx={{ display: { xs: 'block', lg: 'none' }, mb: 0 }}
-        >
-          🌱 Expanding to Egypt & Turkey
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            display: { xs: 'none', lg: 'block', xl: 'none' },
-            mb: 0,
-          }}
-        >
-          🌱 Growth in Egypt & Turkey.
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{ display: { xs: 'none', xl: 'block' }, mb: 0 }}
-        >
-          🌱 <strong>Strategic Growth Ahead:</strong> Our roadmap includes expansion into high-potential emerging markets such as Egypt and Turkey — further diversifying the real estate portfolio.
-        </Typography>
-      </Box>
-
-      {/* Call‑to‑Action */}
-      <Typography
-        variant="body1"
-        sx={{
-          display: { xs: 'none', lg: 'block', xl: 'none' },
-          mt: 3,
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          color: theme.palette.primary.main,
-          textAlign: 'center',
-        }}
-      >
-        Join Syria’s rebuilding—own tokenized property for real impact. 🇸🇾
-      </Typography>
-      <Typography
-        variant="body1"
-        sx={{
-          display: { xs: 'none', xl: 'block' },
-          mt: 3,
-          fontSize: '1.2rem',
-          fontWeight: 'bold',
-          color: theme.palette.primary.main,
-          textAlign: 'center',
-        }}
-      >
-        Be part of Syria’s rebuilding journey — tokenized real estate for a more equitable future. 🇸🇾
-      </Typography>
+                {/* Expansion Info */}
+                <motion.div variants={fadeInUp}>
+                  <Box
+                    sx={{
+                      background: 'linear-gradient(90deg, rgba(76,175,80,0.1) 0%, rgba(33,150,243,0.1) 100%)',
+                      border: '1px solid rgba(76,175,80,0.3)',
+                      borderRadius: 3,
+                      p: 3,
+                      mt: 2,
+                      textAlign: 'center'
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+                      <Nature sx={{ color: '#4CAF50', mr: 1 }} />
+                      <Typography variant="subtitle1" sx={{ color: 'white', fontWeight: 600 }}>
+                        Expanding Soon
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                      Egypt & Turkey markets coming Q2 2025
+                    </Typography>
+                  </Box>
+                </motion.div>
+              </Box>
+            </motion.div>
+          </Grid>
+        </Grid>
+      </Container>
     </Box>
-  </Box>
-);
+  );
+};
 
 export default HeroSection;
