@@ -1,11 +1,14 @@
 'use client';
 
-import { Box, Typography, Container, Grid, Card, CardContent, Button, Chip } from '@mui/material';
-import { CheckCircle, TrendingUp, Public, Security, ArrowForward } from '@mui/icons-material';
+import { Box, Typography, Container, Grid, Card, CardContent, Button } from '@mui/material';
+import { CheckCircle, TrendingUp, Public, Security, ArrowForward, Description } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import theme from '../theme/theme';
+import { useRouter } from 'next/navigation';
 
 const HeroSection = () => {
+  const router = useRouter();
+
   const features = [
     {
       icon: <CheckCircle sx={{ color: '#4CAF50', fontSize: 24 }} />,
@@ -71,11 +74,7 @@ const HeroSection = () => {
         <Grid container spacing={6} alignItems="center">
           {/* Main Hero Content */}
           <Grid>
-            <motion.div
-              initial="initial"
-              animate="animate"
-              variants={staggerChildren}
-            >
+            <motion.div initial="initial" animate="animate" variants={staggerChildren}>
               <Box
                 sx={{
                   background: 'linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)',
@@ -120,6 +119,7 @@ const HeroSection = () => {
                   </Typography>
                 </motion.div>
 
+                {/* Subtitle */}
                 <motion.div variants={fadeInUp}>
                   <Typography
                     variant="h5"
@@ -133,17 +133,18 @@ const HeroSection = () => {
                       mx: 'auto'
                     }}
                   >
-                  Seize the chance to own Syrian real estate at rock‑bottom prices with LandLord Coin (LND)—enjoy steady rental income, share in rebuilding impact, and benefit from blockchain’s security and transparency as demand surges.
+                    Seize the chance to own Syrian real estate at rock‑bottom prices with LandLord Coin (LND)—enjoy steady rental income, share in rebuilding impact, and benefit from blockchain’s security and transparency as demand surges.
                   </Typography>
                 </motion.div>
 
-                {/* CTA Button */}
+                {/* CTA Buttons */}
                 <motion.div variants={fadeInUp}>
                   <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
                     <Button
                       variant="contained"
                       size="large"
                       endIcon={<ArrowForward />}
+                      onClick={() => router.push('/invest')}
                       sx={{
                         background: `linear-gradient(45deg, ${theme.palette.primary.main}, #4CAF50)`,
                         px: 4,
@@ -162,17 +163,29 @@ const HeroSection = () => {
                     >
                       Start Investing
                     </Button>
-                    <Chip
-                      label="🇸🇾 Syria Focus"
+
+                    <Button
                       variant="outlined"
+                      size="large"
+                      startIcon={<Description />}
+                      onClick={() => router.push('/whitepaper')}
                       sx={{
                         color: 'white',
-                        borderColor: 'rgba(255,255,255,0.3)',
-                        fontSize: '0.9rem',
-                        height: 'auto',
-                        py: 1
+                        borderColor: 'rgba(255,255,255,0.5)',
+                        px: 3,
+                        py: 1.5,
+                        fontSize: '1rem',
+                        borderRadius: 3,
+                        fontWeight: 500,
+                        textTransform: 'none',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255,255,255,0.1)',
+                          borderColor: 'white'
+                        }
                       }}
-                    />
+                    >
+                      Business Model
+                    </Button>
                   </Box>
                 </motion.div>
               </Box>
@@ -180,12 +193,8 @@ const HeroSection = () => {
           </Grid>
 
           {/* Features Sidebar */}
-          <Grid>
-            <motion.div
-              initial="initial"
-              animate="animate"
-              variants={staggerChildren}
-            >
+          <Grid sx={{ width: '100%' }}>
+            <motion.div initial="initial" animate="animate" variants={staggerChildren}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <motion.div variants={fadeInUp}>
                   <Typography
@@ -200,11 +209,11 @@ const HeroSection = () => {
                     Why Choose LandLord Coin?
                   </Typography>
                 </motion.div>
-                
-                <Grid container spacing={2}>
+
+                <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
                   {features.map((feature, index) => (
                     <Grid key={index}>
-                      <motion.div 
+                      <motion.div
                         variants={fadeInUp}
                         whileHover={{ scale: 1.05, y: -5 }}
                         transition={{ type: "spring", stiffness: 300 }}
