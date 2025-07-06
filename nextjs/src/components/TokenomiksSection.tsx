@@ -89,7 +89,11 @@ const TokenomiksSection = () => {
 
   useEffect(() => {
     timeoutRef.current = setTimeout(() => paginate(1), 8000);
-    return () => timeoutRef.current && clearTimeout(timeoutRef.current);
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [index]);
 
   return (
