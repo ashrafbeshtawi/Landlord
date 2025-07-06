@@ -10,10 +10,18 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
 import Image from 'next/image';
 import WalletConnectButton from './WalletConnectButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import DescriptionIcon from '@mui/icons-material/Description';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import GroupIcon from '@mui/icons-material/Group';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
 import theme from '@/theme/theme';
 
 const NavigationBar = () => {
@@ -34,13 +42,12 @@ const NavigationBar = () => {
   };
 
   const navItems = [
-    { label: 'Home', path: '/'},
-    { label: 'Tokenomics', path: '/tokenomics'},
-    { label: 'Business Model', path: '/whitepaper'},
-    { label: 'Become Investor', path: '/invest'},
-    { label: 'Team', path: '/team'},
-    { label: 'Contact Us', path: '/contact'},
-
+    { label: 'Home', path: '/', icon: <HomeIcon /> },
+    { label: 'Tokenomics', path: '/tokenomics', icon: <PieChartIcon /> },
+    { label: 'Business Model', path: '/whitepaper', icon: <DescriptionIcon /> },
+    { label: 'Become Investor', path: '/invest', icon: <TrendingUpIcon /> },
+    { label: 'Team', path: '/team', icon: <GroupIcon /> },
+    { label: 'Contact Us', path: '/contact', icon: <ContactMailIcon /> },
   ];
 
   return (
@@ -62,16 +69,17 @@ const NavigationBar = () => {
 
         {/* Desktop Links */}
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-          {navItems.map(({ label, path }) => (
+          {navItems.map(({ label, path, icon }) => (
             <Button
               key={path}
               onClick={() => handleRouteChange(path)}
-              variant= 'text'
+              variant="text"
+              startIcon={icon}
               sx={{
                 mx: 2,
                 fontWeight: 'bold',
-                '&:hover':{ backgroundColor: theme.palette.primary.main },
-                color:'#FFFFFF',
+                '&:hover': { backgroundColor: theme.palette.primary.main },
+                color: '#FFFFFF',
               }}
             >
               {label}
@@ -100,16 +108,16 @@ const NavigationBar = () => {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          {navItems.map(({ label, path }) => (
+          {navItems.map(({ label, path, icon }) => (
             <MenuItem
               key={path}
               onClick={() => handleRouteChange(path)}
-              sx={{
-                fontWeight: 'bold',
-                color: 'inherit',
-              }}
+              sx={{ fontWeight: 'bold', color: 'inherit' }}
             >
-              {label}
+              <ListItemIcon sx={{ color: theme.palette.primary.main }}>
+                {icon}
+              </ListItemIcon>
+              <ListItemText primary={label} />
             </MenuItem>
           ))}
         </Menu>
