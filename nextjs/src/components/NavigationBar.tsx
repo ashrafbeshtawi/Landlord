@@ -37,7 +37,7 @@ const NavigationBar = () => {
     { label: 'Home', path: '/'},
     { label: 'Tokenomics', path: '/tokenomics'},
     { label: 'Business Model', path: '/whitepaper'},
-    { label: 'Roadmap', path: '/roadmap'},
+    { label: 'Become Investor', path: '/invest'},
     { label: 'Team', path: '/team'},
     { label: 'Contact Us', path: '/contact'},
 
