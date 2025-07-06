@@ -6,7 +6,6 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import type { FeatureCollection, Point } from 'geojson';
-import theme from '../theme/theme';
 
 const geojsonData: FeatureCollection<Point, {
   name: string;
