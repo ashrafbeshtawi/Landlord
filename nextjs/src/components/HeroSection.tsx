@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Typography, Container, Grid, Card, CardContent, Button, Chip } from '@mui/material';
-import { CheckCircle, TrendingUp, Public, Security, Nature, ArrowForward } from '@mui/icons-material';
+import { CheckCircle, TrendingUp, Public, Security, ArrowForward } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import theme from '../theme/theme';
 
@@ -70,7 +70,7 @@ const HeroSection = () => {
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2, py: { xs: 6, md: 10 } }}>
         <Grid container spacing={6} alignItems="center">
           {/* Main Hero Content */}
-          <Grid item xs={12} lg={7}>
+          <Grid>
             <motion.div
               initial="initial"
               animate="animate"
@@ -104,7 +104,7 @@ const HeroSection = () => {
                   <Typography
                     variant="h1"
                     sx={{
-                      fontSize: { xs: '2.5rem', md: '4rem', lg: '4.5rem' },
+                      fontSize: { xs: '2rem', md: '3rem', lg: '3.5rem' },
                       fontWeight: 800,
                       background: 'linear-gradient(45deg, #ffffff 20%, #e3f2fd 80%)',
                       WebkitBackgroundClip: 'text',
@@ -120,7 +120,6 @@ const HeroSection = () => {
                   </Typography>
                 </motion.div>
 
-                {/* Subtitle */}
                 <motion.div variants={fadeInUp}>
                   <Typography
                     variant="h5"
@@ -130,45 +129,12 @@ const HeroSection = () => {
                       fontSize: { xs: '1.1rem', md: '1.4rem' },
                       fontWeight: 400,
                       lineHeight: 1.5,
-                      maxWidth: '600px',
+                      maxWidth: '650px',
                       mx: 'auto'
                     }}
                   >
-                    LandLord Coin (LND) bridges blockchain with Syrian real estate. 
-                    <Box component="span" sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>
-                      {' '}Low prices today, high demand tomorrow.
-                    </Box>
+                  Seize the chance to own Syrian real estate at rock‑bottom prices with LandLord Coin (LND)—enjoy steady rental income, share in rebuilding impact, and benefit from blockchain’s security and transparency as demand surges.
                   </Typography>
-                </motion.div>
-
-                {/* Key Stats */}
-                <motion.div variants={fadeInUp}>
-                  <Box sx={{ display: 'flex', gap: 4, mb: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Typography variant="h4" sx={{ color: '#2196F3', fontWeight: 700 }}>
-                        3
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>
-                        Countries
-                      </Typography>
-                    </Box>
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Typography variant="h4" sx={{ color: '#4CAF50', fontWeight: 700 }}>
-                        100%
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>
-                        Transparency
-                      </Typography>
-                    </Box>
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Typography variant="h4" sx={{ color: '#FF9800', fontWeight: 700 }}>
-                        24/7
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>
-                        Trading
-                      </Typography>
-                    </Box>
-                  </Box>
                 </motion.div>
 
                 {/* CTA Button */}
@@ -214,7 +180,7 @@ const HeroSection = () => {
           </Grid>
 
           {/* Features Sidebar */}
-          <Grid item xs={12} lg={5}>
+          <Grid>
             <motion.div
               initial="initial"
               animate="animate"
@@ -237,7 +203,7 @@ const HeroSection = () => {
                 
                 <Grid container spacing={2}>
                   {features.map((feature, index) => (
-                    <Grid item xs={12} sm={6} lg={12} key={index}>
+                    <Grid key={index}>
                       <motion.div 
                         variants={fadeInUp}
                         whileHover={{ scale: 1.05, y: -5 }}
@@ -288,30 +254,6 @@ const HeroSection = () => {
                     </Grid>
                   ))}
                 </Grid>
-
-                {/* Expansion Info */}
-                <motion.div variants={fadeInUp}>
-                  <Box
-                    sx={{
-                      background: 'linear-gradient(90deg, rgba(76,175,80,0.1) 0%, rgba(33,150,243,0.1) 100%)',
-                      border: '1px solid rgba(76,175,80,0.3)',
-                      borderRadius: 3,
-                      p: 3,
-                      mt: 2,
-                      textAlign: 'center'
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
-                      <Nature sx={{ color: '#4CAF50', mr: 1 }} />
-                      <Typography variant="subtitle1" sx={{ color: 'white', fontWeight: 600 }}>
-                        Expanding Soon
-                      </Typography>
-                    </Box>
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-                      Egypt & Turkey markets coming Q2 2025
-                    </Typography>
-                  </Box>
-                </motion.div>
               </Box>
             </motion.div>
           </Grid>
