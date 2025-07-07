@@ -1,82 +1,104 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Box, Typography, Button, useTheme } from '@mui/material';
+import { useState, useRef, useEffect } from 'react';
+import { Box, Typography, Button, IconButton } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
+import theme from '@/theme/theme';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 
-const CONTAINERS = [
+const SLIDES = [
   {
     title: 'Tokenomics',
-    items: [
-      ['✅ Fixed Supply', '100 trillion tokens minted at launch — fully transparent from day one.'],
-      ['📈 Profit Sharing', 'LND holders receive periodic profits based on holdings — verifiable and fair.'],
-      ['🔥 Burnable Tokens', 'Any holder can burn tokens — increasing scarcity and long-term value.'],
-      ['🏠 Controlled Minting', 'Owner can mint up to 10% of supply — only for real estate purchases.']
+    points: [
+      ['✅ Fixed Supply', '100 trillion tokens minted at launch (18 decimals) — fully transparent from day one.'],
+      ['📈 Profit Sharing', 'LND holders (excluding the owner) receive periodic profit distributions based on their holdings — secured and verifiable.'],
+      ['🔒 Trustworthy Mechanics', 'Signature-based claims and protection against reentrancy ensure all distributions are safe, fair, and technically sound.'],
+      ['🔥 Burnable Tokens', 'Any holder can reduce the total supply by burning tokens — helping to increase scarcity and long-term value.'],
+      ['🏠 Controlled Minting', 'New tokens can only be minted by the owner and only up to 10% of the existing supply, strictly for real estate acquisitions — ensuring real utility and responsible expansion.']
     ],
-    gradient: 'linear-gradient(45deg, #ffffff, #1DCD9F)'
+    footer: '',
   },
   {
-    title: 'What’s Not in the Contract',
-    items: [
-      ['🚫 No Transfer Restrictions', 'Tokens can be freely bought, held, and sold — no access blocking.'],
-      ['🚫 No Transaction Fees', 'Transfers happen 1:1 — no built-in taxes.'],
-      ['🚫 No Wallet or TX Limits', 'No caps on how much you can hold or transfer.'],
-      ['🚫 No Blacklisting', 'All users are treated equally — no backdoors.']
+    title: 'What’s Not in the Contract By Design',
+    points: [
+      ['🚫 No Transfer Restrictions', 'Tokens can be freely bought, held, and sold — there are no mechanisms that block users from accessing their assets.'],
+      ['🚫 No Transaction Fees or Hidden Deductions', 'Transfers happen 1:1 — there are no built-in taxes or fees applied to send, receive, or trade.'],
+      ['🚫 No Blacklisting or Special Privileges', 'The contract contains no functions that allow addresses to be blocked or given unfair priority — everyone is treated equally.'],
+      ['🚫 No Wallet or Transaction Limits', 'There are no artificial caps on how much you can hold or move — promoting free, open participation.'],
+      ['🚫 No Complex Tokenomics Gimmicks', 'The token does not rely on reflections, auto-liquidity, or rebasing mechanics — it is built for clarity, simplicity.']
     ],
-    gradient: 'linear-gradient(45deg, #ffffff, #169976)'
+    footer: '',
   }
 ];
 
-const transitionVariants = {
-  enter: (dir: number) => ({
-    x: dir > 0 ? 300 : -300,
+const glassBoxStyle = {
+  background: 'linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))',
+  border: '1px solid rgba(255,255,255,0.2)',
+  backdropFilter: 'blur(25px)',
+  borderRadius: 5,
+  p: { xs: 3, md: 5 },
+  boxShadow: '0 25px 50px rgba(0,0,0,0.4)',
+  color: 'white',
+  width: '100%',
+  maxWidth: 800,
+  minHeight: 480,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+};
+
+const variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 300 : -300,
     opacity: 0,
-    scale: 0.8
+    position: 'absolute'
   }),
   center: {
     x: 0,
     opacity: 1,
-    scale: 1,
-    zIndex: 1
+    position: 'relative'
   },
-  exit: (dir: number) => ({
-    x: dir < 0 ? 300 : -300,
+  exit: (direction: number) => ({
+    x: direction < 0 ? 300 : -300,
     opacity: 0,
-    scale: 0.8
-  })
+    position: 'absolute'
+  }),
 };
 
-export default function TokenomiksSliderSection() {
-  const theme = useTheme();
+const TokenomiksSection = () => {
   const [[index, direction], setIndex] = useState([0, 0]);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const paginate = (dir: number) => {
-    setIndex(([prev]) => [(prev + dir + CONTAINERS.length) % CONTAINERS.length, dir]);
+  const paginate = (newDirection: number) => {
+    setIndex(([prev]) => {
+      const nextIndex = (prev + newDirection + SLIDES.length) % SLIDES.length;
+      return [nextIndex, newDirection];
+    });
   };
 
   useEffect(() => {
     timeoutRef.current = setTimeout(() => paginate(1), 8000);
-  
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [index]);
-  
+
+  const currentSlide = SLIDES[index];
 
   return (
     <Box
       id="tokenomiks"
       sx={{
         position: 'relative',
-        backgroundImage: 'url(/tokenomics/tokenomics.png)', // ⬅️ your background image
+        backgroundImage: 'url(/house/house.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         height: '100vh',
         px: { xs: 2, md: 4 },
         py: 12,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         '&::before': {
           content: '""',
           position: 'absolute',
@@ -89,110 +111,83 @@ export default function TokenomiksSliderSection() {
         }
       }}
     >
-      <Box
-        sx={{
-          maxWidth: '1000px',
-          mx: 'auto',
-          position: 'relative',
-          height: { xs: 'auto', md: '500px' }
-        }}
-      >
-        <AnimatePresence custom={direction} mode="popLayout">
-          <motion.div
-            key={index}
-            custom={direction}
-            variants={transitionVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.6, ease: 'easeInOut' }}
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%'
-            }}
-          >
-            <Box
-              sx={{
-                background: 'linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))',
-                border: '1px solid rgba(255,255,255,0.15)',
-                backdropFilter: 'blur(25px)',
-                borderRadius: 5,
-                p: { xs: 3, md: 5 },
-                height: '100%',
-                boxShadow: '0 25px 50px rgba(0,0,0,0.4)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}
-            >
-              <Box>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    textAlign: 'center',
-                    background: CONTAINERS[index].gradient,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    fontWeight: 'bold',
-                    fontSize: { xs: '2rem', md: '2.5rem' }
-                  }}
-                >
-                  {CONTAINERS[index].title}
+      <AnimatePresence initial={false} custom={direction}>
+        <motion.div
+          key={index}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.6 }}
+          style={{ zIndex: 2 }}
+        >
+          <Box sx={glassBoxStyle}>
+            <Box>
+              <Typography variant="h4" textAlign="center" sx={{ color: theme.palette.text.primary, mb: 3 }}>
+                {currentSlide.title}
+              </Typography>
+              {currentSlide.points.map(([title, content], i) => (
+                <Box key={i} sx={{ mt: i === 0 ? 0 : 2 }}>
+                  <Typography variant="body1" sx={{ fontWeight: 'bold', color: theme.palette.text.secondary }}>
+                    {title}
+                  </Typography>
+                  <Typography variant="body2" sx={{ pl: 1, color: 'rgba(255,255,255,0.85)' }}>
+                    {content}
+                  </Typography>
+                </Box>
+              ))}
+              {currentSlide.footer && (
+                <Typography variant="body2" sx={{ mt: 3, color: 'rgba(255,255,255,0.85)', lineHeight: 1.6 }}>
+                  {currentSlide.footer}
                 </Typography>
-
-                {CONTAINERS[index].items.map(([title, content], i) => (
-                  <Box key={i} sx={{ mt: i === 0 ? 3 : 2 }}>
-                    <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 0.5, color: theme.palette.text.primary }}>
-                      {title}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)', pl: 1 }}>
-                      {content}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-
-              <Box sx={{ textAlign: 'center', mt: 4 }}>
-                <Button
-                  variant="contained"
-                  onClick={() => window.open('https://bscscan.com/address/0xYourSmartContractAddressHere', '_blank')}
-                  sx={{
-                    backgroundColor: theme.palette.primary.main,
-                    '&:hover': { backgroundColor: theme.palette.secondary.main },
-                    fontWeight: 600,
-                    px: 4,
-                    py: 1
-                  }}
-                >
-                  View Source Code
-                </Button>
-              </Box>
+              )}
             </Box>
-          </motion.div>
-        </AnimatePresence>
+
+            <Box textAlign="center" mt={4}>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 4 }}
+                onClick={() => window.open('https://bscscan.com/address/0xYourSmartContractAddressHere#code', '_blank')}
+              >
+                View Source Code
+              </Button>
+            </Box>
+          </Box>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Navigation Arrows */}
+      <Box sx={{ position: 'absolute', top: '50%', left: 20, zIndex: 3 }}>
+        <IconButton onClick={() => paginate(-1)} sx={{ color: theme.palette.primary.main }}>
+          <ChevronLeft />
+        </IconButton>
+      </Box>
+      <Box sx={{ position: 'absolute', top: '50%', right: 20, zIndex: 3 }}>
+        <IconButton onClick={() => paginate(1)} sx={{ color: theme.palette.primary.main }}>
+          <ChevronRight />
+        </IconButton>
       </Box>
 
       {/* Navigation Dots */}
-      <Box sx={{ textAlign: 'center', mt: 6, position: 'relative', zIndex: 2 }}>
-        {CONTAINERS.map((_, i) => (
-          <Button
+      <Box sx={{ position: 'absolute', bottom: 32, display: 'flex', gap: 1, zIndex: 3 }}>
+        {SLIDES.map((_, i) => (
+          <Box
             key={i}
-            size="small"
-            onClick={() => paginate(i - index)}
+            onClick={() => setIndex([i, i > index ? 1 : -1])}
             sx={{
-              minWidth: 12,
-              height: 12,
+              width: 10,
+              height: 10,
               borderRadius: '50%',
-              mx: 0.5,
-              backgroundColor: i === index ? 'white' : 'rgba(255,255,255,0.4)',
-              '&:hover': {
-                backgroundColor: 'white'
-              }
+              backgroundColor: i === index ? theme.palette.primary.main : 'rgba(255,255,255,0.3)',
+              cursor: 'pointer'
             }}
           />
         ))}
       </Box>
     </Box>
   );
-}
+};
+
+export default TokenomiksSection;

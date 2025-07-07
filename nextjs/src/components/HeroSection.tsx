@@ -51,7 +51,7 @@ const HeroSection = () => {
       id="home"
       sx={{
         minHeight: '100vh',
-        backgroundImage: 'url(house/house.jpg)',
+        backgroundImage: 'url(house/syria-rebuild.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: { md: 'fixed' },
