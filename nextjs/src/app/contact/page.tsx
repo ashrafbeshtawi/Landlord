@@ -10,8 +10,6 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
-const TITLE_COLOR = '#FFFFFF';
-const BODY_COLOR = '#34C6A3';
 const CONTENT_WIDTH = '800px';
 
 export default function ContactUsPage() {
@@ -63,108 +61,168 @@ export default function ContactUsPage() {
   return (
     <Box
       sx={{
-        p: { xs: 2, md: 4 },
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%)',
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
-        overflow: 'hidden',
-        color: BODY_COLOR,
+        justifyContent: 'center',
+        py: { xs: 6, md: 10 },
       }}
     >
-      {/* Title */}
       <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}>
-        <Box sx={{ maxWidth: CONTENT_WIDTH, width: '100%', mx: 'auto' }}>
+        <Box
+          sx={{
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)',
+            backdropFilter: 'blur(25px)',
+            border: '1px solid rgba(255,255,255,0.25)',
+            borderRadius: 5,
+            p: { xs: 4, md: 6 },
+            boxShadow: '0 25px 50px rgba(0,0,0,0.4)',
+            position: 'relative',
+            overflow: 'hidden',
+            textAlign: 'center',
+            maxWidth: CONTENT_WIDTH,
+            width: '100%',
+            mx: 'auto',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '4px',
+              background: `linear-gradient(90deg, ${theme.palette.primary.main}, #4CAF50, #2196F3)`,
+              borderRadius: '5px 5px 0 0'
+            }
+          }}
+        >
           <Typography
             variant="h3"
-            sx={{ color: TITLE_COLOR, fontWeight: 700, mt: 8, mb: 3, textAlign: 'center' }}
+            sx={{ color: 'white', fontWeight: 700, mb: 3, textAlign: 'center' }}
           >
             Contact Us
           </Typography>
-        </Box>
-      </motion.div>
-
-      {/* Intro Text */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={fadeInUp}
-        transition={{ delay: 0.1 }}
-      >
-        <Box sx={{ maxWidth: CONTENT_WIDTH, width: '100%', mx: 'auto', mb: 4 }}>
           <Typography
             variant="body1"
-            sx={{ lineHeight: 1.6, color: BODY_COLOR, textAlign: 'center' }}
+            sx={{ lineHeight: 1.6, color: 'rgba(255,255,255,0.9)', textAlign: 'center', mb: 4 }}
           >
             We’d love to hear from you! Whether you have questions, feedback, or want to learn more about our project, please fill out the form below and we’ll get back to you as soon as possible.
           </Typography>
-        </Box>
-      </motion.div>
 
-      {/* Contact Form */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ delay: 0.2 }}>
-        <Box sx={{ maxWidth: CONTENT_WIDTH, width: '100%', mx: 'auto' }}>
-          <TextField
-            label="Name"
-            variant="outlined"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={form.name}
-            onChange={handleChange('name')}
-            InputLabelProps={{ style: { color: BODY_COLOR } }}
-            InputProps={{ style: { color: BODY_COLOR } }}
-          />
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={form.email}
-            onChange={handleChange('email')}
-            InputLabelProps={{ style: { color: BODY_COLOR } }}
-            InputProps={{ style: { color: BODY_COLOR } }}
-            type="email"
-          />
-          <TextField
-            label="Message"
-            variant="outlined"
-            fullWidth
-            multiline
-            minRows={4}
-            sx={{ mb: 3 }}
-            value={form.message}
-            onChange={handleChange('message')}
-            InputLabelProps={{ style: { color: BODY_COLOR } }}
-            InputProps={{ style: { color: BODY_COLOR } }}
-          />
+          <Box sx={{ maxWidth: '600px', mx: 'auto' }}>
+            <TextField
+              label="Name"
+              variant="outlined"
+              fullWidth
+              value={form.name}
+              onChange={handleChange('name')}
+              InputLabelProps={{ style: { color: 'rgba(255,255,255,0.7)' } }}
+              sx={{
+                mb: 2,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'rgba(255,255,255,0.5)',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'white',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: theme.palette.primary.main,
+                  },
+                  '& input': {
+                    color: 'white',
+                  },
+                },
+              }}
+            />
+            <TextField
+              label="Email"
+              variant="outlined"
+              fullWidth
+              value={form.email}
+              onChange={handleChange('email')}
+              InputLabelProps={{ style: { color: 'rgba(255,255,255,0.7)' } }}
+              type="email"
+              sx={{
+                mb: 2,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'rgba(255,255,255,0.5)',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'white',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: theme.palette.primary.main,
+                  },
+                  '& input': {
+                    color: 'white',
+                  },
+                },
+              }}
+            />
+            <TextField
+              label="Message"
+              variant="outlined"
+              fullWidth
+              multiline
+              minRows={4}
+              value={form.message}
+              onChange={handleChange('message')}
+              InputLabelProps={{ style: { color: 'rgba(255,255,255,0.7)' } }}
+              sx={{
+                mb: 3,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'rgba(255,255,255,0.5)',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'white',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: theme.palette.primary.main,
+                  },
+                  '& textarea': {
+                    color: 'white',
+                  },
+                },
+              }}
+            />
 
-          {error && (
-            <Typography sx={{ color: 'red', mb: 2, textAlign: 'center' }}>
-              {error}
-            </Typography>
-          )}
-          {success && (
-            <Typography sx={{ color: '#00FF00', mb: 2, textAlign: 'center' }}>
-              Your message has been sent successfully!
-            </Typography>
-          )}
+            {error && (
+              <Typography sx={{ color: 'red', mb: 2, textAlign: 'center' }}>
+                {error}
+              </Typography>
+            )}
+            {success && (
+              <Typography sx={{ color: '#00FF00', mb: 2, textAlign: 'center' }}>
+                Your message has been sent successfully!
+              </Typography>
+            )}
 
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            disabled={loading}
-            sx={{
-              backgroundColor: theme.palette.primary.main,
-              '&:hover': { backgroundColor: theme.palette.secondary.main },
-              display: 'block',
-              mx: 'auto',
-              fontWeight: 700,
-              px: 5,
-              py: 1.5,
-            }}
-          >
-            {loading ? 'Sending...' : 'Send Message'}
-          </Button>
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              disabled={loading}
+              sx={{
+                background: `linear-gradient(45deg, ${theme.palette.primary.main}, #4CAF50)`,
+                px: 4,
+                py: 1.5,
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                borderRadius: 3,
+                textTransform: 'none',
+                boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+                '&:hover': {
+                  background: `linear-gradient(45deg, ${theme.palette.primary.dark}, #45a049)`,
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 15px 30px rgba(0,0,0,0.4)'
+                }
+              }}
+            >
+              {loading ? 'Sending...' : 'Send Message'}
+            </Button>
+          </Box>
         </Box>
       </motion.div>
     </Box>
