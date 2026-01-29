@@ -13,6 +13,14 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
     // Initial supply is 10^14 tokens
     uint256 private constant INITIAL_SUPPLY = 10 ** 14 * 10 ** _decimals;
 
+    // Minting restriction: 3% max every 90 days
+    uint256 public lastMintTimestamp;
+    uint256 public constant MINT_INTERVAL = 90 days;
+    uint256 public constant MAX_MINT_PERCENTAGE = 3;
+
+    // Events
+    event TokensMinted(address indexed to, uint256 amount, uint256 timestamp);
+
     // Struct to store profit distribution information
     struct ProfitDistribution {
         uint256 totalAmount;
@@ -183,9 +191,18 @@ contract LandLordToken is ERC20, Ownable, ReentrancyGuard {
     }
 
     function generateTokensForRealEstatePurchase(uint256 amount) public onlyOwner {
-        uint256 maxMintAmount = totalSupply() / 10;
-        require(amount <= maxMintAmount, "Minting amount exceeds 10% of total supply");
+        require(
+            lastMintTimestamp == 0 || block.timestamp >= lastMintTimestamp + MINT_INTERVAL,
+            "Must wait 90 days between mints"
+        );
+
+        uint256 maxMintAmount = (totalSupply() * MAX_MINT_PERCENTAGE) / 100;
+        require(amount <= maxMintAmount, "Minting amount exceeds 3% of total supply");
+
+        lastMintTimestamp = block.timestamp;
         _mint(owner(), amount);
+
+        emit TokensMinted(owner(), amount, block.timestamp);
     }
 
     // Override decimals function explicitly.
