@@ -10,12 +10,6 @@ import { useRouter } from 'next/navigation';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 
-declare global {
-  interface Window {
-    ethereum?: undefined;
-  }
-}
-
 export default function WalletConnectButton() {
   const router = useRouter();
   const [address, setAddress] = useState<string | null>(null);
