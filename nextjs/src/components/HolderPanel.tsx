@@ -1,111 +1,127 @@
 'use client';
 
-import { Box, Typography, Button, Divider, Grid, Card, CardContent } from '@mui/material';
-import { useEffect, useState } from 'react';
-import theme from '../theme/theme';
-import { useActionStore } from '@/store/store';
-import { ethers } from 'ethers';
-import LandLordToken from '@/LandLordToken.json';
+import { useState } from 'react';
+import { Box, Typography, Divider, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
+import { useActionStore } from '@/store/store';
+import { useDistributions } from '@/hooks/useDistributions';
+import { useContract } from '@/hooks/useContract';
+import { useToast } from '@/hooks/useToast';
+import { Distribution } from '@/types';
+import { formatTokenAmount, formatAddress } from '@/utils/formatters';
+import DistributionCard from '@/components/holder/DistributionCard';
+import ClaimAllButton from '@/components/holder/ClaimAllButton';
+import Toast from '@/components/common/Toast';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import theme from '@/theme/theme';
 
-// Define an interface for the distribution data received from your API
-interface DistributionInfo {
-  id: string; // The distribution ID (index)
-  totalAmount: string; // Total profit distributed
-  distributionDate: string; // ISO string date (Unix timestamp as string)
-  distributionBlock: string; // Block number of distribution
-  tokensExcludingOwner: string; // Total supply minus owner ownerBalance at distribution time
-  userBalanceAtDistributionBlock: string; // User's balance at the distribution block
-  userShare: string; // Calculated share for the user
-}
+const fadeInUp = {
+  initial: { opacity: 0, y: 60 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.8, ease: 'easeOut' },
+};
 
-const HolderPanel = () => {
-  const walletAdresse = useActionStore((state) => state.walletAdresse);
+export default function HolderPanel() {
+  const walletAddress = useActionStore((state) => state.walletAdresse);
+  const {
+    balance,
+    distributions,
+    claimStatuses,
+    loading,
+    error,
+    refresh,
+    fetchSignature,
+    updateClaimStatus,
+    isAnyClaiming,
+  } = useDistributions(walletAddress);
+  const { claimProfit } = useContract();
+  const { toast, showSuccess, showError, showPending, hideToast } = useToast();
 
-  const [balance, setBalance] = useState<string | null>(null);
-  const [availableDistributions, setAvailableDistributions] = useState<DistributionInfo[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [batchProgress, setBatchProgress] = useState<{ current: number; total: number } | undefined>();
+  const [isBatchClaiming, setIsBatchClaiming] = useState(false);
 
-  useEffect(() => {
-    const fetchPanelData = async () => {
-      if (!walletAdresse) {
-        setBalance(null);
-        setAvailableDistributions([]);
-        return;
-      }
+  const handleClaim = async (distribution: Distribution) => {
+    const { id } = distribution;
 
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`/api/balance?userAddress=${walletAdresse}`);
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.details || 'Failed to fetch panel data');
-        }
-        const data = await res.json();
-        
-        setBalance(data.balance); 
-        
-        setAvailableDistributions(data.availableDistributions || []);
-
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPanelData();
-  }, [walletAdresse]);
-
-  const handleCollectProfit = async (distribution: DistributionInfo) => {
     try {
-      if (!window.ethereum) {
-        throw new Error("MetaMask is not installed.");
-      }
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '';
-      const contract = new ethers.Contract(contractAddress, LandLordToken.abi, signer);
+      updateClaimStatus(id, { status: 'signing' });
+      showPending('Getting signature...');
 
-      // Fetch the signature from the backend
-      const signatureResponse = await fetch('/api/signature', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userAddress: walletAdresse,
-          distributionId: distribution.id,
-          balanceAtDistribution: distribution.userBalanceAtDistributionBlock,
-        }),
-      });
+      const signature = await fetchSignature(distribution);
 
-      if (!signatureResponse.ok) {
-        throw new Error('Failed to get signature from backend.');
-      }
+      updateClaimStatus(id, { status: 'pending' });
+      showPending('Confirming transaction...');
 
-      const { signature } = await signatureResponse.json();
-
-      const tx = await contract.claimProfit(
-        distribution.id,
+      const txHash = await claimProfit(
+        id,
         distribution.userBalanceAtDistributionBlock,
         signature
       );
-      await tx.wait();
-      alert('Profit claimed successfully!');
-    } catch (error) {
-      console.error(error);
-      alert('Failed to claim profit.');
+
+      updateClaimStatus(id, { status: 'success', txHash });
+      showSuccess('Profit claimed successfully!', txHash);
+
+      // Refresh data after successful claim
+      setTimeout(() => refresh(), 2000);
+    } catch (err) {
+      const errorMessage = (err as Error).message || 'Failed to claim profit';
+      updateClaimStatus(id, { status: 'error', error: errorMessage });
+      showError(errorMessage);
     }
   };
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 60 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.8, ease: "easeOut" }
+  const handleClaimAll = async () => {
+    const unclaimedDistributions = distributions.filter(
+      (d) => claimStatuses.get(d.id)?.status !== 'success'
+    );
+
+    if (unclaimedDistributions.length === 0) return;
+
+    setIsBatchClaiming(true);
+    setBatchProgress({ current: 0, total: unclaimedDistributions.length });
+
+    let successCount = 0;
+    let failCount = 0;
+
+    for (let i = 0; i < unclaimedDistributions.length; i++) {
+      const distribution = unclaimedDistributions[i];
+      setBatchProgress({ current: i + 1, total: unclaimedDistributions.length });
+
+      try {
+        updateClaimStatus(distribution.id, { status: 'signing' });
+        const signature = await fetchSignature(distribution);
+
+        updateClaimStatus(distribution.id, { status: 'pending' });
+        const txHash = await claimProfit(
+          distribution.id,
+          distribution.userBalanceAtDistributionBlock,
+          signature
+        );
+
+        updateClaimStatus(distribution.id, { status: 'success', txHash });
+        successCount++;
+      } catch (err) {
+        const errorMessage = (err as Error).message || 'Failed to claim';
+        updateClaimStatus(distribution.id, { status: 'error', error: errorMessage });
+        failCount++;
+      }
+    }
+
+    setIsBatchClaiming(false);
+    setBatchProgress(undefined);
+
+    if (failCount === 0) {
+      showSuccess(`Successfully claimed ${successCount} distributions!`);
+    } else {
+      showError(`Claimed ${successCount}, failed ${failCount}. Check individual cards for details.`);
+    }
+
+    setTimeout(() => refresh(), 2000);
   };
+
+  const activeDistributions = distributions.filter(
+    (d) => claimStatuses.get(d.id)?.status !== 'success'
+  );
 
   return (
     <Box
@@ -132,24 +148,31 @@ const HolderPanel = () => {
           right: 0,
           height: '4px',
           background: `linear-gradient(90deg, ${theme.palette.primary.main}, #4CAF50, #2196F3)`,
-          borderRadius: '5px 5px 0 0'
-        }
+          borderRadius: '5px 5px 0 0',
+        },
       }}
     >
       <motion.div initial="initial" animate="animate" variants={fadeInUp}>
         <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold', color: 'white' }}>
-          ⚙️ Holder Dashboard
+          Holder Dashboard
         </Typography>
 
         <Box sx={{ alignSelf: 'flex-start', width: '100%', textAlign: 'left', mb: 2 }}>
           <Typography variant="body1" sx={{ mb: 1 }}>
-            🔐 Connected Wallet: <strong>{walletAdresse ? `${walletAdresse.slice(0, 6)}…${walletAdresse.slice(-4)}` : 'Not Connected'}</strong>
+            Connected Wallet:{' '}
+            <strong>{walletAddress ? formatAddress(walletAddress) : 'Not Connected'}</strong>
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 1 }}>
-            💰 Your LND Balance:{' '}
+            Your LND Balance:{' '}
             <strong>
-              {loading ? '⏳ loading...' : error ? `❌ ${error}` : `${balance ? ethers.formatUnits(balance, 18) : '0'} LND`}
+              {loading ? (
+                'Loading...'
+              ) : error ? (
+                <span style={{ color: '#ff6b6b' }}>{error}</span>
+              ) : (
+                `${balance ? formatTokenAmount(balance) : '0'} LND`
+              )}
             </strong>
           </Typography>
         </Box>
@@ -158,97 +181,49 @@ const HolderPanel = () => {
 
         <Typography
           variant="h5"
-          sx={{
-            mb: 2,
-            fontWeight: 'bold',
-            color: 'white',
-            textAlign: 'center',
-            width: '100%'
-          }}
+          sx={{ mb: 2, fontWeight: 'bold', color: 'white', textAlign: 'center', width: '100%' }}
         >
-          🎁 Available Distributions
+          Available Distributions
         </Typography>
 
         {loading ? (
-          <Typography>⏳ Loading distributions...</Typography>
+          <LoadingSpinner message="Loading distributions..." />
         ) : error ? (
-          <Typography color="error">❌ Error: {error}</Typography>
-        ) : availableDistributions.length === 0 ? (
-          <Typography variant="body1" sx={{ mt: 2, mb: 2, color: 'rgba(255,255,255,0.8)', textAlign: 'center' }}>
-            No unclaimed profits found. New distributions might be coming soon, so please check back later!
+          <Typography color="error">Error: {error}</Typography>
+        ) : activeDistributions.length === 0 ? (
+          <Typography
+            variant="body1"
+            sx={{ mt: 2, mb: 2, color: 'rgba(255,255,255,0.8)', textAlign: 'center' }}
+          >
+            No unclaimed profits found. New distributions might be coming soon!
           </Typography>
         ) : (
-          <Grid
-            container
-            spacing={2}
-            justifyContent="center"
-            sx={{ width: '100%' }}
-          >
-            {availableDistributions.map((dist) => (
-              <Grid key={dist.id}>
-                <Card
-                  sx={{
-                    background: 'linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-                    backdropFilter: 'blur(15px)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: 3,
-                    height: '100%',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      boxShadow: '0 15px 30px rgba(0,0,0,0.3)',
-                      border: '1px solid rgba(255,255,255,0.3)'
-                    }
-                  }}
-                >
-                  <CardContent sx={{ p: 3, textAlign: 'center' }}>
-                    <Typography variant="h6" sx={{ mb: 1, color: 'white', fontSize: '1.1rem' }}>
-                      Distribution ID: {dist.id}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.8)' }}>
-                      Total Distributed: <strong>{ethers.formatUnits(dist.totalAmount, 18)} LND</strong>
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.8)' }}>
-                      Distribution Date: <strong>{new Date(Number(dist.distributionDate) * 1000).toLocaleDateString()}</strong> (Block: {dist.distributionBlock})
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.8)' }}>
-                      Your Balance at Dist. Time: <strong>{ethers.formatUnits(dist.userBalanceAtDistributionBlock, 18)} LND</strong>
-                    </Typography>
-                    <Typography variant="body1" sx={{ mt: 1, fontWeight: 'bold', color: 'white', fontSize: '1.2rem' }}>
-                      Your Estimated Share: <strong>{ethers.formatUnits(dist.userShare, 18)} LND</strong>
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      onClick={() => handleCollectProfit(dist)}
-                      disabled={!walletAdresse}
-                      fullWidth
-                      sx={{
-                        mt: 2,
-                        background: `linear-gradient(45deg, ${theme.palette.primary.main}, #4CAF50)`,
-                        px: 4,
-                        py: 1.5,
-                        fontSize: '1rem',
-                        fontWeight: 600,
-                        borderRadius: 3,
-                        textTransform: 'none',
-                        boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
-                        '&:hover': {
-                          background: `linear-gradient(45deg, ${theme.palette.primary.dark}, #45a049)`,
-                          transform: 'translateY(-2px)',
-                          boxShadow: '0 15px 30px rgba(0,0,0,0.4)'
-                        }
-                      }}
-                    >
-                      Collect Profit
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+          <>
+            <ClaimAllButton
+              count={activeDistributions.length}
+              onClaimAll={handleClaimAll}
+              disabled={!walletAddress || isAnyClaiming}
+              isProcessing={isBatchClaiming}
+              progress={batchProgress}
+            />
+
+            <Grid container spacing={3} justifyContent="center" sx={{ width: '100%' }}>
+              {activeDistributions.map((dist) => (
+                <Grid key={dist.id}>
+                  <DistributionCard
+                    distribution={dist}
+                    claimStatus={claimStatuses.get(dist.id) || { distributionId: dist.id, status: 'idle' }}
+                    onClaim={handleClaim}
+                    disabled={!walletAddress || (isAnyClaiming && claimStatuses.get(dist.id)?.status === 'idle')}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </>
         )}
       </motion.div>
+
+      <Toast toast={toast} onClose={hideToast} />
     </Box>
   );
-};
-
-export default HolderPanel;
+}
