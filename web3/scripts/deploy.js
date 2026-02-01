@@ -50,6 +50,21 @@ async function main() {
   // --- 7. Set Backend Address ---
   await setBackendAddress(lndToken, backend.address); // Using the 'backend' signer address
 
+  // --- 8. Output environment variables for .env file ---
+  console.log("\n" + "=".repeat(60));
+  console.log("📋 COPY THESE VALUES TO YOUR .env FILE:");
+  console.log("=".repeat(60));
+  console.log(`NEXT_PUBLIC_CONTRACT_ADDRESS=${await lndToken.getAddress()}`);
+
+  // Hardhat's default test accounts have known private keys
+  // Account #5 (backend) private key:
+  const HARDHAT_ACCOUNT_5_PRIVATE_KEY = "0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba";
+  console.log(`PRIVATE_KEY=${HARDHAT_ACCOUNT_5_PRIVATE_KEY}`);
+  console.log(`RPC_URL=http://localhost:8545`);
+  console.log("=".repeat(60));
+  console.log(`Backend wallet address: ${backend.address}`);
+  console.log("=".repeat(60));
+
   console.log("\nDeployment and setup script finished.");
 }
 
