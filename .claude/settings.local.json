@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd design document for LandLord improvements\n\nCovers smart contract security review, 3% quarterly minting\nrestriction, frontend refactor, and collect profit implementation.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "Bash(npx hardhat compile:*)",
+      "Bash(git -C /Users/ashraf.beshtawi/Desktop/Landlord status)",
+      "Bash(git -C /Users/ashraf.beshtawi/Desktop/Landlord diff HEAD)",
+      "Bash(git -C /Users/ashraf.beshtawi/Desktop/Landlord log --oneline -5)",
+      "Bash(git -C /Users/ashraf.beshtawi/Desktop/Landlord add nextjs/src/components/common/Toast.tsx)",
+      "Bash(git -C /Users/ashraf.beshtawi/Desktop/Landlord commit -m \"$\\(cat <<''EOF''\nfeat\\(frontend\\): add Toast notification component\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm list:*)",
+      "Bash(nvm use:*)"
+    ]
+  }
+}
