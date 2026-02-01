@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Box, Typography, Divider, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useActionStore } from '@/store/store';
@@ -13,6 +13,7 @@ import DistributionCard from '@/components/holder/DistributionCard';
 import ClaimAllButton from '@/components/holder/ClaimAllButton';
 import Toast from '@/components/common/Toast';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
 import theme from '@/theme/theme';
 
 const fadeInUp = {
@@ -21,7 +22,18 @@ const fadeInUp = {
   transition: { duration: 0.8, ease: 'easeOut' },
 };
 
-export default function HolderPanel() {
+// Type guard for errors
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (typeof error === 'string') {
+    return error;
+  }
+  return 'An unknown error occurred';
+}
+
+function HolderPanelContent() {
   const walletAddress = useActionStore((state) => state.walletAdresse);
   const {
     balance,
@@ -64,7 +76,7 @@ export default function HolderPanel() {
       // Refresh data after successful claim
       setTimeout(() => refresh(), 2000);
     } catch (err) {
-      const errorMessage = (err as Error).message || 'Failed to claim profit';
+      const errorMessage = getErrorMessage(err);
       updateClaimStatus(id, { status: 'error', error: errorMessage });
       showError(errorMessage);
     }
@@ -101,7 +113,7 @@ export default function HolderPanel() {
         updateClaimStatus(distribution.id, { status: 'success', txHash });
         successCount++;
       } catch (err) {
-        const errorMessage = (err as Error).message || 'Failed to claim';
+        const errorMessage = getErrorMessage(err);
         updateClaimStatus(distribution.id, { status: 'error', error: errorMessage });
         failCount++;
       }
@@ -119,9 +131,61 @@ export default function HolderPanel() {
     setTimeout(() => refresh(), 2000);
   };
 
-  const activeDistributions = distributions.filter(
-    (d) => claimStatuses.get(d.id)?.status !== 'success'
+  const activeDistributions = useMemo(
+    () => distributions.filter((d) => claimStatuses.get(d.id)?.status !== 'success'),
+    [distributions, claimStatuses]
   );
+
+  // Render content based on state
+  const renderDistributions = () => {
+    if (loading) {
+      return <LoadingSpinner message="Loading distributions..." />;
+    }
+
+    if (error) {
+      return (
+        <Typography color="error" sx={{ mt: 2 }}>
+          Error: {error}
+        </Typography>
+      );
+    }
+
+    if (activeDistributions.length === 0) {
+      return (
+        <Typography
+          variant="body1"
+          sx={{ mt: 2, mb: 2, color: 'rgba(255,255,255,0.8)', textAlign: 'center' }}
+        >
+          No unclaimed profits found. New distributions might be coming soon!
+        </Typography>
+      );
+    }
+
+    return (
+      <>
+        <ClaimAllButton
+          count={activeDistributions.length}
+          onClaimAll={handleClaimAll}
+          disabled={!walletAddress || isAnyClaiming}
+          isProcessing={isBatchClaiming}
+          progress={batchProgress}
+        />
+
+        <Grid container spacing={3} justifyContent="center" sx={{ width: '100%' }}>
+          {activeDistributions.map((dist) => (
+            <Grid key={dist.id}>
+              <DistributionCard
+                distribution={dist}
+                claimStatus={claimStatuses.get(dist.id) || { distributionId: dist.id, status: 'idle' }}
+                onClaim={handleClaim}
+                disabled={!walletAddress || (isAnyClaiming && claimStatuses.get(dist.id)?.status === 'idle')}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </>
+    );
+  };
 
   return (
     <Box
@@ -186,44 +250,18 @@ export default function HolderPanel() {
           Available Distributions
         </Typography>
 
-        {loading ? (
-          <LoadingSpinner message="Loading distributions..." />
-        ) : error ? (
-          <Typography color="error">Error: {error}</Typography>
-        ) : activeDistributions.length === 0 ? (
-          <Typography
-            variant="body1"
-            sx={{ mt: 2, mb: 2, color: 'rgba(255,255,255,0.8)', textAlign: 'center' }}
-          >
-            No unclaimed profits found. New distributions might be coming soon!
-          </Typography>
-        ) : (
-          <>
-            <ClaimAllButton
-              count={activeDistributions.length}
-              onClaimAll={handleClaimAll}
-              disabled={!walletAddress || isAnyClaiming}
-              isProcessing={isBatchClaiming}
-              progress={batchProgress}
-            />
-
-            <Grid container spacing={3} justifyContent="center" sx={{ width: '100%' }}>
-              {activeDistributions.map((dist) => (
-                <Grid key={dist.id}>
-                  <DistributionCard
-                    distribution={dist}
-                    claimStatus={claimStatuses.get(dist.id) || { distributionId: dist.id, status: 'idle' }}
-                    onClaim={handleClaim}
-                    disabled={!walletAddress || (isAnyClaiming && claimStatuses.get(dist.id)?.status === 'idle')}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </>
-        )}
+        {renderDistributions()}
       </motion.div>
 
       <Toast toast={toast} onClose={hideToast} />
     </Box>
+  );
+}
+
+export default function HolderPanel() {
+  return (
+    <ErrorBoundary>
+      <HolderPanelContent />
+    </ErrorBoundary>
   );
 }

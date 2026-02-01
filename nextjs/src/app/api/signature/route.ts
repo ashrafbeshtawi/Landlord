@@ -1,106 +1,151 @@
-import { NextResponse } from 'next/server';
 import { ethers } from 'ethers';
+import { createSecureResponse, parseJsonBody, maskAddress, getErrorMessage } from '@/utils/api';
 
 const ERC20_ABI = ['function balanceOf(address account) external view returns (uint256)'];
 
-export async function GET(request: Request) {
+interface SignatureRequestBody {
+  userAddress: string;
+  distributionId: string | number;
+  balanceAtDistribution: string;
+  distributionBlock: string | number;
+  ownershipSignature: string;
+  nonce: string;
+}
+
+/**
+ * Verifies that the requester owns the wallet address by checking their signature
+ */
+async function verifyOwnership(
+  userAddress: string,
+  nonce: string,
+  ownershipSignature: string
+): Promise<boolean> {
   try {
-    const url = new URL(request.url);
-    const userAddress = url.searchParams.get('userAddress');
-    const distributionId = url.searchParams.get('distributionId');
-    const block = url.searchParams.get('block');
+    const message = `Verify ownership for LandLord claim\nAddress: ${userAddress}\nNonce: ${nonce}`;
+    const recoveredAddress = ethers.verifyMessage(message, ownershipSignature);
+    return recoveredAddress.toLowerCase() === userAddress.toLowerCase();
+  } catch {
+    return false;
+  }
+}
 
-    if (!userAddress || !distributionId) {
-      return NextResponse.json({ error: 'userAddress and distributionId are required.' }, { status: 400 });
+/**
+ * Validates block number is reasonable (not in future, not too old)
+ */
+async function validateBlockNumber(
+  provider: ethers.JsonRpcProvider,
+  blockNumber: number
+): Promise<{ valid: boolean; error?: string }> {
+  try {
+    const currentBlock = await provider.getBlockNumber();
+
+    if (blockNumber > currentBlock) {
+      return { valid: false, error: 'Block number is in the future' };
     }
 
-    const distributionIdNum = parseInt(distributionId, 10);
-    if (isNaN(distributionIdNum)) {
-      return NextResponse.json({ error: 'distributionId must be a valid number.' }, { status: 400 });
+    // Don't allow blocks older than ~2 years (assuming ~3s blocks on BSC)
+    const maxAge = 21024000;
+    if (blockNumber < currentBlock - maxAge) {
+      return { valid: false, error: 'Block number is too old' };
     }
 
+    return { valid: true };
+  } catch {
+    return { valid: false, error: 'Failed to validate block number' };
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const { data: body, error: parseError } = await parseJsonBody<SignatureRequestBody>(request);
+
+    if (parseError || !body) {
+      return createSecureResponse({ error: parseError || 'Invalid request body.' }, 400);
+    }
+
+    const {
+      userAddress,
+      distributionId,
+      balanceAtDistribution,
+      distributionBlock,
+      ownershipSignature,
+      nonce,
+    } = body;
+
+    // Validate required fields
+    if (!userAddress || distributionId === undefined || !balanceAtDistribution || !distributionBlock) {
+      return createSecureResponse({ error: 'Missing required parameters.' }, 400);
+    }
+
+    if (!ownershipSignature || !nonce) {
+      return createSecureResponse(
+        { error: 'Ownership verification required. Provide ownershipSignature and nonce.' },
+        400
+      );
+    }
+
+    if (!ethers.isAddress(userAddress)) {
+      return createSecureResponse({ error: 'Invalid address format.' }, 400);
+    }
+
+    // Verify the requester owns this wallet
+    const isOwner = await verifyOwnership(userAddress, nonce, ownershipSignature);
+    if (!isOwner) {
+      return createSecureResponse({ error: 'Ownership verification failed.' }, 403);
+    }
+
+    const distributionIdNum = parseInt(String(distributionId), 10);
+    if (isNaN(distributionIdNum) || distributionIdNum < 0) {
+      return createSecureResponse({ error: 'Invalid distribution ID.' }, 400);
+    }
+
+    const blockNum = parseInt(String(distributionBlock), 10);
+    if (isNaN(blockNum) || blockNum < 0) {
+      return createSecureResponse({ error: 'Invalid block number.' }, 400);
+    }
+
+    // Load environment variables
     const privateKey = process.env.PRIVATE_KEY;
     const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
     const rpcUrl = process.env.RPC_URL;
 
     if (!privateKey || !contractAddress || !rpcUrl) {
-      return NextResponse.json(
-        { error: 'Missing environment variables (PRIVATE_KEY, NEXT_PUBLIC_CONTRACT_ADDRESS, RPC_URL).' },
-        { status: 500 }
-      );
+      console.error('Missing required environment variables for signature generation');
+      return createSecureResponse({ error: 'Server configuration error.' }, 500);
     }
 
     const provider = new ethers.JsonRpcProvider(rpcUrl);
     const backendWallet = new ethers.Wallet(privateKey, provider);
     const tokenContract = new ethers.Contract(contractAddress, ERC20_ABI, provider);
 
-    const blockTag = block ? parseInt(block, 10) : 'latest';
-    if (block && isNaN(Number(blockTag))) {
-      return NextResponse.json({ error: 'block must be a valid number if provided.' }, { status: 400 });
+    // Validate block is reasonable
+    const blockValidation = await validateBlockNumber(provider, blockNum);
+    if (!blockValidation.valid) {
+      return createSecureResponse({ error: blockValidation.error || 'Invalid block number.' }, 400);
     }
 
-    const balanceAtDistribution = await tokenContract.balanceOf(userAddress, { blockTag });
+    // Verify the balance on-chain - DO NOT trust user input
+    const actualBalance = await tokenContract.balanceOf(userAddress, { blockTag: blockNum });
+    const providedBalance = BigInt(balanceAtDistribution);
 
+    if (actualBalance !== providedBalance) {
+      console.warn(
+        `Balance mismatch for ${maskAddress(userAddress)}: provided ${providedBalance}, actual ${actualBalance}`
+      );
+      return createSecureResponse({ error: 'Balance verification failed.' }, 400);
+    }
+
+    // Generate the signature
     const messageHash = ethers.solidityPackedKeccak256(
       ['address', 'uint256', 'uint256'],
-      [userAddress, distributionIdNum, balanceAtDistribution]
+      [userAddress, distributionIdNum, actualBalance]
     );
 
     const signature = await backendWallet.signMessage(ethers.getBytes(messageHash));
 
-    return NextResponse.json({
-      signature,
-      balanceAtDistribution: balanceAtDistribution.toString(),
-    });
+    return createSecureResponse({ signature });
   } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-    return NextResponse.json(
-      { error: 'Something went wrong', details: errorMessage },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const { userAddress, distributionId, balanceAtDistribution } = body;
-
-    if (!userAddress || distributionId === undefined || !balanceAtDistribution) {
-      return NextResponse.json(
-        { error: 'userAddress, distributionId, and balanceAtDistribution are required.' },
-        { status: 400 }
-      );
-    }
-
-    const distributionIdNum = parseInt(distributionId, 10);
-    if (isNaN(distributionIdNum)) {
-      return NextResponse.json({ error: 'distributionId must be a valid number.' }, { status: 400 });
-    }
-
-    const privateKey = process.env.PRIVATE_KEY;
-    if (!privateKey) {
-      return NextResponse.json(
-        { error: 'Missing environment variable (PRIVATE_KEY).' },
-        { status: 500 }
-      );
-    }
-
-    const backendWallet = new ethers.Wallet(privateKey);
-
-    const messageHash = ethers.solidityPackedKeccak256(
-      ['address', 'uint256', 'uint256'],
-      [userAddress, distributionIdNum, balanceAtDistribution]
-    );
-
-    const signature = await backendWallet.signMessage(ethers.getBytes(messageHash));
-
-    return NextResponse.json({ signature });
-  } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-    return NextResponse.json(
-      { error: 'Something went wrong', details: errorMessage },
-      { status: 500 }
-    );
+    console.error('Signature API error:', getErrorMessage(err));
+    return createSecureResponse({ error: 'Failed to generate signature.' }, 500);
   }
 }

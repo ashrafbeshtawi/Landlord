@@ -14,7 +14,10 @@
       "Bash(npm run build:*)",
       "Bash(source ~/.nvm/nvm.sh)",
       "Bash(nvm list:*)",
-      "Bash(nvm use:*)"
+      "Bash(nvm use:*)",
+      "Bash(tree -L 2 -I 'node_modules|.next':*)",
+      "Bash(npm run lint:*)",
+      "Bash(npx eslint:*)"
     ]
   }
 }

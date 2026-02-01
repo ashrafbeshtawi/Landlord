@@ -1,14 +1,16 @@
 import { ethers } from 'ethers';
+import { FORMAT_THRESHOLDS } from './constants';
 
 export function formatTokenAmount(amount: string, decimals: number = 18): string {
   try {
     const formatted = ethers.formatUnits(amount, decimals);
     const num = parseFloat(formatted);
-    if (num >= 1000000) {
-      return (num / 1000000).toFixed(2) + 'M';
+
+    if (num >= FORMAT_THRESHOLDS.MILLION) {
+      return (num / FORMAT_THRESHOLDS.MILLION).toFixed(2) + 'M';
     }
-    if (num >= 1000) {
-      return (num / 1000).toFixed(2) + 'K';
+    if (num >= FORMAT_THRESHOLDS.THOUSAND) {
+      return (num / FORMAT_THRESHOLDS.THOUSAND).toFixed(2) + 'K';
     }
     return num.toFixed(4);
   } catch {

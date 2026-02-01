@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Box, Button, TextField, Typography, Grid, Card, CardContent } from '@mui/material';
 import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
@@ -8,14 +8,17 @@ import { useActionStore } from '@/store/store';
 import { useContract } from '@/hooks/useContract';
 import { useToast } from '@/hooks/useToast';
 import Toast from '@/components/common/Toast';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
 import theme from '@/theme/theme';
 
 interface ActionField {
   label: string;
   name: string;
+  type: 'address' | 'amount';
 }
 
 interface ActionConfig {
+  id: string; // Unique ID for key prop
   title: string;
   fields: ActionField[];
 }
@@ -24,32 +27,37 @@ type FormState = {
   [key: string]: { [field: string]: string };
 };
 
-const actionConfigs: ActionConfig[] = [
+// Memoized action configs with stable IDs
+const ACTION_CONFIGS: ActionConfig[] = [
   {
+    id: 'transfer',
     title: 'Transfer',
     fields: [
-      { label: 'To Address', name: 'toAddress' },
-      { label: 'Amount', name: 'amount' },
+      { label: 'To Address', name: 'toAddress', type: 'address' },
+      { label: 'Amount', name: 'amount', type: 'amount' },
     ],
   },
   {
+    id: 'approve',
     title: 'Approve',
     fields: [
-      { label: 'Spender Address', name: 'spenderAddress' },
-      { label: 'Amount', name: 'amount' },
+      { label: 'Spender Address', name: 'spenderAddress', type: 'address' },
+      { label: 'Amount', name: 'amount', type: 'amount' },
     ],
   },
   {
+    id: 'transfer-from',
     title: 'Transfer From',
     fields: [
-      { label: 'From Address', name: 'fromAddress' },
-      { label: 'To Address', name: 'toAddress' },
-      { label: 'Amount', name: 'amount' },
+      { label: 'From Address', name: 'fromAddress', type: 'address' },
+      { label: 'To Address', name: 'toAddress', type: 'address' },
+      { label: 'Amount', name: 'amount', type: 'amount' },
     ],
   },
   {
+    id: 'burn',
     title: 'Burn',
-    fields: [{ label: 'Amount', name: 'amount' }],
+    fields: [{ label: 'Amount', name: 'amount', type: 'amount' }],
   },
 ];
 
@@ -66,13 +74,48 @@ const fadeInUp = {
   transition: { duration: 0.8, ease: 'easeOut' },
 };
 
-export default function ERC20Actions() {
+// Type guard for ethers errors
+interface EthersError extends Error {
+  reason?: string;
+  code?: string;
+}
+
+function isEthersError(error: unknown): error is EthersError {
+  return (
+    error instanceof Error &&
+    (typeof (error as EthersError).reason === 'string' ||
+      typeof (error as EthersError).code === 'string')
+  );
+}
+
+// Validation helpers
+function isValidAddress(address: string): boolean {
+  return ethers.isAddress(address);
+}
+
+function isValidAmount(amount: string): boolean {
+  if (!amount || amount.trim() === '') return false;
+  try {
+    const num = parseFloat(amount);
+    if (isNaN(num) || num <= 0) return false;
+    // Check it can be parsed as BigInt with 18 decimals
+    ethers.parseUnits(amount, 18);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function ERC20ActionsContent() {
   const { walletAdresse } = useActionStore();
   const { getContract } = useContract();
   const { toast, showSuccess, showError, showPending, hideToast } = useToast();
 
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [processingAction, setProcessingAction] = useState<string | null>(null);
+
+  // Memoize action configs to prevent recreation
+  const actionConfigs = useMemo(() => ACTION_CONFIGS, []);
 
   const handleInputChange = (actionTitle: string, fieldName: string, value: string) => {
     setFormState((prev) => ({
@@ -84,10 +127,41 @@ export default function ERC20Actions() {
     }));
   };
 
+  const validateForm = (actionTitle: string): string | null => {
+    const config = actionConfigs.find((c) => c.title === actionTitle);
+    if (!config) return 'Invalid action';
+
+    const formData = formState[actionTitle];
+
+    for (const field of config.fields) {
+      const value = formData[field.name];
+      if (!value || value.trim() === '') {
+        return `${field.label} is required`;
+      }
+
+      if (field.type === 'address' && !isValidAddress(value)) {
+        return `${field.label} is not a valid Ethereum address`;
+      }
+
+      if (field.type === 'amount' && !isValidAmount(value)) {
+        return `${field.label} must be a positive number`;
+      }
+    }
+
+    return null;
+  };
+
   const executeAction = async (
     actionTitle: string,
     contractMethod: (contract: ethers.Contract) => Promise<ethers.ContractTransactionResponse>
   ) => {
+    // Validate before executing
+    const validationError = validateForm(actionTitle);
+    if (validationError) {
+      showError(validationError);
+      return;
+    }
+
     try {
       setProcessingAction(actionTitle);
       showPending(`Processing ${actionTitle.toLowerCase()}...`);
@@ -103,8 +177,23 @@ export default function ERC20Actions() {
         ...prev,
         [actionTitle]: initialFormState[actionTitle],
       }));
-    } catch (err) {
-      const errorMessage = (err as Error).message || `${actionTitle} failed`;
+    } catch (err: unknown) {
+      // Use type guard for proper error handling
+      let errorMessage = `${actionTitle} failed`;
+
+      if (isEthersError(err)) {
+        errorMessage = err.reason || err.message || errorMessage;
+
+        // Handle common error codes
+        if (err.code === 'ACTION_REJECTED') {
+          errorMessage = 'Transaction was rejected by user';
+        } else if (err.code === 'INSUFFICIENT_FUNDS') {
+          errorMessage = 'Insufficient funds for transaction';
+        }
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+
       showError(errorMessage);
     } finally {
       setProcessingAction(null);
@@ -113,10 +202,6 @@ export default function ERC20Actions() {
 
   const handleTransfer = () => {
     const { toAddress, amount } = formState.Transfer;
-    if (!toAddress || !amount) {
-      showError('Please fill in all fields');
-      return;
-    }
     executeAction('Transfer', (contract) =>
       contract.transfer(toAddress, ethers.parseUnits(amount, 18))
     );
@@ -124,10 +209,6 @@ export default function ERC20Actions() {
 
   const handleApprove = () => {
     const { spenderAddress, amount } = formState.Approve;
-    if (!spenderAddress || !amount) {
-      showError('Please fill in all fields');
-      return;
-    }
     executeAction('Approve', (contract) =>
       contract.approve(spenderAddress, ethers.parseUnits(amount, 18))
     );
@@ -135,10 +216,6 @@ export default function ERC20Actions() {
 
   const handleTransferFrom = () => {
     const { fromAddress, toAddress, amount } = formState['Transfer From'];
-    if (!fromAddress || !toAddress || !amount) {
-      showError('Please fill in all fields');
-      return;
-    }
     executeAction('Transfer From', (contract) =>
       contract.transferFrom(fromAddress, toAddress, ethers.parseUnits(amount, 18))
     );
@@ -146,10 +223,6 @@ export default function ERC20Actions() {
 
   const handleBurn = () => {
     const { amount } = formState.Burn;
-    if (!amount) {
-      showError('Please fill in the amount');
-      return;
-    }
     executeAction('Burn', (contract) => contract.burn(ethers.parseUnits(amount, 18)));
   };
 
@@ -159,6 +232,35 @@ export default function ERC20Actions() {
     'Transfer From': handleTransferFrom,
     Burn: handleBurn,
   };
+
+  // Memoized styles
+  const cardStyles = useMemo(
+    () => ({
+      background: 'linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+      backdropFilter: 'blur(15px)',
+      border: '1px solid rgba(255,255,255,0.2)',
+      borderRadius: 3,
+      minWidth: 260,
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        boxShadow: '0 15px 30px rgba(0,0,0,0.3)',
+        border: '1px solid rgba(255,255,255,0.3)',
+      },
+    }),
+    []
+  );
+
+  const textFieldStyles = useMemo(
+    () => ({
+      '& .MuiOutlinedInput-root': {
+        '& fieldset': { borderColor: 'rgba(255,255,255,0.3)' },
+        '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.5)' },
+        '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main },
+        '& input': { color: 'white' },
+      },
+    }),
+    []
+  );
 
   return (
     <Box
@@ -195,21 +297,8 @@ export default function ERC20Actions() {
 
         <Grid container spacing={3} justifyContent="center">
           {actionConfigs.map((action) => (
-            <Grid key={action.title}>
-              <Card
-                sx={{
-                  background: 'linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-                  backdropFilter: 'blur(15px)',
-                  border: '1px solid rgba(255,255,255,0.2)',
-                  borderRadius: 3,
-                  minWidth: 260,
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    boxShadow: '0 15px 30px rgba(0,0,0,0.3)',
-                    border: '1px solid rgba(255,255,255,0.3)',
-                  },
-                }}
-              >
+            <Grid key={action.id}>
+              <Card sx={cardStyles}>
                 <CardContent sx={{ p: 3, textAlign: 'center' }}>
                   <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>
                     {action.title}
@@ -217,7 +306,7 @@ export default function ERC20Actions() {
 
                   {action.fields.map((field) => (
                     <TextField
-                      key={field.name}
+                      key={`${action.id}-${field.name}`}
                       label={field.label}
                       fullWidth
                       margin="dense"
@@ -225,15 +314,9 @@ export default function ERC20Actions() {
                       value={formState[action.title]?.[field.name] || ''}
                       onChange={(e) => handleInputChange(action.title, field.name, e.target.value)}
                       disabled={processingAction === action.title}
+                      placeholder={field.type === 'address' ? '0x...' : '0.0'}
                       InputLabelProps={{ style: { color: 'rgba(255,255,255,0.7)' } }}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          '& fieldset': { borderColor: 'rgba(255,255,255,0.3)' },
-                          '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.5)' },
-                          '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main },
-                          '& input': { color: 'white' },
-                        },
-                      }}
+                      sx={textFieldStyles}
                     />
                   ))}
 
@@ -275,5 +358,13 @@ export default function ERC20Actions() {
 
       <Toast toast={toast} onClose={hideToast} />
     </Box>
+  );
+}
+
+export default function ERC20Actions() {
+  return (
+    <ErrorBoundary>
+      <ERC20ActionsContent />
+    </ErrorBoundary>
   );
 }
