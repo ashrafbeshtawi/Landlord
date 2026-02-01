@@ -22,7 +22,21 @@ export function formatAddress(address: string): string {
 }
 
 export function formatDate(timestamp: string | number): string {
-  const date = new Date(Number(timestamp) * 1000);
+  let date: Date;
+
+  // Handle ISO string (from API) or Unix timestamp
+  if (typeof timestamp === 'string' && timestamp.includes('T')) {
+    // ISO string format: "2024-01-15T10:30:00.000Z"
+    date = new Date(timestamp);
+  } else {
+    // Unix timestamp (seconds)
+    date = new Date(Number(timestamp) * 1000);
+  }
+
+  if (isNaN(date.getTime())) {
+    return 'Unknown';
+  }
+
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
