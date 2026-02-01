@@ -20,19 +20,19 @@ export async function GET(request: Request) {
     }
 
     const privateKey = process.env.PRIVATE_KEY;
-    const tokenAddress = process.env.TOKEN_ADDRESS;
+    const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
     const rpcUrl = process.env.RPC_URL;
 
-    if (!privateKey || !tokenAddress || !rpcUrl) {
+    if (!privateKey || !contractAddress || !rpcUrl) {
       return NextResponse.json(
-        { error: 'Missing environment variables (PRIVATE_KEY, TOKEN_ADDRESS, RPC_URL).' },
+        { error: 'Missing environment variables (PRIVATE_KEY, NEXT_PUBLIC_CONTRACT_ADDRESS, RPC_URL).' },
         { status: 500 }
       );
     }
 
     const provider = new ethers.JsonRpcProvider(rpcUrl);
     const backendWallet = new ethers.Wallet(privateKey, provider);
-    const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+    const tokenContract = new ethers.Contract(contractAddress, ERC20_ABI, provider);
 
     const blockTag = block ? parseInt(block, 10) : 'latest';
     if (block && isNaN(Number(blockTag))) {

@@ -35,18 +35,18 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Invalid userAddress format.' }, { status: 400 });
     }
 
-    const tokenAddress = process.env.TOKEN_ADDRESS;
+    const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
     const rpcUrl = process.env.RPC_URL;
 
-    if (!tokenAddress || !rpcUrl) {
+    if (!contractAddress || !rpcUrl) {
       return NextResponse.json(
-        { error: 'Missing environment variables (TOKEN_ADDRESS, RPC_URL).' },
+        { error: 'Missing environment variables (NEXT_PUBLIC_CONTRACT_ADDRESS, RPC_URL).' },
         { status: 500 }
       );
     }
 
     const provider = new ethers.JsonRpcProvider(rpcUrl);
-    const landLordTokenContract = new ethers.Contract(tokenAddress, LANDLORD_TOKEN_ABI, provider);
+    const landLordTokenContract = new ethers.Contract(contractAddress, LANDLORD_TOKEN_ABI, provider);
 
     let currentBlockTag: string | number = 'latest';
     if (blockParam) {
