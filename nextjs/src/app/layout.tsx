@@ -6,6 +6,7 @@ import NavigationBar from "@/components/NavigationBar";
 import Box from '@mui/material/Box';
 import "./globals.css";
 import Footer from "@/components/Footer";
+import { WalletProvider } from "@/providers/WalletProvider";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -28,24 +29,25 @@ export default function RootLayout({
       <body className="antialiased">
         <AppRouterCacheProvider>
           <StyledRoot>
-          <Box
-            className= 'gradient-background'
-            sx={{
-              minHeight: '100vh',
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-          {/* Persisted navigation across routes */}
-          <NavigationBar />
+            <WalletProvider>
+              <Box
+                className='gradient-background'
+                sx={{
+                  minHeight: '100vh',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                {/* Persisted navigation across routes */}
+                <NavigationBar />
 
-          {/* Page content rendered here */}
-          {children}
-          </Box>
-          <Footer />
+                {/* Page content rendered here */}
+                {children}
+              </Box>
+              <Footer />
+            </WalletProvider>
           </StyledRoot>
-          </AppRouterCacheProvider>
-
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

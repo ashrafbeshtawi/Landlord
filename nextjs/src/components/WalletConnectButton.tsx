@@ -2,15 +2,32 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { ethers } from 'ethers';
-import { Button, Box, IconButton, Snackbar, Alert } from '@mui/material';
-import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import {
+  Button,
+  Box,
+  IconButton,
+  Snackbar,
+  Alert,
+  CircularProgress,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+} from '@mui/material';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import theme from '../theme/theme';
 import { useActionStore } from '@/store/store';
+import { useWalletContext } from '@/providers/WalletProvider';
 import { useRouter } from 'next/navigation';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import { formatAddress } from '@/utils/formatters';
+import { getExplorerUrl } from '@/utils/constants';
 
-// Simple notification state for wallet-specific messages
 interface WalletNotification {
   open: boolean;
   message: string;
@@ -19,14 +36,16 @@ interface WalletNotification {
 
 export default function WalletConnectButton() {
   const router = useRouter();
-  const [address, setAddress] = useState<string | null>(null);
-  const { signer, setWalletConnected, setWalletDisconnected, setChainId } = useActionStore();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { isInitialized, isConnecting: autoConnecting } = useWalletContext();
 
-  // Track previous address for comparison without causing re-renders in callbacks
+  const [address, setAddress] = useState<string | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const { signer, chainId, setWalletConnected, setWalletDisconnected, setChainId } = useActionStore();
+
   const addressRef = useRef<string | null>(null);
   addressRef.current = address;
 
-  // Notification state (replaces alert())
   const [notification, setNotification] = useState<WalletNotification>({
     open: false,
     message: '',
@@ -41,21 +60,49 @@ export default function WalletConnectButton() {
     setNotification((prev) => ({ ...prev, open: false }));
   }, []);
 
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleLogout = useCallback((): void => {
     setWalletDisconnected();
     router.push('/');
     setAddress(null);
+    handleMenuClose();
   }, [setWalletDisconnected, router]);
 
   const goToControlPanel = useCallback((): void => {
     router.push('/control');
+    handleMenuClose();
   }, [router]);
+
+  const handleCopyAddress = useCallback(async () => {
+    if (address) {
+      await navigator.clipboard.writeText(address);
+      showNotification('Address copied!', 'success');
+    }
+    handleMenuClose();
+  }, [address, showNotification]);
+
+  const handleViewOnExplorer = useCallback(() => {
+    if (address) {
+      const explorerUrl = getExplorerUrl(chainId);
+      window.open(`${explorerUrl}/address/${address}`, '_blank');
+    }
+    handleMenuClose();
+  }, [address, chainId]);
 
   const handleConnectWallet = useCallback(async (): Promise<void> => {
     if (typeof window === 'undefined' || !window.ethereum) {
-      showNotification('MetaMask not available on your browser. Please install it.', 'error');
+      showNotification('MetaMask not available. Please install it.', 'error');
       return;
     }
+
+    setIsConnecting(true);
 
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
@@ -66,29 +113,29 @@ export default function WalletConnectButton() {
 
       const addr = await newSigner.getAddress();
       setAddress(addr);
+      showNotification('Wallet connected!', 'success');
       goToControlPanel();
     } catch (err) {
       console.error('Error connecting wallet:', err);
-      showNotification('Failed to connect wallet. Please try again.', 'error');
+      showNotification('Failed to connect wallet.', 'error');
+    } finally {
+      setIsConnecting(false);
     }
   }, [setWalletConnected, goToControlPanel, showNotification]);
 
-  // Handle account changes from MetaMask
   const handleAccountsChanged = useCallback(
     async (accounts: string[]) => {
       if (accounts.length === 0) {
-        // User disconnected their wallet
         handleLogout();
         showNotification('Wallet disconnected', 'info');
       } else if (accounts[0] !== addressRef.current) {
-        // Account changed, reconnect with new account
         try {
           if (typeof window !== 'undefined' && window.ethereum) {
             const provider = new ethers.BrowserProvider(window.ethereum);
             const newSigner = await provider.getSigner();
             await setWalletConnected(newSigner);
             setAddress(accounts[0]);
-            showNotification('Switched to account: ' + accounts[0].slice(0, 6) + '...' + accounts[0].slice(-4), 'success');
+            showNotification(`Switched to ${formatAddress(accounts[0])}`, 'success');
           }
         } catch (err) {
           console.error('Error switching account:', err);
@@ -100,19 +147,17 @@ export default function WalletConnectButton() {
     [handleLogout, setWalletConnected, showNotification]
   );
 
-  // Handle chain/network changes - update store instead of reloading
   const handleChainChanged = useCallback(
     async (chainIdHex: string) => {
       try {
         const newChainId = parseInt(chainIdHex, 16);
         setChainId(newChainId);
 
-        // Reconnect signer with new chain
         if (typeof window !== 'undefined' && window.ethereum && addressRef.current) {
           const provider = new ethers.BrowserProvider(window.ethereum);
           const newSigner = await provider.getSigner();
           await setWalletConnected(newSigner);
-          showNotification(`Switched to chain ID: ${newChainId}`, 'info');
+          showNotification(`Switched to chain ${newChainId}`, 'info');
         }
       } catch (err) {
         console.error('Error handling chain change:', err);
@@ -122,7 +167,6 @@ export default function WalletConnectButton() {
     [setChainId, setWalletConnected, showNotification]
   );
 
-  // Set up wallet event listeners
   useEffect(() => {
     if (typeof window === 'undefined' || !window.ethereum) return;
 
@@ -143,7 +187,6 @@ export default function WalletConnectButton() {
       ethereum.on('accountsChanged', accountsHandler);
       ethereum.on('chainChanged', chainHandler);
 
-      // Cleanup listeners on unmount
       return () => {
         ethereum.removeListener?.('accountsChanged', accountsHandler);
         ethereum.removeListener?.('chainChanged', chainHandler);
@@ -151,97 +194,146 @@ export default function WalletConnectButton() {
     }
   }, [handleAccountsChanged, handleChainChanged]);
 
-  // Sync address from signer on mount/change
   useEffect(() => {
     if (signer) {
       signer.getAddress().then(setAddress).catch(() => setAddress(null));
     }
   }, [signer]);
 
+  const showLoading = !isInitialized || autoConnecting || isConnecting;
+
   return (
     <>
-      <Box sx={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
-        {!address ? (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        {showLoading ? (
+          <CircularProgress size={24} sx={{ color: theme.palette.primary.main, mx: 2 }} />
+        ) : !address ? (
           <>
+            {/* Desktop Connect Button */}
             <Button
-              variant="outlined"
-              color="primary"
+              variant="contained"
               onClick={handleConnectWallet}
-              sx={{ display: { xs: 'none', md: 'flex' }, ml: 2, fontWeight: 'bold' }}
+              startIcon={<AccountBalanceWalletIcon />}
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+                ml: 2,
+                fontWeight: 600,
+                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                '&:hover': {
+                  background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`,
+                },
+              }}
             >
               Connect Wallet
             </Button>
+
+            {/* Mobile Connect Button */}
             <IconButton
+              onClick={handleConnectWallet}
               sx={{
                 display: { xs: 'flex', md: 'none' },
                 ml: 1,
-                backgroundColor: theme.palette.primary.main,
+                bgcolor: theme.palette.primary.main,
+                '&:hover': { bgcolor: theme.palette.primary.dark },
               }}
-              onClick={handleConnectWallet}
             >
               <VpnKeyIcon sx={{ color: '#fff' }} />
             </IconButton>
           </>
         ) : (
           <>
+            {/* Connected State - Desktop */}
             <Button
               variant="outlined"
-              color="secondary"
-              onClick={goToControlPanel}
+              onClick={handleMenuOpen}
+              startIcon={<AccountBalanceWalletIcon />}
               sx={{
-                ml: 1,
-                fontWeight: 'bold',
-                borderColor: theme.palette.secondary.main,
-                color: theme.palette.secondary.main,
                 display: { xs: 'none', md: 'flex' },
+                ml: 2,
+                fontWeight: 600,
+                borderColor: theme.palette.primary.main,
+                color: theme.palette.primary.main,
+                '&:hover': {
+                  borderColor: theme.palette.primary.light,
+                  bgcolor: 'rgba(29, 205, 159, 0.1)',
+                },
               }}
             >
-              Control Panel
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleLogout}
-              sx={{
-                ml: 1,
-                fontWeight: 'bold',
-                borderColor: theme.palette.secondary.main,
-                color: theme.palette.secondary.main,
-                display: { xs: 'none', md: 'flex' },
-              }}
-            >
-              Disconnect
+              {formatAddress(address)}
             </Button>
 
+            {/* Connected State - Mobile */}
             <IconButton
+              onClick={handleMenuOpen}
               sx={{
                 display: { xs: 'flex', md: 'none' },
                 ml: 1,
-                backgroundColor: theme.palette.primary.main,
+                bgcolor: theme.palette.primary.main,
+                '&:hover': { bgcolor: theme.palette.primary.dark },
               }}
-              onClick={goToControlPanel}
             >
-              <WalletIcon sx={{ color: '#fff' }} />
+              <AccountBalanceWalletIcon sx={{ color: '#fff' }} />
             </IconButton>
 
-            <IconButton
-              sx={{
-                display: { xs: 'flex', md: 'none' },
-                ml: 1,
-                backgroundColor: theme.palette.primary.main,
+            {/* Dropdown Menu */}
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              PaperProps={{
+                sx: {
+                  mt: 1,
+                  minWidth: 200,
+                  bgcolor: '#1a1a2e',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  '& .MuiMenuItem-root': {
+                    color: 'white',
+                    '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
+                  },
+                },
               }}
-              onClick={handleLogout}
             >
-              <ExitToAppIcon sx={{ color: '#fff' }} />
-            </IconButton>
+              <MenuItem onClick={goToControlPanel}>
+                <ListItemIcon>
+                  <DashboardIcon sx={{ color: theme.palette.primary.main }} />
+                </ListItemIcon>
+                <ListItemText>Control Panel</ListItemText>
+              </MenuItem>
+
+              <MenuItem onClick={handleCopyAddress}>
+                <ListItemIcon>
+                  <ContentCopyIcon sx={{ color: 'rgba(255,255,255,0.7)' }} />
+                </ListItemIcon>
+                <ListItemText>Copy Address</ListItemText>
+              </MenuItem>
+
+              <MenuItem onClick={handleViewOnExplorer}>
+                <ListItemIcon>
+                  <OpenInNewIcon sx={{ color: 'rgba(255,255,255,0.7)' }} />
+                </ListItemIcon>
+                <ListItemText>View on Explorer</ListItemText>
+              </MenuItem>
+
+              <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)', my: 1 }} />
+
+              <MenuItem onClick={handleLogout}>
+                <ListItemIcon>
+                  <LogoutIcon sx={{ color: '#ff6b6b' }} />
+                </ListItemIcon>
+                <ListItemText sx={{ '& .MuiTypography-root': { color: '#ff6b6b' } }}>
+                  Disconnect
+                </ListItemText>
+              </MenuItem>
+            </Menu>
           </>
         )}
       </Box>
 
-      {/* Notification Snackbar (replaces alert()) */}
       <Snackbar
         open={notification.open}
-        autoHideDuration={5000}
+        autoHideDuration={4000}
         onClose={hideNotification}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >

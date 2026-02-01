@@ -4,12 +4,20 @@ import { useState, useMemo } from 'react';
 import { Box, Button, TextField, Typography, Grid, Card, CardContent } from '@mui/material';
 import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
+import SendIcon from '@mui/icons-material/Send';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import { useActionStore } from '@/store/store';
 import { useContract } from '@/hooks/useContract';
 import { useToast } from '@/hooks/useToast';
 import Toast from '@/components/common/Toast';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
 import theme from '@/theme/theme';
+
+interface ERC20ActionsProps {
+  onActionComplete?: () => void;
+}
 
 interface ActionField {
   label: string;
@@ -18,8 +26,11 @@ interface ActionField {
 }
 
 interface ActionConfig {
-  id: string; // Unique ID for key prop
+  id: string;
   title: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
   fields: ActionField[];
 }
 
@@ -27,19 +38,24 @@ type FormState = {
   [key: string]: { [field: string]: string };
 };
 
-// Memoized action configs with stable IDs
 const ACTION_CONFIGS: ActionConfig[] = [
   {
     id: 'transfer',
     title: 'Transfer',
+    description: 'Send tokens to another address',
+    icon: <SendIcon />,
+    color: theme.palette.primary.main,
     fields: [
-      { label: 'To Address', name: 'toAddress', type: 'address' },
+      { label: 'Recipient Address', name: 'toAddress', type: 'address' },
       { label: 'Amount', name: 'amount', type: 'amount' },
     ],
   },
   {
     id: 'approve',
     title: 'Approve',
+    description: 'Allow another address to spend tokens',
+    icon: <CheckCircleIcon />,
+    color: '#4CAF50',
     fields: [
       { label: 'Spender Address', name: 'spenderAddress', type: 'address' },
       { label: 'Amount', name: 'amount', type: 'amount' },
@@ -48,6 +64,9 @@ const ACTION_CONFIGS: ActionConfig[] = [
   {
     id: 'transfer-from',
     title: 'Transfer From',
+    description: 'Transfer tokens on behalf of another',
+    icon: <SwapHorizIcon />,
+    color: '#2196F3',
     fields: [
       { label: 'From Address', name: 'fromAddress', type: 'address' },
       { label: 'To Address', name: 'toAddress', type: 'address' },
@@ -57,6 +76,9 @@ const ACTION_CONFIGS: ActionConfig[] = [
   {
     id: 'burn',
     title: 'Burn',
+    description: 'Permanently destroy tokens',
+    icon: <LocalFireDepartmentIcon />,
+    color: '#FF5722',
     fields: [{ label: 'Amount', name: 'amount', type: 'amount' }],
   },
 ];
@@ -68,13 +90,6 @@ const initialFormState: FormState = {
   Burn: { amount: '' },
 };
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 60 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.8, ease: 'easeOut' },
-};
-
-// Type guard for ethers errors
 interface EthersError extends Error {
   reason?: string;
   code?: string;
@@ -88,7 +103,6 @@ function isEthersError(error: unknown): error is EthersError {
   );
 }
 
-// Validation helpers
 function isValidAddress(address: string): boolean {
   return ethers.isAddress(address);
 }
@@ -98,7 +112,6 @@ function isValidAmount(amount: string): boolean {
   try {
     const num = parseFloat(amount);
     if (isNaN(num) || num <= 0) return false;
-    // Check it can be parsed as BigInt with 18 decimals
     ethers.parseUnits(amount, 18);
     return true;
   } catch {
@@ -106,7 +119,7 @@ function isValidAmount(amount: string): boolean {
   }
 }
 
-function ERC20ActionsContent() {
+function ERC20ActionsContent({ onActionComplete }: ERC20ActionsProps) {
   const { walletAdresse } = useActionStore();
   const { getContract } = useContract();
   const { toast, showSuccess, showError, showPending, hideToast } = useToast();
@@ -114,7 +127,6 @@ function ERC20ActionsContent() {
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [processingAction, setProcessingAction] = useState<string | null>(null);
 
-  // Memoize action configs to prevent recreation
   const actionConfigs = useMemo(() => ACTION_CONFIGS, []);
 
   const handleInputChange = (actionTitle: string, fieldName: string, value: string) => {
@@ -155,7 +167,6 @@ function ERC20ActionsContent() {
     actionTitle: string,
     contractMethod: (contract: ethers.Contract) => Promise<ethers.ContractTransactionResponse>
   ) => {
-    // Validate before executing
     const validationError = validateForm(actionTitle);
     if (validationError) {
       showError(validationError);
@@ -172,19 +183,21 @@ function ERC20ActionsContent() {
 
       showSuccess(`${actionTitle} successful!`, tx.hash);
 
-      // Clear form after success
       setFormState((prev) => ({
         ...prev,
         [actionTitle]: initialFormState[actionTitle],
       }));
+
+      // Refresh balance after successful action
+      if (onActionComplete) {
+        setTimeout(() => onActionComplete(), 2000);
+      }
     } catch (err: unknown) {
-      // Use type guard for proper error handling
       let errorMessage = `${actionTitle} failed`;
 
       if (isEthersError(err)) {
         errorMessage = err.reason || err.message || errorMessage;
 
-        // Handle common error codes
         if (err.code === 'ACTION_REJECTED') {
           errorMessage = 'Transaction was rejected by user';
         } else if (err.code === 'INSUFFICIENT_FUNDS') {
@@ -233,77 +246,68 @@ function ERC20ActionsContent() {
     Burn: handleBurn,
   };
 
-  // Memoized styles
-  const cardStyles = useMemo(
-    () => ({
-      background: 'linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-      backdropFilter: 'blur(15px)',
-      border: '1px solid rgba(255,255,255,0.2)',
-      borderRadius: 3,
-      minWidth: 260,
-      transition: 'all 0.3s ease',
-      '&:hover': {
-        boxShadow: '0 15px 30px rgba(0,0,0,0.3)',
-        border: '1px solid rgba(255,255,255,0.3)',
-      },
-    }),
-    []
-  );
-
-  const textFieldStyles = useMemo(
-    () => ({
-      '& .MuiOutlinedInput-root': {
-        '& fieldset': { borderColor: 'rgba(255,255,255,0.3)' },
-        '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.5)' },
-        '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main },
-        '& input': { color: 'white' },
-      },
-    }),
-    []
-  );
-
   return (
-    <Box
-      sx={{
-        p: { xs: 4, md: 6 },
-        background: 'linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)',
-        backdropFilter: 'blur(25px)',
-        border: '1px solid rgba(255,255,255,0.25)',
-        borderRadius: 5,
-        boxShadow: '0 25px 50px rgba(0,0,0,0.4)',
-        position: 'relative',
-        overflow: 'hidden',
-        textAlign: 'center',
-        width: { xs: '90%', md: '80%' },
-        mx: 'auto',
-        mt: 4,
-        color: 'white',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '4px',
-          background: `linear-gradient(90deg, ${theme.palette.primary.main}, #4CAF50, #2196F3)`,
-          borderRadius: '5px 5px 0 0',
-        },
-      }}
-    >
-      <motion.div initial="initial" animate="animate" variants={fadeInUp}>
-        <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', color: 'white' }}>
+    <Box>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h5" sx={{ fontWeight: 600, color: 'white', mb: 1 }}>
           Token Actions
         </Typography>
+        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>
+          Manage your LND tokens
+        </Typography>
+      </Box>
 
-        <Grid container spacing={3} justifyContent="center">
-          {actionConfigs.map((action) => (
-            <Grid key={action.id}>
-              <Card sx={cardStyles}>
-                <CardContent sx={{ p: 3, textAlign: 'center' }}>
-                  <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>
-                    {action.title}
-                  </Typography>
+      <Grid container spacing={3} justifyContent="center">
+        {actionConfigs.map((action, index) => (
+          <Grid key={action.id} size={{ xs: 12, sm: 6, lg: 3 }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+            >
+              <Card
+                sx={{
+                  height: '100%',
+                  background: 'linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)',
+                  backdropFilter: 'blur(15px)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 3,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: `0 20px 40px rgba(0,0,0,0.3)`,
+                    border: `1px solid ${action.color}40`,
+                  },
+                }}
+              >
+                <CardContent sx={{ p: 3 }}>
+                  {/* Header */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                    <Box
+                      sx={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 2,
+                        bgcolor: `${action.color}20`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: action.color,
+                      }}
+                    >
+                      {action.icon}
+                    </Box>
+                    <Box>
+                      <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, lineHeight: 1.2 }}>
+                        {action.title}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>
+                        {action.description}
+                      </Typography>
+                    </Box>
+                  </Box>
 
+                  {/* Form Fields */}
                   {action.fields.map((field) => (
                     <TextField
                       key={`${action.id}-${field.name}`}
@@ -315,11 +319,19 @@ function ERC20ActionsContent() {
                       onChange={(e) => handleInputChange(action.title, field.name, e.target.value)}
                       disabled={processingAction === action.title}
                       placeholder={field.type === 'address' ? '0x...' : '0.0'}
-                      InputLabelProps={{ style: { color: 'rgba(255,255,255,0.7)' } }}
-                      sx={textFieldStyles}
+                      InputLabelProps={{ style: { color: 'rgba(255,255,255,0.6)' } }}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                          '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.3)' },
+                          '&.Mui-focused fieldset': { borderColor: action.color },
+                          '& input': { color: 'white' },
+                        },
+                      }}
                     />
                   ))}
 
+                  {/* Submit Button */}
                   <Button
                     variant="contained"
                     onClick={handlers[action.title]}
@@ -327,23 +339,20 @@ function ERC20ActionsContent() {
                     fullWidth
                     sx={{
                       mt: 2,
-                      background:
-                        processingAction === action.title
-                          ? 'rgba(255,255,255,0.1)'
-                          : `linear-gradient(45deg, ${theme.palette.primary.main}, #4CAF50)`,
+                      background: processingAction === action.title
+                        ? 'rgba(255,255,255,0.1)'
+                        : `linear-gradient(135deg, ${action.color}, ${action.color}CC)`,
                       py: 1.5,
-                      fontSize: '0.95rem',
+                      fontSize: '0.9rem',
                       fontWeight: 600,
                       borderRadius: 2,
                       textTransform: 'none',
-                      boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
                       '&:hover': {
-                        background: `linear-gradient(45deg, ${theme.palette.primary.dark}, #45a049)`,
-                        transform: 'translateY(-2px)',
+                        background: `linear-gradient(135deg, ${action.color}DD, ${action.color}AA)`,
                       },
                       '&:disabled': {
                         background: 'rgba(255,255,255,0.1)',
-                        color: 'rgba(255,255,255,0.5)',
+                        color: 'rgba(255,255,255,0.4)',
                       },
                     }}
                   >
@@ -351,20 +360,20 @@ function ERC20ActionsContent() {
                   </Button>
                 </CardContent>
               </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </motion.div>
+            </motion.div>
+          </Grid>
+        ))}
+      </Grid>
 
       <Toast toast={toast} onClose={hideToast} />
     </Box>
   );
 }
 
-export default function ERC20Actions() {
+export default function ERC20Actions({ onActionComplete }: ERC20ActionsProps = {}) {
   return (
     <ErrorBoundary>
-      <ERC20ActionsContent />
+      <ERC20ActionsContent onActionComplete={onActionComplete} />
     </ErrorBoundary>
   );
 }

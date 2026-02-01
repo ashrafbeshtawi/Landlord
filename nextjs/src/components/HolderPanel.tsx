@@ -1,28 +1,25 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Box, Typography, Divider, Grid } from '@mui/material';
+import { Box, Typography, Grid, Alert } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useActionStore } from '@/store/store';
 import { useDistributions } from '@/hooks/useDistributions';
 import { useContract } from '@/hooks/useContract';
 import { useToast } from '@/hooks/useToast';
 import { Distribution } from '@/types';
-import { formatTokenAmount, formatAddress } from '@/utils/formatters';
 import DistributionCard from '@/components/holder/DistributionCard';
 import ClaimAllButton from '@/components/holder/ClaimAllButton';
 import Toast from '@/components/common/Toast';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
-import theme from '@/theme/theme';
 
 const fadeInUp = {
-  initial: { opacity: 0, y: 60 },
+  initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.8, ease: 'easeOut' },
+  transition: { duration: 0.5, ease: 'easeOut' },
 };
 
-// Type guard for errors
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
@@ -36,7 +33,6 @@ function getErrorMessage(error: unknown): string {
 function HolderPanelContent() {
   const walletAddress = useActionStore((state) => state.walletAdresse);
   const {
-    balance,
     distributions,
     claimStatuses,
     loading,
@@ -73,7 +69,6 @@ function HolderPanelContent() {
       updateClaimStatus(id, { status: 'success', txHash });
       showSuccess('Profit claimed successfully!', txHash);
 
-      // Refresh data after successful claim
       setTimeout(() => refresh(), 2000);
     } catch (err) {
       const errorMessage = getErrorMessage(err);
@@ -136,33 +131,57 @@ function HolderPanelContent() {
     [distributions, claimStatuses]
   );
 
-  // Render content based on state
-  const renderDistributions = () => {
-    if (loading) {
-      return <LoadingSpinner message="Loading distributions..." />;
-    }
-
-    if (error) {
-      return (
-        <Typography color="error" sx={{ mt: 2 }}>
-          Error: {error}
-        </Typography>
-      );
-    }
-
-    if (activeDistributions.length === 0) {
-      return (
-        <Typography
-          variant="body1"
-          sx={{ mt: 2, mb: 2, color: 'rgba(255,255,255,0.8)', textAlign: 'center' }}
-        >
-          No unclaimed profits found. New distributions might be coming soon!
-        </Typography>
-      );
-    }
-
+  if (loading) {
     return (
-      <>
+      <Box sx={{ py: 6 }}>
+        <LoadingSpinner message="Loading distributions..." />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert severity="error" sx={{ mb: 2 }}>
+        {error}
+      </Alert>
+    );
+  }
+
+  if (activeDistributions.length === 0) {
+    return (
+      <motion.div initial="initial" animate="animate" variants={fadeInUp}>
+        <Box
+          sx={{
+            py: 8,
+            textAlign: 'center',
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
+            borderRadius: 3,
+            border: '1px dashed rgba(255,255,255,0.2)',
+          }}
+        >
+          <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.7)', mb: 1 }}>
+            No Unclaimed Distributions
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.5)' }}>
+            New profit distributions will appear here when available.
+          </Typography>
+        </Box>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div initial="initial" animate="animate" variants={fadeInUp}>
+      <Box sx={{ textAlign: 'center', mb: 3 }}>
+        <Typography variant="h5" sx={{ fontWeight: 600, color: 'white', mb: 2 }}>
+          Claim Your Profits
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>
+          You have {activeDistributions.length} unclaimed distribution{activeDistributions.length !== 1 ? 's' : ''}
+        </Typography>
+      </Box>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
         <ClaimAllButton
           count={activeDistributions.length}
           onClaimAll={handleClaimAll}
@@ -170,91 +189,23 @@ function HolderPanelContent() {
           isProcessing={isBatchClaiming}
           progress={batchProgress}
         />
+      </Box>
 
-        <Grid container spacing={3} justifyContent="center" sx={{ width: '100%' }}>
-          {activeDistributions.map((dist) => (
-            <Grid key={dist.id}>
-              <DistributionCard
-                distribution={dist}
-                claimStatus={claimStatuses.get(dist.id) || { distributionId: dist.id, status: 'idle' }}
-                onClaim={handleClaim}
-                disabled={!walletAddress || (isAnyClaiming && claimStatuses.get(dist.id)?.status === 'idle')}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </>
-    );
-  };
-
-  return (
-    <Box
-      id="holder-panel"
-      sx={{
-        p: { xs: 4, md: 6 },
-        background: 'linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)',
-        backdropFilter: 'blur(25px)',
-        border: '1px solid rgba(255,255,255,0.25)',
-        borderRadius: 5,
-        boxShadow: '0 25px 50px rgba(0,0,0,0.4)',
-        position: 'relative',
-        overflow: 'hidden',
-        textAlign: 'center',
-        width: { xs: '90%', md: '80%' },
-        mx: 'auto',
-        mt: 12,
-        color: 'white',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '4px',
-          background: `linear-gradient(90deg, ${theme.palette.primary.main}, #4CAF50, #2196F3)`,
-          borderRadius: '5px 5px 0 0',
-        },
-      }}
-    >
-      <motion.div initial="initial" animate="animate" variants={fadeInUp}>
-        <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold', color: 'white' }}>
-          Holder Dashboard
-        </Typography>
-
-        <Box sx={{ alignSelf: 'flex-start', width: '100%', textAlign: 'left', mb: 2 }}>
-          <Typography variant="body1" sx={{ mb: 1 }}>
-            Connected Wallet:{' '}
-            <strong>{walletAddress ? formatAddress(walletAddress) : 'Not Connected'}</strong>
-          </Typography>
-
-          <Typography variant="body1" sx={{ mb: 1 }}>
-            Your LND Balance:{' '}
-            <strong>
-              {loading ? (
-                'Loading...'
-              ) : error ? (
-                <span style={{ color: '#ff6b6b' }}>{error}</span>
-              ) : (
-                `${balance ? formatTokenAmount(balance) : '0'} LND`
-              )}
-            </strong>
-          </Typography>
-        </Box>
-
-        <Divider sx={{ width: '100%', my: 2, borderColor: 'rgba(255,255,255,0.2)' }} />
-
-        <Typography
-          variant="h5"
-          sx={{ mb: 2, fontWeight: 'bold', color: 'white', textAlign: 'center', width: '100%' }}
-        >
-          Available Distributions
-        </Typography>
-
-        {renderDistributions()}
-      </motion.div>
+      <Grid container spacing={3} justifyContent="center">
+        {activeDistributions.map((dist) => (
+          <Grid key={dist.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+            <DistributionCard
+              distribution={dist}
+              claimStatus={claimStatuses.get(dist.id) || { distributionId: dist.id, status: 'idle' }}
+              onClaim={handleClaim}
+              disabled={!walletAddress || (isAnyClaiming && claimStatuses.get(dist.id)?.status === 'idle')}
+            />
+          </Grid>
+        ))}
+      </Grid>
 
       <Toast toast={toast} onClose={hideToast} />
-    </Box>
+    </motion.div>
   );
 }
 
