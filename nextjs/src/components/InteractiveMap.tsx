@@ -5,7 +5,9 @@ import { Map, Source, Layer, Popup, MapLayerMouseEvent } from 'react-map-gl/mapl
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
+import PublicIcon from '@mui/icons-material/Public';
 import type { FeatureCollection, Point } from 'geojson';
+import theme from '@/theme/theme';
 
 const geojsonData: FeatureCollection<Point, {
   name: string;
@@ -112,165 +114,178 @@ export default function MapComponent() {
 
   return (
     <Box
+      id="markets"
       sx={{
-        width: '100%',
-        px: { xs: 2, md: 6 },
-        py: 10,
+        minHeight: '100vh',
+        pt: { xs: 12, md: 14 },
+        pb: 8,
+        px: { xs: 2, md: 4 },
+        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
         display: 'flex',
-        justifyContent: 'center',
         alignItems: 'center',
-        background: 'transparent'
       }}
     >
-      <Box
-        component={motion.div}
-        initial="initial"
-        animate="animate"
-        variants={fadeInUp}
-        sx={{
-          width: '100%',
-          maxWidth: '1200px',
-          borderRadius: 5,
-          overflow: 'hidden',
-          border: '1px solid rgba(255,255,255,0.15)',
-          backdropFilter: 'blur(25px)',
-          background: 'linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-          p: { xs: 3, md: 5 }
-        }}
-      >
-        {/* Title */}
-        <Typography
-          variant="h4"
-          component={motion.h2}
-          variants={fadeInUp}
-          sx={{
-            color: 'white',
-            fontWeight: 700,
-            fontSize: { xs: '1.6rem', md: '2.4rem' },
-            textAlign: 'center',
-            mb: 3,
-            lineHeight: 1.2
-          }}
-        >
-          🌍 Targeted Markets & Expansion Plans
-        </Typography>
-
-        {/* Legend */}
-        <Box
-          component={motion.div}
-          variants={fadeInUp}
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 4,
-            p: 2,
-            borderRadius: 3,
-            background: 'rgba(255,255,255,0.07)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            mb: 3
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box sx={{ width: 14, height: 14, borderRadius: '50%', bgcolor: '#4CAF50' }} />
-            <Typography variant="body2" sx={{ color: 'white' }}>
+      <Box sx={{ maxWidth: 1200, mx: 'auto', width: '100%' }}>
+        {/* Header */}
+        <motion.div initial="initial" animate="animate" variants={fadeInUp}>
+          <Box sx={{ textAlign: 'center', mb: 6 }}>
+            <Box
+              sx={{
+                width: 80,
+                height: 80,
+                borderRadius: '50%',
+                background: `linear-gradient(135deg, ${theme.palette.primary.main}, #4CAF50)`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mx: 'auto',
+                mb: 3,
+              }}
+            >
+              <PublicIcon sx={{ fontSize: 40, color: 'white' }} />
+            </Box>
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 800,
+                mb: 2,
+                background: `linear-gradient(90deg, ${theme.palette.primary.main}, #4CAF50)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontSize: { xs: '2rem', md: '2.8rem' },
+              }}
+            >
               Targeted Markets
             </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box sx={{ width: 14, height: 14, borderRadius: '50%', bgcolor: '#FFD700' }} />
-            <Typography variant="body2" sx={{ color: 'white' }}>
-              Expansion Phase
+            <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.7)', maxWidth: 600, mx: 'auto' }}>
+              Explore our expansion strategy across high-potential real estate markets
             </Typography>
           </Box>
-        </Box>
+        </motion.div>
 
-        <Typography
-          variant="body1"
-          component={motion.p}
-          variants={fadeInUp}
-          sx={{
-            color: 'rgba(255,255,255,0.85)',
-            textAlign: 'center',
-            mb: 3,
-            fontSize: { xs: '0.9rem', md: '1rem' }
-          }}
-        >
-          Hover over each country to view property data and ROI metrics.
-        </Typography>
-
-        {/* MAP */}
-        {initialViewState && (
+        {/* Map Card */}
+        <motion.div initial="initial" animate="animate" variants={fadeInUp} transition={{ delay: 0.1 }}>
           <Box
-            component={motion.div}
-            variants={fadeInUp}
             sx={{
-              height: '600px',
+              background: 'linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)',
+              backdropFilter: 'blur(20px)',
               borderRadius: 4,
-              overflow: 'hidden',
-              border: '1px solid rgba(255,255,255,0.1)'
+              border: '1px solid rgba(255,255,255,0.1)',
+              p: { xs: 3, md: 5 },
             }}
           >
-            <Map
-              mapLib={import('maplibre-gl')}
-              initialViewState={initialViewState}
-              style={{ width: '100%', height: '100%' }}
-              mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json"
-              interactiveLayerIds={['country-labels']}
-              onMouseMove={onHover}
-              onMouseLeave={() => setHoverInfo(null)}
+            {/* Legend */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: { xs: 2, md: 4 },
+                flexWrap: 'wrap',
+                p: 2,
+                borderRadius: 3,
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                mb: 3,
+              }}
             >
-              <Source id="countries" type="geojson" data={geojsonData}>
-                <Layer
-                  id="country-bubbles"
-                  type="circle"
-                  paint={{
-                    'circle-radius': 65,
-                    'circle-color': ['get', 'color'],
-                    'circle-opacity': 0.7,
-                    'circle-stroke-width': 2,
-                    'circle-stroke-color': '#333'
-                  }}
-                />
-                <Layer
-                  id="country-labels"
-                  type="symbol"
-                  layout={{
-                    'text-field': ['get', 'name'],
-                    'text-size': 14,
-                    'text-anchor': 'center'
-                  }}
-                  paint={{ 'text-color': '#ffffff' }}
-                />
-              </Source>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ width: 14, height: 14, borderRadius: '50%', bgcolor: '#4CAF50' }} />
+                <Typography variant="body2" sx={{ color: 'white', fontWeight: 500 }}>
+                  Targeted Markets
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ width: 14, height: 14, borderRadius: '50%', bgcolor: '#FFD700' }} />
+                <Typography variant="body2" sx={{ color: 'white', fontWeight: 500 }}>
+                  Expansion Phase
+                </Typography>
+              </Box>
+            </Box>
 
-              {hoverInfo && (
-                <Popup
-                  longitude={hoverInfo.longitude}
-                  latitude={hoverInfo.latitude}
-                  closeButton={false}
-                  closeOnClick={false}
-                  anchor="top"
-                  offset={20}
+            <Typography
+              variant="body1"
+              sx={{
+                color: 'rgba(255,255,255,0.7)',
+                textAlign: 'center',
+                mb: 3,
+              }}
+            >
+              Hover over each country to view property data and ROI metrics.
+            </Typography>
+
+            {/* MAP */}
+            {initialViewState && (
+              <Box
+                sx={{
+                  height: { xs: '400px', md: '500px' },
+                  borderRadius: 3,
+                  overflow: 'hidden',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                }}
+              >
+                <Map
+                  mapLib={import('maplibre-gl')}
+                  initialViewState={initialViewState}
+                  style={{ width: '100%', height: '100%' }}
+                  mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json"
+                  interactiveLayerIds={['country-labels']}
+                  onMouseMove={onHover}
+                  onMouseLeave={() => setHoverInfo(null)}
                 >
-                  <Box
-                    sx={{
-                      background: 'white',
-                      color: '#333',
-                      borderRadius: 2,
-                      p: 1,
-                      fontSize: 13,
-                      whiteSpace: 'pre-line',
-                      maxWidth: 250
-                    }}
-                  >
-                    {hoverInfo.description}
-                  </Box>
-                </Popup>
-              )}
-            </Map>
+                  <Source id="countries" type="geojson" data={geojsonData}>
+                    <Layer
+                      id="country-bubbles"
+                      type="circle"
+                      paint={{
+                        'circle-radius': 65,
+                        'circle-color': ['get', 'color'],
+                        'circle-opacity': 0.7,
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': '#333',
+                      }}
+                    />
+                    <Layer
+                      id="country-labels"
+                      type="symbol"
+                      layout={{
+                        'text-field': ['get', 'name'],
+                        'text-size': 14,
+                        'text-anchor': 'center',
+                      }}
+                      paint={{ 'text-color': '#ffffff' }}
+                    />
+                  </Source>
+
+                  {hoverInfo && (
+                    <Popup
+                      longitude={hoverInfo.longitude}
+                      latitude={hoverInfo.latitude}
+                      closeButton={false}
+                      closeOnClick={false}
+                      anchor="top"
+                      offset={20}
+                    >
+                      <Box
+                        sx={{
+                          background: 'linear-gradient(145deg, #1a1a2e, #16213e)',
+                          color: 'white',
+                          borderRadius: 2,
+                          p: 2,
+                          fontSize: 13,
+                          whiteSpace: 'pre-line',
+                          maxWidth: 280,
+                          border: `1px solid ${theme.palette.primary.main}30`,
+                        }}
+                      >
+                        {hoverInfo.description}
+                      </Box>
+                    </Popup>
+                  )}
+                </Map>
+              </Box>
+            )}
           </Box>
-        )}
+        </motion.div>
       </Box>
     </Box>
   );
