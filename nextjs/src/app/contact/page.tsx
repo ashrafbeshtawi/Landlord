@@ -136,7 +136,7 @@ export default function ContactUsPage() {
               Contact Us
             </Typography>
             <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.7)' }}>
-              Have questions? We'd love to hear from you.
+              Have questions? We&apos;d love to hear from you.
             </Typography>
           </Box>
 
@@ -153,7 +153,7 @@ export default function ContactUsPage() {
                   border: '1px solid rgba(76, 175, 80, 0.3)',
                 }}
               >
-                Your message has been sent successfully! We'll get back to you soon.
+                Your message has been sent successfully! We&apos;ll get back to you soon.
               </Alert>
             </motion.div>
           )}

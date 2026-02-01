@@ -148,7 +148,7 @@ const HeroSection = () => {
                     }}
                   >
                     Seize the chance to own Syrian real estate at rock-bottom prices with LandLord Coin (LND)—enjoy
-                    steady rental income, share in rebuilding impact, and benefit from blockchain's security and
+                    steady rental income, share in rebuilding impact, and benefit from blockchain&apos;s security and
                     transparency.
                   </Typography>
                 </motion.div>
@@ -245,7 +245,7 @@ const HeroSection = () => {
                     }}
                   >
                     <Typography variant="body2" sx={{ color: 'white', fontWeight: 600 }}>
-                      Rebuilding Syria's Future
+                      Rebuilding Syria&apos;s Future
                     </Typography>
                   </Box>
                 </Box>
